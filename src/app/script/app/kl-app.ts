@@ -81,6 +81,8 @@ import { requestPersistentStorage } from '../klecks/storage/request-persistent-s
 import { CrossTabChannel } from '../bb/base/cross-tab-channel';
 import { MobileColorUi } from '../klecks/ui/mobile/mobile-color-ui';
 import { getSelectionPath2d } from '../bb/multi-polygon/get-selection-path-2d';
+import { createMatrixFromTransform } from '../bb/transform/create-matrix-from-transform';
+import { applyToPoint, inverse } from 'transformation-matrix';
 
 importFilters();
 
@@ -257,8 +259,8 @@ export class KlApp {
             this.embed
                 ? 'left'
                 : LocalStorage.getItem('uiState')
-                  ? LocalStorage.getItem('uiState')
-                  : 'right'
+                    ? LocalStorage.getItem('uiState')
+                    : 'right'
         ) as TUiLayout;
         const projectStore = KL_INDEXED_DB.getIsAvailable() ? new ProjectStore() : undefined;
         this.rootEl = BB.el({
@@ -376,9 +378,13 @@ export class KlApp {
 
         const brushSettingService = new KL.BrushSettingService({
             onSetColor: (color) => {
-                this.klColorSlider.setColor(color);
+                if (this.klColorSlider) {
+                    this.klColorSlider.setColor(color);
+                }
                 currentBrushUi.setColor(color);
-                this.mobileColorUi.setColor(color);
+                if (this.mobileColorUi) {
+                    this.mobileColorUi.setColor(color);
+                }
                 currentColor = BB.copyObj(color);
             },
             onSetSize: (size) => {
@@ -391,11 +397,18 @@ export class KlApp {
             onSetScatter: (scatter) => {
                 currentBrushUi.setScatter(scatter);
             },
-            onGetColor: () => this.klColorSlider.getColor(),
-            onGetSize: () => brushUiMap[currentBrushId].getSize(),
-            onGetOpacity: () => brushUiMap[currentBrushId].getOpacity(),
-            onGetScatter: () => brushUiMap[currentBrushId].getScatter(),
+            onGetColor: () => this.klColorSlider ? this.klColorSlider.getColor() : new BB.RGB(0, 0, 0),
+            onGetSize: () => currentBrushId ? brushUiMap[currentBrushId].getSize() : 1,
+            onGetOpacity: () => currentBrushId ? brushUiMap[currentBrushId].getOpacity() : 1,
+            onGetScatter: () => currentBrushId ? brushUiMap[currentBrushId].getScatter() : 1,
             onGetSliderConfig: () => {
+                if (!currentBrushId) {
+                    return {
+                        sizeSlider: { min: 1, max: 100 },
+                        opacitySlider: { min: 0, max: 1 },
+                        scatterSlider: { min: 0, max: 1 },
+                    };
+                }
                 return {
                     sizeSlider: KL.BRUSHES_UI[currentBrushId].sizeSlider,
                     opacitySlider: KL.BRUSHES_UI[currentBrushId].opacitySlider,
@@ -706,20 +719,20 @@ export class KlApp {
                                 angleRad: angleRad,
                                 fill: textToolSettings.fill
                                     ? {
-                                          color: {
-                                              ...this.klColorSlider.getColor(),
-                                              a: textToolSettings.fill.color.a,
-                                          },
-                                      }
+                                        color: {
+                                            ...this.klColorSlider.getColor(),
+                                            a: textToolSettings.fill.color.a,
+                                        },
+                                    }
                                     : undefined,
                                 stroke: textToolSettings.stroke
                                     ? {
-                                          ...textToolSettings.stroke,
-                                          color: {
-                                              ...this.klColorSlider.getSecondaryRGB(),
-                                              a: textToolSettings.stroke.color.a,
-                                          },
-                                      }
+                                        ...textToolSettings.stroke,
+                                        color: {
+                                            ...this.klColorSlider.getSecondaryRGB(),
+                                            a: textToolSettings.stroke.color.a,
+                                        },
+                                    }
                                     : undefined,
                             },
 
@@ -743,7 +756,9 @@ export class KlApp {
                 this.mobileColorUi.setIsVisible(toolId !== 'select');
             },
             onTransformChange: (transform, isScaleOrAngleChanged) => {
-                handUi.update(transform.scale, transform.angleDeg);
+                if (typeof handUi !== 'undefined' && handUi) {
+                    handUi.update(transform.scale, transform.angleDeg);
+                }
                 this.toolspaceToolRow.setEnableZoomIn(transform.scale !== EASEL_MAX_SCALE);
                 this.toolspaceToolRow.setEnableZoomOut(transform.scale !== EASEL_MIN_SCALE);
 
@@ -769,6 +784,45 @@ export class KlApp {
             position: 'absolute',
             left: '0',
             top: '0',
+        });
+
+        const easelElement = this.easel.getElement();
+        easelElement.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer) {
+                e.dataTransfer.dropEffect = 'copy';
+            }
+        });
+        easelElement.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const data = e.dataTransfer?.getData('text/plain');
+            if (data) {
+                try {
+                    const col = JSON.parse(data) as TRgb;
+                    const rect = easelElement.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const vTransform = this.easel.getTransform();
+                    const m = createMatrixFromTransform(vTransform);
+                    const p = applyToPoint(inverse(m), { x, y });
+
+                    this.klCanvas.floodFill(
+                        currentLayer.index,
+                        p.x,
+                        p.y,
+                        col,
+                        1,
+                        20,
+                        'all',
+                        1,
+                        true,
+                    );
+                    this.easel.requestRender();
+                } catch (err) {
+                    // ignore
+                }
+            }
         });
         this.easelProjectUpdater = new EaselProjectUpdater({
             klCanvas: this.klCanvas,
@@ -889,7 +943,7 @@ export class KlApp {
                                     setTimeout(() => {
                                         throw new Error(
                                             'keyboard-shortcut: failed to store browser storage, ' +
-                                                e,
+                                            e,
                                         );
                                     }, 0);
                                     this.statusOverlay.out(
@@ -1015,7 +1069,7 @@ export class KlApp {
                     this.klColorSlider.swapColors();
                 }
             },
-            onUp: (keyStr, event) => {},
+            onUp: (keyStr, event) => { },
         });
 
         const brushUiMap: {
@@ -1614,7 +1668,7 @@ export class KlApp {
                     this.easelProjectUpdater.update();
                     this.easel.resetOrFitTransform(true);
                 },
-                onCancel: () => {},
+                onCancel: () => { },
             });
         };
 
@@ -1624,7 +1678,7 @@ export class KlApp {
                 canvas: this.klCanvas.getCompleteCanvas(1),
                 fileName: BB.getDate() + KL_CONFIG.filenameBase + '.png',
                 title: BB.getDate() + KL_CONFIG.filenameBase + '.png',
-                callback: callback ? callback : () => {},
+                callback: callback ? callback : () => { },
             });
         };
 
@@ -1785,44 +1839,44 @@ export class KlApp {
         const fileUi = this.embed
             ? null
             : new KL.FileUi({
-                  klRootEl: this.rootEl,
-                  projectStore: projectStore,
-                  getProject: () => this.klCanvas.getProject(),
-                  exportType: exportType,
-                  onExportTypeChange: (type) => {
-                      exportType = type;
-                  },
-                  onFileSelect: (files, optionsStr) =>
-                      importHandler.handleFileSelect(files, optionsStr),
-                  onSaveImageToComputer: () => {
-                      applyUncommitted();
-                      this.saveToComputer.save();
-                  },
-                  onNewImage: showNewImageDialog,
-                  onShareImage: (callback) => {
-                      applyUncommitted();
-                      shareImage(callback);
-                  },
-                  onUpload: () => {
-                      // on upload
-                      applyUncommitted();
-                      KL.imgurUpload(
-                          this.klCanvas,
-                          this.rootEl,
-                          p.app && p.app.imgurKey ? p.app.imgurKey : '',
-                          () => this.updateLastSaved(),
-                      );
-                  },
-                  applyUncommitted: () => applyUncommitted(),
-                  onChangeShowSaveDialog: (b) => {
-                      this.saveToComputer.setShowSaveDialog(b);
-                  },
-                  klRecoveryManager,
-                  onOpenBrowserStorage,
-                  onStoredToBrowserStorage: () => {
-                      this.updateLastSaved();
-                  },
-              });
+                klRootEl: this.rootEl,
+                projectStore: projectStore,
+                getProject: () => this.klCanvas.getProject(),
+                exportType: exportType,
+                onExportTypeChange: (type) => {
+                    exportType = type;
+                },
+                onFileSelect: (files, optionsStr) =>
+                    importHandler.handleFileSelect(files, optionsStr),
+                onSaveImageToComputer: () => {
+                    applyUncommitted();
+                    this.saveToComputer.save();
+                },
+                onNewImage: showNewImageDialog,
+                onShareImage: (callback) => {
+                    applyUncommitted();
+                    shareImage(callback);
+                },
+                onUpload: () => {
+                    // on upload
+                    applyUncommitted();
+                    KL.imgurUpload(
+                        this.klCanvas,
+                        this.rootEl,
+                        p.app && p.app.imgurKey ? p.app.imgurKey : '',
+                        () => this.updateLastSaved(),
+                    );
+                },
+                applyUncommitted: () => applyUncommitted(),
+                onChangeShowSaveDialog: (b) => {
+                    this.saveToComputer.setShowSaveDialog(b);
+                },
+                klRecoveryManager,
+                onOpenBrowserStorage,
+                onStoredToBrowserStorage: () => {
+                    this.updateLastSaved();
+                },
+            });
 
         if (!this.embed && projectStore) {
             this.saveReminder = new SaveReminder({

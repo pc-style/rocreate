@@ -2,8 +2,9 @@ import { BB } from '../../../bb/bb';
 import { calcSliderFalloffFactor } from './slider-falloff';
 import { TRgb } from '../../kl-types';
 import { PointerListener } from '../../../bb/input/pointer-listener';
-import { HSV } from '../../../bb/color/color';
+import { HSV, RGB } from '../../../bb/color/color';
 import { css } from '../../../bb/base/base';
+import { KlColorHistory } from './kl-color-history';
 
 /**
  * a small color slider
@@ -20,6 +21,7 @@ export class KlColorSliderSmall {
     private readonly pointerSV: HTMLElement;
     private readonly pointerH: HTMLElement;
     private readonly canvasSV: HTMLCanvasElement;
+    private readonly colorHistory: KlColorHistory;
 
     private updateSV(): void {
         const ctx = BB.ctx(this.canvasSV);
@@ -79,6 +81,13 @@ export class KlColorSliderSmall {
         this.width = p.width;
         this.heightSV = p.heightSV;
 
+        this.colorHistory = new KlColorHistory({
+            onColorSelect: (rgb) => {
+                this.setColor(rgb, true);
+                p.callback(rgb);
+            },
+        });
+
         this.canvasSV = BB.canvas(10, 10);
         css(this.canvasSV, {
             width: this.width + 'px',
@@ -99,12 +108,12 @@ export class KlColorSliderSmall {
                 gradH.addColorStop(
                     i,
                     'rgba(' +
-                        parseInt('' + col.r) +
-                        ', ' +
-                        parseInt('' + col.g) +
-                        ', ' +
-                        parseInt('' + col.b) +
-                        ', 1)',
+                    parseInt('' + col.r) +
+                    ', ' +
+                    parseInt('' + col.g) +
+                    ', ' +
+                    parseInt('' + col.b) +
+                    ', 1)',
                 );
             }
             ctx.fillStyle = gradH;
@@ -119,7 +128,7 @@ export class KlColorSliderSmall {
         this.canvasSV.style.cssFloat = 'left';
         canvasH.style.cssFloat = 'left';
 
-        this.rootEl.append(this.canvasSV, canvasH);
+        this.rootEl.append(this.canvasSV, canvasH, this.colorHistory.getElement());
 
         this.pointerSV = BB.el({
             parent: this.rootEl,
@@ -173,6 +182,7 @@ export class KlColorSliderSmall {
 
                         this.updateSVPointer();
                         p.callback(BB.ColorConverter.toRGB(this.color));
+                        this.colorHistory.add(BB.ColorConverter.toRGB(this.color));
                     } else {
                         virtualHSV.s = this.color.s;
                         virtualHSV.v = this.color.v;
@@ -195,6 +205,7 @@ export class KlColorSliderSmall {
                     this.color = new BB.HSV(this.color.h, virtualHSV.s, virtualHSV.v);
                     this.updateSVPointer();
                     p.callback(BB.ColorConverter.toRGB(this.color));
+                    this.colorHistory.add(BB.ColorConverter.toRGB(this.color));
                 }
                 if (event.type === 'pointerup') {
                     this.svPointerId = null;
@@ -216,6 +227,7 @@ export class KlColorSliderSmall {
                         this.updateSV();
                         this.updateHPointer();
                         p.callback(BB.ColorConverter.toRGB(this.color));
+                        this.colorHistory.add(BB.ColorConverter.toRGB(this.color));
                     } else {
                         virtualHSV.h = this.color.h;
                     }
@@ -242,6 +254,7 @@ export class KlColorSliderSmall {
                     this.updateSV();
                     this.updateHPointer();
                     p.callback(BB.ColorConverter.toRGB(this.color));
+                    this.colorHistory.add(BB.ColorConverter.toRGB(this.color));
                 }
                 if (event.type === 'pointerup') {
                     this.hPointerId = null;
@@ -258,7 +271,7 @@ export class KlColorSliderSmall {
     }
 
     // ---- interface ----
-    setColor(c: TRgb): void {
+    setColor(c: TRgb, skipHistory: boolean = false): void {
         if (this.hPointerId !== null || this.svPointerId !== null) {
             return;
         }
@@ -267,6 +280,10 @@ export class KlColorSliderSmall {
         this.updateSV();
         this.updateSVPointer();
         this.updateHPointer();
+
+        if (!skipHistory) {
+            this.colorHistory.add(BB.ColorConverter.toRGB(this.color));
+        }
     }
 
     getColor(): TRgb {

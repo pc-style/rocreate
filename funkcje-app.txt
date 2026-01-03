@@ -1,0 +1,27 @@
+MÓJ WYBÓR FUNKCJI:
+1. Zestaw podstawowych pędzli
+2. Ustawianie wielkości i krycia
+3. Wygładzanie linii (Stabilizacja)
+4. Czułość na nacisk (Pencil)
+5. Pędzel gumki i rozmazywania
+6. Szybkie wypełnianie (ColorDrop)
+7. Nielimitowane warstwy
+8. Tryby mieszania (Mnożenie, itp.)
+9. Przezroczystość warstw
+10. Blokada Alfa
+11. Zmiana kolejności (Drag & Drop)
+12. Koło kolorów i selektor
+13. Tworzenie własnych palet
+14. Próbnik kolorów (Eyedropper)
+15. Historia ostatnio użytych
+16. Harmonijne kolory
+17. Skalowanie i obracanie
+18. Zaznaczenie odręczne
+19. Wypaczanie (Warp)
+20. Rozmycie Gaussa
+21. Balans kolorów i krzywe
+22. Tekst i typografia
+23. Cofnij / Ponów (Gesty)
+24. Eksport do PNG / JPEG / PSD
+25. Automatyczny zapis
+26. Galeria projektów

@@ -176,6 +176,12 @@ Renaming a key across multiple language files:
     hint: 'A dialog where users can manually type the color, each channel a number. "mci" keys all related to this dialog.',
     value: 'Manual Color Input'
   },
+  "palettes-add": "Add Palette",
+  "palettes-add-color": "Add to Palette",
+  "palettes-name-prompt": "Palette Name:",
+  "palettes-new-name": "New Palette",
+  "palettes-default": "Default Palette",
+  "palettes-delete-color": "Delete this color from palette?",
   "mci-hex": {
     "hint": "as in hex code. Hex representation of color. „#f00“ → red",
     "value": "Hex"

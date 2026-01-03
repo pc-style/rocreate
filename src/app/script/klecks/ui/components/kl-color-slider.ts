@@ -7,6 +7,9 @@ import { TRgb } from '../../kl-types';
 import { HSV, RGB } from '../../../bb/color/color';
 import { ERASE_COLOR } from '../../brushes/erase-color';
 import { css } from '../../../bb/base/base';
+import { KlColorHistory } from './kl-color-history';
+import { KlPalettes } from './kl-palettes';
+import { KlColorHarmony } from './kl-color-harmony';
 
 /**
  * big main HS+V color slider
@@ -24,6 +27,9 @@ export class KlColorSlider {
     private secondaryColorHsv: HSV;
     private readonly controlH: HTMLElement;
     private readonly onEyedropper: (b: boolean) => void;
+    private readonly colorHistory: KlColorHistory;
+    private readonly palettes: KlPalettes;
+    private readonly harmony: KlColorHarmony;
     private isPicking: boolean;
     private readonly pickerButton: HTMLElement;
     private readonly width: number;
@@ -122,12 +128,34 @@ export class KlColorSlider {
         this.emitColor = p.onPick;
         this.onEyedropper = p.onEyedropper;
 
+        this.colorHistory = new KlColorHistory({
+            onColorSelect: (rgb) => {
+                this.setColor(rgb, true);
+                this.emitColor(new BB.RGB(rgb.r, rgb.g, rgb.b));
+            },
+        });
+
+        this.palettes = new KlPalettes({
+            onColorSelect: (rgb) => {
+                this.setColor(rgb, false);
+                this.emitColor(new BB.RGB(rgb.r, rgb.g, rgb.b));
+            },
+        });
+
         this.primaryColorRgb = {
             r: parseInt('' + p.startValue.r),
             g: parseInt('' + p.startValue.g),
             b: parseInt('' + p.startValue.b),
         };
-        this.primaryColorHsv = BB.ColorConverter.toHSV(p.startValue); // BB.HSV
+        this.primaryColorHsv = BB.ColorConverter.toHSV(new BB.RGB(this.primaryColorRgb.r, this.primaryColorRgb.g, this.primaryColorRgb.b));
+
+        this.harmony = new KlColorHarmony({
+            initialColor: this.primaryColorRgb,
+            onColorSelect: (rgb) => {
+                this.setColor(rgb, false);
+                this.emitColor(new BB.RGB(rgb.r, rgb.g, rgb.b));
+            },
+        });
         this.secondaryColorRgb = {
             r: ERASE_COLOR,
             g: ERASE_COLOR,
@@ -238,7 +266,13 @@ export class KlColorSlider {
 
         this.SVContainer.append(svWrapper, this.pointerSV);
         this.updateSVPointer();
-        this.rootEl.append(this.SVContainer, divH);
+        this.rootEl.append(
+            this.SVContainer,
+            divH,
+            this.colorHistory.getElement(),
+            this.palettes.getElement(),
+            this.harmony.getElement(),
+        );
         this.outputDiv.append(this.divPreview);
 
         //divH.className = "svSlider";
@@ -334,6 +368,22 @@ export class KlColorSlider {
         });
         this.divPreview.append(this.hexButton);
 
+        const addToPaletteBtn = BB.el({
+            parent: this.divPreview,
+            content: '+P',
+            title: LANG('palettes-add-color'),
+            className: 'color-picker-preview-button',
+            css: {
+                height: '100%',
+                width: this.height + 'px',
+                lineHeight: this.height + 'px',
+                fontSize: this.height * 0.45 + 'px',
+            },
+            onClick: () => {
+                this.palettes.addColor(this.primaryColorRgb);
+            },
+        });
+
         this.setColPreview();
 
         setTimeout(() => {
@@ -363,6 +413,7 @@ export class KlColorSlider {
                             this.updateSVPointer();
                             this.setColPreview();
                             this.emitColor(BB.ColorConverter.toRGB(this.primaryColorHsv));
+                            this.colorHistory.add(this.primaryColorRgb);
                         } else {
                             virtualHSV.s = this.primaryColorHsv.s;
                             virtualHSV.v = this.primaryColorHsv.v;
@@ -390,6 +441,7 @@ export class KlColorSlider {
                         this.updateSVPointer();
                         this.setColPreview();
                         this.emitColor(BB.ColorConverter.toRGB(this.primaryColorHsv));
+                        this.colorHistory.add(this.primaryColorRgb);
                     }
 
                     if (event.type === 'pointerup') {
@@ -423,6 +475,7 @@ export class KlColorSlider {
                             this.updateSVCanvas();
                             this.setColPreview();
                             this.emitColor(BB.ColorConverter.toRGB(this.primaryColorHsv));
+                            this.colorHistory.add(this.primaryColorRgb);
                         } else {
                             virtualHSV.h = this.primaryColorHsv.h;
                         }
@@ -455,6 +508,7 @@ export class KlColorSlider {
                         this.updateSVCanvas();
                         this.setColPreview();
                         this.emitColor(BB.ColorConverter.toRGB(this.primaryColorHsv));
+                        this.colorHistory.add(this.primaryColorRgb);
                     }
 
                     if (event.type === 'pointerup') {
@@ -484,7 +538,7 @@ export class KlColorSlider {
         this.updateSecondaryColor();
     }
 
-    setColor(c: TRgb): void {
+    setColor(c: TRgb, skipHistory: boolean = false): void {
         this.primaryColorRgb = {
             r: parseInt('' + c.r),
             g: parseInt('' + c.g),
@@ -496,6 +550,13 @@ export class KlColorSlider {
         this.updateSVCanvas();
         this.updateSVPointer();
         this.setColPreview();
+
+        if (!skipHistory) {
+            this.colorHistory.add(this.primaryColorRgb);
+        }
+        if (this.harmony) {
+            this.harmony.updateUI(this.primaryColorRgb);
+        }
     }
 
     getColor(): RGB {
@@ -565,6 +626,8 @@ export class KlColorSlider {
         this.updateSVPointer();
         this.setColPreview();
         this.updateSecondaryColor();
+
+        this.colorHistory.add(this.primaryColorRgb);
 
         this.emitColor(
             new BB.RGB(this.primaryColorRgb.r, this.primaryColorRgb.g, this.primaryColorRgb.b),
