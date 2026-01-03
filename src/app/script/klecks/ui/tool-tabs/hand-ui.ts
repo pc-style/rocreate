@@ -1,6 +1,6 @@
 import { BB } from '../../../bb/bb';
-import angleImg from 'url:/src/app/img/ui/angle.svg';
-import rotateImg from 'url:/src/app/img/ui/edit-rotate.svg';
+import angleImg from 'url:/src/app/img/ui/procreate/angle.svg';
+import rotateImg from 'url:/src/app/img/ui/procreate/rotate.svg';
 import { LANG } from '../../../language/language';
 import { Checkbox } from '../components/checkbox';
 import { LocalStorage } from '../../../bb/base/local-storage';

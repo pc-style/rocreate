@@ -4,11 +4,11 @@ import { BrowserStorageUi } from '../components/browser-storage-ui';
 import { TDropOption, TExportType, TKlProject } from '../../kl-types';
 import { ProjectStore } from '../../storage/project-store';
 import { LANG } from '../../../language/language';
-import newImageImg from 'url:/src/app/img/ui/new-image.svg';
-import exportImg from 'url:/src/app/img/ui/export.svg';
-import shareImg from 'url:/src/app/img/ui/share.svg';
-import uploadImg from 'url:/src/app/img/ui/upload.svg';
-import importImg from 'url:/src/app/img/ui/import.svg';
+import newImageImg from 'url:/src/app/img/ui/procreate/new-image.svg';
+import exportImg from 'url:/src/app/img/ui/procreate/export.svg';
+import shareImg from 'url:/src/app/img/ui/procreate/export.svg';
+import uploadImg from 'url:/src/app/img/ui/procreate/export.svg';
+import importImg from 'url:/src/app/img/ui/procreate/import.svg';
 import { Checkbox } from '../components/checkbox';
 import { LocalStorage } from '../../../bb/base/local-storage';
 import { KlRecoveryManager, TKlRecoveryListener } from '../../storage/kl-recovery-manager';
@@ -332,7 +332,7 @@ export class FileUi {
         setTimeout(asyncCreation, 1);
     }
 
-    refresh(): void {}
+    refresh(): void { }
 
     getElement(): HTMLElement {
         return this.rootEl;

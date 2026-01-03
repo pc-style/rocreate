@@ -13,11 +13,11 @@ import { css, throwIfNull } from '../../../../bb/base/base';
 import { HAS_POINTER_EVENTS } from '../../../../bb/base/browser';
 import { c } from '../../../../bb/base/c';
 import { DropdownMenu } from '../../components/dropdown-menu';
-import addLayerImg from 'url:/src/app/img/ui/add-layer.svg';
-import duplicateLayerImg from 'url:/src/app/img/ui/duplicate-layer.svg';
-import mergeLayerImg from 'url:/src/app/img/ui/merge-layers.svg';
-import removeLayerImg from 'url:/src/app/img/ui/remove-layer.svg';
-import renameLayerImg from 'url:/src/app/img/ui/rename-layer.svg';
+import addLayerImg from 'url:/src/app/img/ui/procreate/add-layer.svg';
+import duplicateLayerImg from 'url:/src/app/img/ui/procreate/duplicate-layer.svg';
+import mergeLayerImg from 'url:/src/app/img/ui/procreate/merge-layers.svg';
+import removeLayerImg from 'url:/src/app/img/ui/procreate/remove-layer.svg';
+import renameLayerImg from 'url:/src/app/img/ui/procreate/rename-layer.svg';
 import caretDownImg from 'url:/src/app/img/ui/caret-down.svg';
 import { KlHistory } from '../../../history/kl-history';
 import { makeUnfocusable } from '../../../../bb/base/ui';
@@ -87,6 +87,7 @@ export class LayersUi {
 
     private readonly layerHeight: number = 35;
     private readonly layerSpacing: number = 0;
+    private isProcreate: boolean = false;
 
     private move(oldSpotIndex: number, newSpotIndex: number): void {
         if (isNaN(oldSpotIndex) || isNaN(newSpotIndex)) {
@@ -168,7 +169,7 @@ export class LayersUi {
     }
 
     private updateHeight(): void {
-        this.layerListEl.style.height = this.layerElArr.length * 35 + 'px';
+        this.layerListEl.style.height = this.layerElArr.length * (this.layerHeight + this.layerSpacing) + 'px';
     }
 
     private createLayerList(force?: boolean): void {
@@ -189,7 +190,7 @@ export class LayersUi {
                 className: 'kl-layer',
             }) as HTMLElement as TLayerEl;
             this.layerElArr[index] = layer;
-            layer.posY = (this.klCanvasLayerArr.length - 1) * 35 - index * 35;
+            layer.posY = (this.klCanvasLayerArr.length - 1) * (this.layerHeight + this.layerSpacing) - index * (this.layerHeight + this.layerSpacing);
             css(layer, {
                 top: layer.posY + 'px',
             });
@@ -200,8 +201,8 @@ export class LayersUi {
 
             const container1 = BB.el();
             css(container1, {
-                width: '270px',
-                height: '34px',
+                width: '100%',
+                height: this.layerHeight + 'px',
             });
             const container2 = BB.el();
             layer.append(innerLayer);
@@ -217,11 +218,15 @@ export class LayersUi {
                     title: LANG('layers-visibility-toggle'),
                     css: {
                         display: 'flex',
-                        width: '25px',
+                        position: 'absolute',
+                        right: '8px',
+                        top: '0',
+                        width: '30px',
                         height: '100%',
-                        justifyContent: 'right',
+                        justifyContent: 'center',
                         alignItems: 'center',
                         cursor: 'pointer',
+                        zIndex: '2',
                     },
                 });
                 const check = BB.el({
@@ -279,8 +284,8 @@ export class LayersUi {
                 thc.restore();
                 css(layer.thumb, {
                     position: 'absolute',
-                    left: (32 - layer.thumb.width) / 2 + paddingLeft + 'px',
-                    top: (32 - layer.thumb.height) / 2 + 1 + 'px',
+                    left: 10 + 'px',
+                    top: (this.layerHeight - layer.thumb.height) / 2 + 'px',
                     background: 'var(--kl-checkerboard-background)',
                 });
             }
@@ -295,10 +300,10 @@ export class LayersUi {
 
                 css(layer.label, {
                     position: 'absolute',
-                    left: 1 + 32 + 5 + paddingLeft + 'px',
-                    top: 1 + 'px',
-                    fontSize: '13px',
-                    width: '165px',
+                    left: 50 + 'px',
+                    top: (this.layerHeight - 20) / 2 + 'px',
+                    fontSize: '14px',
+                    width: '140px',
                     height: '20px',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
@@ -320,11 +325,11 @@ export class LayersUi {
 
                 css(layer.opacityLabel, {
                     position: 'absolute',
-                    left: 250 - 1 - 5 - 50 - 5 + paddingLeft + 'px',
-                    top: 1 + 'px',
-                    fontSize: '13px',
+                    right: 40 + 'px',
+                    top: (this.layerHeight - 20) / 2 + 'px',
+                    fontSize: '12px',
                     textAlign: 'right',
-                    width: '50px',
+                    width: '30px',
                     transition: 'color 0.2s ease-in-out',
                     textDecoration: isVisible ? undefined : 'line-through',
                 });
@@ -354,9 +359,7 @@ export class LayersUi {
                 },
             });
             css(opacitySlider.getElement(), {
-                position: 'absolute',
-                left: 39 + paddingLeft + 'px',
-                top: '17px',
+                display: 'none', // Hide old opacity slider, we will use a better one or procreate UI
             });
             layer.opacitySlider = opacitySlider;
 
@@ -461,7 +464,7 @@ export class LayersUi {
                     layer.posY += event.dY;
                     const corrected = Math.max(
                         0,
-                        Math.min((this.klCanvasLayerArr.length - 1) * 35, layer.posY),
+                        Math.min((this.klCanvasLayerArr.length - 1) * (this.layerHeight + this.layerSpacing), layer.posY),
                     );
                     layer.style.top = corrected + 'px';
                     this.updateLayersVerticalPosition(layer.spot, this.posToSpot(layer.posY));
@@ -477,7 +480,7 @@ export class LayersUi {
                     }, 20);
                     layer.posY = Math.max(
                         0,
-                        Math.min((this.klCanvasLayerArr.length - 1) * 35, layer.posY),
+                        Math.min((this.klCanvasLayerArr.length - 1) * (this.layerHeight + this.layerSpacing), layer.posY),
                     );
                     layer.style.zIndex = '';
                     const newSpot = this.posToSpot(layer.posY);
@@ -539,8 +542,9 @@ export class LayersUi {
         this.onClearLayer = p.onClearLayer;
 
         this.layerElArr = [];
-        this.layerHeight = 35;
-        this.layerSpacing = 0;
+        this.isProcreate = document.documentElement.classList.contains('procreate-mode');
+        this.layerHeight = this.isProcreate ? 48 : 35;
+        this.layerSpacing = this.isProcreate ? 4 : 0;
         const width = 270;
 
         this.largeThumbDiv = BB.el({
@@ -567,10 +571,7 @@ export class LayersUi {
         this.selectedSpotIndex = this.klCanvasLayerArr.length - 1;
         this.rootEl = BB.el({
             css: {
-                marginRight: '10px',
-                marginBottom: '10px',
-                marginLeft: '10px',
-                marginTop: '10px',
+                width: '100%',
                 cursor: 'default',
                 position: 'relative',
                 zIndex: '0',
@@ -579,9 +580,8 @@ export class LayersUi {
 
         const listDiv = BB.el({
             css: {
-                width: width + 'px',
+                width: '100%',
                 position: 'relative',
-                margin: '0 -10px',
                 zIndex: '0',
             },
         });
@@ -673,7 +673,7 @@ export class LayersUi {
                 this.removeBtn.innerHTML = "<img src='" + removeLayerImg + "' height='20'/>";
                 renameBtn.innerHTML = "<img src='" + renameLayerImg + "' height='20'/>";
                 div.append(
-                    c(',flex,gap-5,mb-10', [
+                    c('kl-layers-toolbar,flex,gap-5,mb-10', [
                         this.addBtn,
                         this.removeBtn,
                         this.duplicateBtn,

@@ -30,16 +30,16 @@ import { SaveToComputer } from '../klecks/storage/save-to-computer';
 import { ToolspaceScroller } from '../klecks/ui/components/toolspace-scroller';
 import { translateSmoothing } from '../klecks/utils/translate-smoothing';
 import { KlAppImportHandler } from './kl-app-import-handler';
-import toolPaintImg from 'url:/src/app/img/ui/tool-paint.svg';
-import toolHandImg from 'url:/src/app/img/ui/tool-hand.svg';
-import toolFillImg from 'url:/src/app/img/ui/tool-fill.svg';
-import toolGradientImg from 'url:/src/app/img/ui/tool-gradient.svg';
-import toolTextImg from 'url:/src/app/img/ui/tool-text.svg';
-import toolShapeImg from 'url:/src/app/img/ui/tool-shape.svg';
-import toolSelectImg from 'url:/src/app/img/ui/tool-select.svg';
-import tabSettingsImg from 'url:/src/app/img/ui/tab-settings.svg';
-import tabLayersImg from 'url:/src/app/img/ui/tab-layers.svg';
-import tabEditImg from 'url:/src/app/img/ui/tab-edit.svg';
+import toolPaintImg from 'url:/src/app/img/ui/procreate/brush.svg';
+import toolHandImg from 'url:/src/app/img/ui/procreate/hand.svg';
+import toolFillImg from 'url:/src/app/img/ui/procreate/bucket.svg';
+import toolGradientImg from 'url:/src/app/img/ui/procreate/gradient.svg';
+import toolTextImg from 'url:/src/app/img/ui/procreate/text.svg';
+import toolShapeImg from 'url:/src/app/img/ui/procreate/shape.svg';
+import toolSelectImg from 'url:/src/app/img/ui/procreate/selection.svg';
+import tabSettingsImg from 'url:/src/app/img/ui/procreate/wand.svg';
+import tabLayersImg from 'url:/src/app/img/ui/procreate/layers.svg';
+import tabEditImg from 'url:/src/app/img/ui/procreate/wrench.svg';
 import { LayersUi } from '../klecks/ui/tool-tabs/layers-ui/layers-ui';
 import { TVector2D } from '../bb/bb-types';
 import { createConsoleApi } from './console-api';
@@ -357,7 +357,7 @@ export class KlApp {
         let currentColor = new BB.RGB(0, 0, 0);
         let currentBrushUi: TBrushUiInstance<any>;
         let currentBrushId: string;
-        let lastNonEraserBrushId: string;
+        let lastPaintingBrushId: string = 'penBrush';
         let currentLayer: TKlCanvasLayer = this.klCanvas.getLayer(
             this.klCanvas.getLayerCount() - 1,
         );
@@ -365,9 +365,9 @@ export class KlApp {
         // when cycling through brushes you need to know the next non-eraser brush
         const getNextBrushId = (): string => {
             if (currentBrushId === 'eraserBrush') {
-                return lastNonEraserBrushId;
+                return lastPaintingBrushId;
             }
-            const keyArr = Object.keys(brushUiMap).filter((item) => item !== 'eraserBrush');
+            const keyArr = Object.keys(brushUiMap).filter((item) => item !== 'eraserBrush' && item !== 'smudgeBrush');
             const i = keyArr.findIndex((item) => item === currentBrushId);
             return keyArr[(i + 1) % keyArr.length];
         };
@@ -429,29 +429,16 @@ export class KlApp {
             chainArr: [this.lineSanitizer as any, lineSmoothing as any],
         });
 
-        drawEventChain.setChainOut(((event: TDrawEvent) => {
-            if (event.type === 'down') {
-                this.toolspace.style.pointerEvents = 'none';
-                currentBrushUi.startLine(event.x, event.y, event.pressure);
-                this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
-                this.easel.requestRender();
+        let strokeCanvas: HTMLCanvasElement | undefined;
+        let strokeContext: CanvasRenderingContext2D | undefined;
+
+        const getStrokeContext = () => {
+            if (!strokeCanvas || strokeCanvas.width !== this.klCanvas.getWidth() || strokeCanvas.height !== this.klCanvas.getHeight()) {
+                strokeCanvas = BB.canvas(this.klCanvas.getWidth(), this.klCanvas.getHeight());
+                strokeContext = BB.ctx(strokeCanvas);
             }
-            if (event.type === 'move') {
-                currentBrushUi.goLine(event.x, event.y, event.pressure, event.isCoalesced);
-                this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
-                this.easel.requestRender();
-            }
-            if (event.type === 'up') {
-                this.toolspace.style.pointerEvents = '';
-                currentBrushUi.endLine();
-                this.easel.requestRender();
-            }
-            if (event.type === 'line') {
-                currentBrushUi.getBrush().drawLineSegment(event.x0, event.y0, event.x1, event.y1);
-                this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
-                this.easel.requestRender();
-            }
-        }) as any);
+            return strokeContext!;
+        };
 
         let textToolSettings = {
             size: 20,
@@ -1031,7 +1018,7 @@ export class KlApp {
                     this.toolspaceToolRow.setActive('brush');
                     mainTabRow?.open('brush');
                     updateMainTabVisibility();
-                    brushTabRow.open(prevMode === 'brush' ? getNextBrushId() : currentBrushId);
+                    brushTabRow.open(prevMode === 'brush' ? getNextBrushId() : lastPaintingBrushId);
                 }
                 if (comboStr === 'g') {
                     event.preventDefault();
@@ -1101,6 +1088,74 @@ export class KlApp {
             ui.getElement().style.padding = 10 + 'px';
         });
 
+        drawEventChain.setChainOut(((event: TDrawEvent) => {
+            if (event.type === 'down') {
+                this.toolspace.style.pointerEvents = 'none';
+
+                const brush = currentBrushUi.getBrush();
+                if (brush && 'setStrokeContext' in brush) {
+                    const ctx = getStrokeContext();
+                    ctx.clearRect(0, 0, strokeCanvas!.width, strokeCanvas!.height);
+                    const opacity = currentBrushUi.getOpacity();
+                    (brush as any).setStrokeContext(ctx, opacity);
+
+                    const selection = this.klCanvas.getSelection();
+                    const selectionPath = selection ? getSelectionPath2d(selection) : undefined;
+
+                    this.klCanvas.setComposite(currentLayer.index, {
+                        draw: (ctx) => {
+                            if (strokeCanvas) {
+                                ctx.save();
+                                if (selectionPath) {
+                                    ctx.clip(selectionPath);
+                                }
+                                if (currentBrushId === 'eraserBrush') {
+                                    if (currentLayer.index === 0 && !brushUiMap.eraserBrush.getIsTransparentBg()) {
+                                        ctx.globalCompositeOperation = 'source-atop';
+                                    } else {
+                                        ctx.globalCompositeOperation = 'destination-out';
+                                    }
+                                } else {
+                                    ctx.globalAlpha = opacity;
+                                }
+                                ctx.drawImage(strokeCanvas, 0, 0);
+                                ctx.restore();
+                            }
+                        },
+                    });
+                    this.easelProjectUpdater.update();
+                }
+
+                currentBrushUi.startLine(event.x, event.y, event.pressure);
+                this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
+                this.easel.requestRender();
+            }
+            if (event.type === 'move') {
+                currentBrushUi.goLine(event.x, event.y, event.pressure, event.isCoalesced);
+                this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
+                this.easel.requestRender();
+            }
+            if (event.type === 'up') {
+                this.toolspace.style.pointerEvents = '';
+
+                currentBrushUi.endLine();
+
+                const brush = currentBrushUi.getBrush();
+                if (brush && 'setStrokeContext' in brush) {
+                    (brush as any).setStrokeContext(null, 1);
+                    this.klCanvas.setComposite(currentLayer.index, undefined);
+                    this.easelProjectUpdater.update();
+                }
+
+                this.easel.requestRender();
+            }
+            if (event.type === 'line') {
+                currentBrushUi.getBrush().drawLineSegment(event.x0, event.y0, event.x1, event.y1);
+                this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
+                this.easel.requestRender();
+            }
+        }) as any);
+
         this.toolspace = BB.el({
             className: 'kl-toolspace',
             css: {
@@ -1124,7 +1179,7 @@ export class KlApp {
 
         this.mobileBrushUi = new MobileBrushUi({
             onBrush: () => {
-                brushTabRow.open(lastNonEraserBrushId);
+                brushTabRow.open(lastPaintingBrushId);
             },
             onEraser: () => {
                 brushTabRow.open('eraserBrush');
@@ -1359,8 +1414,8 @@ export class KlApp {
         this.klColorSlider.setHeight(Math.max(163, Math.min(400, this.uiHeight - 505)));
 
         const setCurrentBrush = (brushId: string) => {
-            if (brushId !== 'eraserBrush') {
-                lastNonEraserBrushId = brushId;
+            if (brushId !== 'eraserBrush' && brushId !== 'smudgeBrush') {
+                lastPaintingBrushId = brushId;
             }
 
             if (this.klColorSlider) {
@@ -2328,7 +2383,7 @@ export class KlApp {
             onToolChange: (tool: TTopBarTool) => {
                 applyUncommitted();
                 if (tool === 'brush') {
-                    brushTabRow.open(lastNonEraserBrushId);
+                    brushTabRow.open(lastPaintingBrushId);
                     this.toolspaceToolRow.setActive('brush');
                     this.easel.setTool('brush');
                     mainTabRow?.open('brush');

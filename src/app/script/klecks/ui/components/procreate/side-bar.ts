@@ -2,7 +2,7 @@ import { BB } from '../../../../bb/bb';
 import { LANG } from '../../../../language/language';
 import { PointerListener } from '../../../../bb/input/pointer-listener';
 import { css } from '../../../../bb/base/base';
-import toolUndoImg from 'url:/src/app/img/ui/tool-undo.svg';
+import toolUndoImg from 'url:/src/app/img/ui/procreate/undo.svg';
 import { TPointerEvent } from '../../../../bb/input/event.types';
 import { clamp } from '../../../../bb/math/math';
 

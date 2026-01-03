@@ -15,7 +15,7 @@ import { getMultiPolyBounds } from '../../bb/multi-polygon/get-multi-polygon-bou
 
 export class EraserBrush {
     private size: number = 30;
-    private spacing: number = 0.4;
+    private spacing: number = 0.1; // Denser interpolation
     private opacity: number = 1;
     private useSizePressure: boolean = true;
     private useOpacityPressure: boolean = false;
@@ -25,6 +25,8 @@ export class EraserBrush {
     private isBaseLayer: boolean = false;
     private layer: TKlCanvasLayer = {} as TKlCanvasLayer;
     private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
+    private strokeContext: CanvasRenderingContext2D | null = null;
+    private strokeAlpha: number = 1;
 
     private started: boolean = false;
     private lastDot: number | undefined;
@@ -50,30 +52,33 @@ export class EraserBrush {
     }
 
     private drawDot(x: number, y: number, size: number, opacity: number): void {
-        this.context.save();
-        if (this.isBaseLayer) {
+        const targetCtx = this.strokeContext || this.context;
+        targetCtx.save();
+        if (this.strokeContext) {
+            targetCtx.globalCompositeOperation = 'source-over';
+        } else if (this.isBaseLayer) {
             if (this.isTransparentBG) {
-                this.context.globalCompositeOperation = 'destination-out';
+                targetCtx.globalCompositeOperation = 'destination-out';
             } else {
-                this.context.globalCompositeOperation = 'source-atop';
+                targetCtx.globalCompositeOperation = 'source-atop';
             }
         } else {
-            this.context.globalCompositeOperation = 'destination-out';
+            targetCtx.globalCompositeOperation = 'destination-out';
         }
-        const radgrad = this.context.createRadialGradient(size, size, 0, size, size, size);
+        const radgrad = targetCtx.createRadialGradient(size, size, 0, size, size, size);
         let sharpness = Math.pow(opacity, 2);
         sharpness = Math.max(0, Math.min((size - 1) / size, sharpness));
         const oFac = Math.max(0, Math.min(1, opacity));
-        const localOpacity = 2 * oFac - oFac * oFac;
+        const localOpacity = this.strokeContext ? 1 : 2 * oFac - oFac * oFac;
         radgrad.addColorStop(
             sharpness,
             `rgba(${ERASE_COLOR}, ${ERASE_COLOR}, ${ERASE_COLOR}, ` + localOpacity + ')',
         );
         radgrad.addColorStop(1, `rgba(${ERASE_COLOR}, ${ERASE_COLOR}, ${ERASE_COLOR}, 0)`);
-        this.context.fillStyle = radgrad;
-        this.context.translate(x - size, y - size);
-        this.context.fillRect(0, 0, size * 2, size * 2);
-        this.context.restore();
+        targetCtx.fillStyle = radgrad;
+        targetCtx.translate(x - size, y - size);
+        targetCtx.fillRect(0, 0, size * 2, size * 2);
+        targetCtx.restore();
 
         this.updateChangedTiles({
             x1: Math.floor(x - size),
@@ -112,18 +117,21 @@ export class EraserBrush {
             this.drawDot(val.x, val.y, localSize, localOpacity);
         };
 
-        this.context.save();
-        this.selectionPath && this.context.clip(this.selectionPath);
+        const targetCtx = this.strokeContext || this.context;
+        targetCtx.save();
+        if (!this.strokeContext) {
+            this.selectionPath && targetCtx.clip(this.selectionPath);
+        }
         if (x === undefined || y === undefined) {
             this.bezierLine!.addFinal(bdist, bezierCallback);
         } else {
             this.bezierLine!.add(x, y, bdist, bezierCallback);
         }
-        this.context.restore();
+        targetCtx.restore();
     }
 
     // ----------------------------------- public -----------------------------------
-    constructor() {}
+    constructor() { }
 
     // ---- interface ----
     startLine(x: number, y: number, p: number): void {
@@ -174,6 +182,23 @@ export class EraserBrush {
     endLine(): void {
         if (this.bezierLine) {
             this.continueLine(undefined, undefined, this.lastInput.pressure);
+        }
+
+        if (this.strokeContext) {
+            this.context.save();
+            this.selectionPath && this.context.clip(this.selectionPath);
+            if (this.isBaseLayer) {
+                if (this.isTransparentBG) {
+                    this.context.globalCompositeOperation = 'destination-out';
+                } else {
+                    this.context.globalCompositeOperation = 'source-atop';
+                }
+            } else {
+                this.context.globalCompositeOperation = 'destination-out';
+            }
+            this.context.globalAlpha = this.opacity;
+            this.context.drawImage(this.strokeContext.canvas, 0, 0);
+            this.context.restore();
         }
 
         this.started = false;
@@ -261,6 +286,11 @@ export class EraserBrush {
 
     setTransparentBG(b: boolean): void {
         this.isTransparentBG = b;
+    }
+
+    setStrokeContext(c: CanvasRenderingContext2D | null, alpha: number): void {
+        this.strokeContext = c;
+        this.strokeAlpha = alpha;
     }
 
     //GET

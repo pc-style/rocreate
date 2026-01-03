@@ -27,13 +27,15 @@ export class PenBrush {
     private settingHasScatterPressure: boolean = false;
     private settingHasSizePressure: boolean = true;
     private settingSize: number = 2;
-    private settingSpacing: number = 0.8489;
+    private settingSpacing: number = 0.1; // Denser interpolation for smoother strokes
     private settingOpacity: number = 1;
     private settingScatter: number = 0;
     private settingColor: TRgb = {} as TRgb;
     private settingColorStr: string = '';
     private settingAlphaId: number = ALPHA_CIRCLE;
     private settingLockLayerAlpha: boolean = false;
+    private strokeContext: CanvasRenderingContext2D | null = null;
+    private strokeAlpha: number = 1;
 
     private hasDrawnDot: boolean = false;
     private lineToolLastDot: number = 0;
@@ -147,19 +149,21 @@ export class PenBrush {
             return;
         }
 
-        if (this.settingLockLayerAlpha) {
+        if (this.settingLockLayerAlpha && !this.strokeContext) {
             this.context.globalCompositeOperation = 'source-atop';
         }
 
-        if (!before || before[3] !== opacity) {
-            this.context.globalAlpha = opacity;
+        const targetCtx = this.strokeContext || this.context;
+
+        if (!before || before[3] !== (this.strokeContext ? 1 : opacity)) {
+            targetCtx.globalAlpha = this.strokeContext ? 1 : opacity;
         }
 
         if (
             !before &&
             (this.settingAlphaId === ALPHA_CIRCLE || this.settingAlphaId === ALPHA_SQUARE)
         ) {
-            this.context.fillStyle = this.settingColorStr;
+            targetCtx.fillStyle = this.settingColorStr;
         }
 
         if (scatter > 0) {
@@ -182,37 +186,37 @@ export class PenBrush {
         });
 
         if (this.settingAlphaId === ALPHA_CIRCLE) {
-            this.context.beginPath();
-            this.context.arc(x, y, size, 0, TWO_PI);
-            this.context.closePath();
-            this.context.fill();
+            targetCtx.beginPath();
+            targetCtx.arc(x, y, size, 0, TWO_PI);
+            targetCtx.closePath();
+            targetCtx.fill();
             this.hasDrawnDot = true;
         } else if (this.settingAlphaId === ALPHA_SQUARE) {
             if (angle !== undefined) {
-                this.context.save();
-                this.context.translate(x, y);
-                this.context.rotate((angle / 180) * Math.PI);
-                this.context.fillRect(-size, -size, size * 2, size * 2);
-                this.context.restore();
+                targetCtx.save();
+                targetCtx.translate(x, y);
+                targetCtx.rotate((angle / 180) * Math.PI);
+                targetCtx.fillRect(-size, -size, size * 2, size * 2);
+                targetCtx.restore();
                 this.hasDrawnDot = true;
             }
         } else {
             // other brush alphas
-            this.context.save();
-            this.context.translate(x, y);
+            targetCtx.save();
+            targetCtx.translate(x, y);
             let targetMipmap = this.alphaCanvas128;
             if (size <= 32 && size > 16) {
                 targetMipmap = this.alphaCanvas64;
             } else if (size <= 16) {
                 targetMipmap = this.alphaCanvas32;
             }
-            this.context.scale(size, size);
+            targetCtx.scale(size, size);
             if (this.settingAlphaId === ALPHA_CHALK) {
-                this.context.rotate(((x + y) * 53123) % TWO_PI); // without mod it sometimes looks different
+                targetCtx.rotate(((x + y) * 53123) % TWO_PI); // without mod it sometimes looks different
             }
-            this.context.drawImage(targetMipmap, -1, -1, 2, 2);
+            targetCtx.drawImage(targetMipmap, -1, -1, 2, 2);
 
-            this.context.restore();
+            targetCtx.restore();
             this.hasDrawnDot = true;
         }
     }
@@ -221,7 +225,7 @@ export class PenBrush {
     private continueLine(x: number | null, y: number | null, size: number, pressure: number): void {
         if (this.bezierLine === null) {
             this.bezierLine = new BB.BezierLine();
-            this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, () => {});
+            this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, () => { });
         }
 
         const drawArr: [number, number, number, number, number, number | undefined][] = []; //draw instructions. will be all drawn at once
@@ -251,18 +255,26 @@ export class PenBrush {
         }
 
         // execute draw instructions
-        this.context.save();
+        if (this.strokeContext) {
+            this.strokeContext.save();
+        } else {
+            this.context.save();
+        }
         let before: (typeof drawArr)[number] | undefined = undefined;
         for (let i = 0; i < drawArr.length; i++) {
             const item = drawArr[i];
             this.drawDot(item[0], item[1], item[2], item[3], item[4], item[5], before);
             before = item;
         }
-        this.context.restore();
+        if (this.strokeContext) {
+            this.strokeContext.restore();
+        } else {
+            this.context.restore();
+        }
     }
 
     // ----------------------------------- public -----------------------------------
-    constructor() {}
+    constructor() { }
 
     // ---- interface ----
 
@@ -284,10 +296,16 @@ export class PenBrush {
         this.hasDrawnDot = false;
 
         this.inputIsDrawing = true;
-        this.context.save();
-        this.selectionPath && this.context.clip(this.selectionPath);
-        this.drawDot(x, y, localSize, localOpacity, localScatter);
-        this.context.restore();
+        if (this.strokeContext) {
+            this.strokeContext.save();
+            this.drawDot(x, y, localSize, localOpacity, localScatter);
+            this.strokeContext.restore();
+        } else {
+            this.context.save();
+            this.selectionPath && this.context.clip(this.selectionPath);
+            this.drawDot(x, y, localSize, localOpacity, localScatter);
+            this.context.restore();
+        }
 
         this.lineToolLastDot = localSize * this.settingSpacing;
         this.lastInput.x = x;
@@ -314,15 +332,16 @@ export class PenBrush {
             ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
             : Math.max(0.1, this.settingSize);
 
-        this.context.save();
-        this.selectionPath && this.context.clip(this.selectionPath);
-        this.continueLine(x, y, localSize, this.lastInput.pressure);
-
-        /*context.fillStyle = 'red';
-        context.fillRect(Math.floor(x), Math.floor(y - 10), 1, 20);
-        context.fillRect(Math.floor(x - 10), Math.floor(y), 20, 1);*/
-
-        this.context.restore();
+        if (this.strokeContext) {
+            this.strokeContext.save();
+            this.continueLine(x, y, localSize, this.lastInput.pressure);
+            this.strokeContext.restore();
+        } else {
+            this.context.save();
+            this.selectionPath && this.context.clip(this.selectionPath);
+            this.continueLine(x, y, localSize, this.lastInput.pressure);
+            this.context.restore();
+        }
 
         this.lastInput.x = x;
         this.lastInput.y = y;
@@ -340,10 +359,24 @@ export class PenBrush {
         const localSize = this.settingHasSizePressure
             ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
             : Math.max(0.1, this.settingSize);
-        this.context.save();
-        this.selectionPath && this.context.clip(this.selectionPath);
-        this.continueLine(null, null, localSize, this.lastInput.pressure);
-        this.context.restore();
+        if (this.strokeContext) {
+            this.strokeContext.save();
+            this.continueLine(null, null, localSize, this.lastInput.pressure);
+            this.strokeContext.restore();
+        } else {
+            this.context.save();
+            this.selectionPath && this.context.clip(this.selectionPath);
+            this.continueLine(null, null, localSize, this.lastInput.pressure);
+            this.context.restore();
+        }
+
+        if (this.strokeContext) {
+            this.context.save();
+            this.selectionPath && this.context.clip(this.selectionPath);
+            this.context.globalAlpha = this.strokeAlpha;
+            this.context.drawImage(this.strokeContext.canvas, 0, 0);
+            this.context.restore();
+        }
 
         this.inputIsDrawing = false;
 
@@ -495,6 +528,11 @@ export class PenBrush {
 
     setLockAlpha(b: boolean): void {
         this.settingLockLayerAlpha = b;
+    }
+
+    setStrokeContext(c: CanvasRenderingContext2D | null, alpha: number): void {
+        this.strokeContext = c;
+        this.strokeAlpha = alpha;
     }
 
     //GET

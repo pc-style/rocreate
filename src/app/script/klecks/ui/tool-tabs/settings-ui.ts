@@ -4,7 +4,7 @@ import { KL } from '../../kl';
 import { languages } from '../../../../languages/languages';
 import bitbofLogoImg from 'url:/src/app/img/bitbof-logo.svg';
 import klecksLogoImg from 'url:/src/app/img/klecks-logo.png';
-import uiSwapImg from 'url:/src/app/img/ui/ui-swap-lr.svg';
+import uiSwapImg from 'url:/src/app/img/ui/procreate/ui-swap.svg';
 import { LocalStorage } from '../../../bb/base/local-storage';
 import { THEME, TTheme } from '../../../theme/theme';
 import { addIsDarkListener, css, nullToUndefined } from '../../../bb/base/base';
@@ -26,8 +26,9 @@ export class SettingsUi {
     // ----------------------------------- public -----------------------------------
     constructor({ onLeftRight, saveReminder, customAbout }: TSettingsUiParams) {
         this.rootEl = BB.el({
+            className: 'settings-ui',
             css: {
-                margin: '10px',
+                width: '100%',
             },
         });
 

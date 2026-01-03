@@ -2,19 +2,19 @@ import { BB } from '../../../../bb/bb';
 import { LANG } from '../../../../language/language';
 import { PointerListener } from '../../../../bb/input/pointer-listener';
 import { css } from '../../../../bb/base/base';
-import toolPaintImg from 'url:/src/app/img/ui/tool-paint.svg';
-import toolHandImg from 'url:/src/app/img/ui/tool-hand.svg';
-import toolFillImg from 'url:/src/app/img/ui/tool-fill.svg';
-import toolGradientImg from 'url:/src/app/img/ui/tool-gradient.svg';
-import toolTextImg from 'url:/src/app/img/ui/tool-text.svg';
-import toolShapeImg from 'url:/src/app/img/ui/tool-shape.svg';
-import brushEraserImg from 'url:/src/app/img/ui/brush-eraser.svg';
-import brushSmudgeImg from 'url:/src/app/img/ui/brush-smudge.svg';
-import tabLayersImg from 'url:/src/app/img/ui/tab-layers.svg';
-import tabEditImg from 'url:/src/app/img/ui/tab-edit.svg';
-import tabSettingsImg from 'url:/src/app/img/ui/tab-settings.svg';
-import toolSelectImg from 'url:/src/app/img/ui/tool-select.svg';
-import editTransformImg from 'url:/src/app/img/ui/edit-transform.svg';
+import toolPaintImg from 'url:/src/app/img/ui/procreate/brush.svg';
+import toolHandImg from 'url:/src/app/img/ui/procreate/hand.svg';
+import toolFillImg from 'url:/src/app/img/ui/procreate/bucket.svg';
+import toolGradientImg from 'url:/src/app/img/ui/procreate/gradient.svg';
+import toolTextImg from 'url:/src/app/img/ui/procreate/text.svg';
+import toolShapeImg from 'url:/src/app/img/ui/procreate/shape.svg';
+import brushEraserImg from 'url:/src/app/img/ui/procreate/eraser.svg';
+import brushSmudgeImg from 'url:/src/app/img/ui/procreate/smudge.svg';
+import tabLayersImg from 'url:/src/app/img/ui/procreate/layers.svg';
+import tabEditImg from 'url:/src/app/img/ui/procreate/wrench.svg';
+import tabSettingsImg from 'url:/src/app/img/ui/procreate/wand.svg';
+import toolSelectImg from 'url:/src/app/img/ui/procreate/selection.svg';
+import editTransformImg from 'url:/src/app/img/ui/procreate/transform.svg';
 
 export type TTopBarTool =
     | 'brush'

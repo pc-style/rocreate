@@ -4,7 +4,7 @@ import { PointerListener } from '../../../../bb/input/pointer-listener';
 import { css } from '../../../../bb/base/base';
 import { TVector2D } from '../../../../bb/bb-types';
 import { clamp } from '../../../../bb/math/math';
-import cancelImg from 'url:/src/app/img/ui/cancel.svg';
+import cancelImg from 'url:/src/app/img/ui/procreate/cancel.svg';
 
 export type TFloatingPanelParams = {
     title: string;
