@@ -2,11 +2,11 @@ import { c } from '../../../bb/base/c';
 import { ProjectViewport, TProjectViewportProject, TViewportTransform } from './project-viewport';
 import { BB } from '../../../bb/bb';
 import { PointerListener } from '../../../bb/input/pointer-listener';
-import toolZoomInImg from 'url:/src/app/img/ui/tool-zoom-in.svg';
-import toolZoomOutImg from 'url:/src/app/img/ui/tool-zoom-out.svg';
-import viewportResetImg from 'url:/src/app/img/ui/viewport-reset.svg';
-import toolHandImg from 'url:/src/app/img/ui/tool-hand.svg';
-import editPencilImg from 'url:/src/app/img/ui/edit-pencil.svg';
+import toolZoomInImg from 'url:/src/app/img/ui/procreate/zoom-in.svg';
+import toolZoomOutImg from 'url:/src/app/img/ui/procreate/zoom-out.svg';
+import viewportResetImg from 'url:/src/app/img/ui/procreate/reset-view.svg';
+import toolHandImg from 'url:/src/app/img/ui/procreate/hand.svg';
+import editPencilImg from 'url:/src/app/img/ui/procreate/pencil.svg';
 import { EventChain } from '../../../bb/input/event-chain/event-chain';
 import { DoubleTapper } from '../../../bb/input/event-chain/double-tapper';
 import { TChainElement } from '../../../bb/input/event-chain/event-chain.types';
@@ -126,22 +126,22 @@ export class Preview {
     private transformCanvas(
         t:
             | {
-                  type: 'translate';
-                  x: number;
-                  y: number;
-              }
+                type: 'translate';
+                x: number;
+                y: number;
+            }
             | {
-                  type: 'rotate';
-                  cX: number;
-                  cY: number;
-                  angleDeg: number;
-              }
+                type: 'rotate';
+                cX: number;
+                cY: number;
+                angleDeg: number;
+            }
             | {
-                  type: 'zoom';
-                  vX?: number;
-                  vY?: number;
-                  fac: number;
-              },
+                type: 'zoom';
+                vX?: number;
+                vY?: number;
+                fac: number;
+            },
     ): void {
         if (t.type === 'translate') {
             const old = this.viewport.getTransform();
@@ -365,10 +365,10 @@ export class Preview {
                 svgRoot,
                 ...(this.modeToggle
                     ? [
-                          c(',pos-absolute,left-5,top-5,z-1,pointer-auto', [
-                              this.modeToggle.getElement(),
-                          ]),
-                      ]
+                        c(',pos-absolute,left-5,top-5,z-1,pointer-auto', [
+                            this.modeToggle.getElement(),
+                        ]),
+                    ]
                     : []),
                 c(',pos-absolute,right-5,bottom-5,flex,flexCol,gap-5,z-1,pointer-auto', [
                     c({

@@ -3,9 +3,9 @@ import { DIALOG_COUNTER } from '../modal-count';
 import { BB } from '../../../../bb/bb';
 import { LANG } from '../../../../language/language';
 import './scroll-fix';
-import cancelImg from 'url:/src/app/img/ui/cancel.svg';
-import checkImg from 'url:/src/app/img/ui/check.svg';
-import removeLayerImg from 'url:/src/app/img/ui/remove-layer.svg';
+import cancelImg from 'url:/src/app/img/ui/procreate/cancel.svg';
+import checkImg from 'url:/src/app/img/ui/procreate/check.svg';
+import removeLayerImg from 'url:/src/app/img/ui/procreate/remove-layer.svg';
 
 export function showModal(p: {
     target: HTMLElement;
@@ -182,15 +182,15 @@ export function showModal(p: {
     const buttonRowEl =
         p.buttons && p.buttons.length > 0
             ? BB.el({
-                  parent: boxEl,
-                  css: {
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      justifyContent: 'flex-end',
-                      marginTop: '12px', // 8px already via buttons
-                      marginLeft: '-8px',
-                  },
-              })
+                parent: boxEl,
+                css: {
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-end',
+                    marginTop: '12px', // 8px already via buttons
+                    marginLeft: '-8px',
+                },
+            })
             : undefined;
     let clickOnEnterBtn: HTMLButtonElement | undefined;
     const btnElArr: HTMLButtonElement[] = [];

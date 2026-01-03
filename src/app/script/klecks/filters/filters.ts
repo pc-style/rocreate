@@ -5,19 +5,19 @@ import glCurvesImg from 'url:/src/app/img/ui/procreate/curves.svg';
 import flipImg from 'url:/src/app/img/ui/procreate/flip.svg';
 import glHueSaturationImg from 'url:/src/app/img/ui/procreate/hue-saturation.svg';
 import invertImg from 'url:/src/app/img/ui/procreate/invert.svg';
-import glPerspectiveImg from 'url:/src/app/img/ui/edit-perspective.svg';
+import glPerspectiveImg from 'url:/src/app/img/ui/procreate/perspective.svg';
 import resizeImg from 'url:/src/app/img/ui/procreate/resize.svg';
 import rotateImg from 'url:/src/app/img/ui/procreate/rotate.svg';
-import glTiltShiftImg from 'url:/src/app/img/ui/edit-tilt-shift.png';
-import toAlphaImg from 'url:/src/app/img/ui/edit-to-alpha.svg';
+import glTiltShiftImg from 'url:/src/app/img/ui/procreate/tilt-shift.svg';
+import toAlphaImg from 'url:/src/app/img/ui/procreate/to-alpha.svg';
 import transformImg from 'url:/src/app/img/ui/procreate/transform.svg';
-import glBlurImg from 'url:/src/app/img/ui/edit-triangle-blur.png';
-import glUnsharpMaskImg from 'url:/src/app/img/ui/edit-unsharp-mask.png';
-import gridImg from 'url:/src/app/img/ui/edit-grid.svg';
-import noiseImg from 'url:/src/app/img/ui/edit-noise.svg';
-import patternImg from 'url:/src/app/img/ui/edit-pattern.svg';
-import vanishPointImg from 'url:/src/app/img/ui/edit-vanish-point.svg';
-import distortImg from 'url:/src/app/img/ui/edit-distort.svg';
+import glBlurImg from 'url:/src/app/img/ui/procreate/blur.svg';
+import glUnsharpMaskImg from 'url:/src/app/img/ui/procreate/unsharp-mask.svg';
+import gridImg from 'url:/src/app/img/ui/procreate/grid.svg';
+import noiseImg from 'url:/src/app/img/ui/procreate/noise.svg';
+import patternImg from 'url:/src/app/img/ui/procreate/pattern.svg';
+import vanishPointImg from 'url:/src/app/img/ui/procreate/vanish-point.svg';
+import distortImg from 'url:/src/app/img/ui/procreate/distort.svg';
 
 export const FILTER_LIB_STATUS = {
     isLoaded: false,
