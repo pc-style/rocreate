@@ -1,0 +1,515 @@
+/* Procreate-style UI Components */
+
+/* CSS Custom Properties for Procreate theme */
+:root {
+    --procreate-bg: rgba(30, 30, 30, 0.95);
+    --procreate-bg-solid: #1e1e1e;
+    --procreate-surface: rgba(50, 50, 50, 0.9);
+    --procreate-surface-hover: rgba(70, 70, 70, 0.9);
+    --procreate-surface-active: rgba(90, 90, 90, 0.95);
+    --procreate-border: rgba(255, 255, 255, 0.1);
+    --procreate-text: #ffffff;
+    --procreate-text-secondary: rgba(255, 255, 255, 0.6);
+    --procreate-accent: #4a9eff;
+    --procreate-accent-glow: rgba(74, 158, 255, 0.4);
+    --procreate-slider-track: rgba(255, 255, 255, 0.15);
+    --procreate-slider-fill: #4a9eff;
+    --procreate-radius: 12px;
+    --procreate-radius-sm: 8px;
+    --procreate-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --procreate-glass: blur(20px);
+}
+
+/* ============================================
+   TOP BAR
+   ============================================ */
+.procreate-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    background: var(--procreate-bg);
+    backdrop-filter: var(--procreate-glass);
+    -webkit-backdrop-filter: var(--procreate-glass);
+    border-bottom: 1px solid var(--procreate-border);
+    z-index: 100;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.procreate-topbar__left,
+.procreate-topbar__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.procreate-topbar__btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--procreate-radius-sm);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.procreate-topbar__btn-icon {
+    width: 22px;
+    height: 22px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) invert(1);
+    opacity: 0.75;
+    transition: opacity 0.15s ease;
+}
+
+.procreate-topbar__btn--hover {
+    background: var(--procreate-surface-hover);
+}
+
+.procreate-topbar__btn--hover .procreate-topbar__btn-icon {
+    opacity: 1;
+}
+
+.procreate-topbar__btn:active {
+    background: var(--procreate-surface-active);
+    transform: scale(0.95);
+}
+
+.procreate-topbar__btn--active {
+    background: var(--procreate-surface-active);
+    box-shadow: 
+        inset 0 0 0 2px var(--procreate-accent),
+        0 0 12px var(--procreate-accent-glow);
+}
+
+.procreate-topbar__btn--active .procreate-topbar__btn-icon {
+    opacity: 1;
+    filter: brightness(0) invert(1) drop-shadow(0 0 4px var(--procreate-accent));
+}
+
+.procreate-topbar__btn--panel {
+    background: var(--procreate-surface);
+}
+
+/* Color button (circular) */
+.procreate-topbar__color-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(145deg, #444, #222);
+    border: none;
+    cursor: pointer;
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.procreate-topbar__color-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.procreate-topbar__color-btn:active {
+    transform: scale(0.95);
+}
+
+.procreate-topbar__color-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   SIDE BAR
+   ============================================ */
+.procreate-sidebar {
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 8px;
+    background: var(--procreate-bg);
+    backdrop-filter: var(--procreate-glass);
+    -webkit-backdrop-filter: var(--procreate-glass);
+    border-radius: var(--procreate-radius);
+    border: 1px solid var(--procreate-border);
+    box-shadow: var(--procreate-shadow);
+    z-index: 99;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.procreate-sidebar__size-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--procreate-text);
+    transition: width 0.1s ease, height 0.1s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Vertical Slider */
+.procreate-sidebar__slider {
+    width: 28px;
+    height: 140px;
+    cursor: pointer;
+    position: relative;
+}
+
+.procreate-sidebar__slider-track {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    transform: translateX(-50%);
+    background: var(--procreate-slider-track);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.procreate-sidebar__slider-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    background: linear-gradient(to top, var(--procreate-slider-fill), var(--procreate-accent-glow));
+    border-radius: 4px;
+    transition: height 0.05s ease-out;
+}
+
+.procreate-sidebar__slider--active .procreate-sidebar__slider-fill {
+    background: linear-gradient(to top, var(--procreate-accent), #7ec4ff);
+    box-shadow: 0 0 12px var(--procreate-accent-glow);
+}
+
+.procreate-sidebar__slider-thumb {
+    position: absolute;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--procreate-text);
+    transform: translate(-50%, 50%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease;
+}
+
+/* Modify button */
+.procreate-sidebar__modify-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--procreate-surface);
+    border: 1px solid var(--procreate-border);
+    color: var(--procreate-text);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.procreate-sidebar__modify-btn:hover {
+    background: var(--procreate-surface-hover);
+    transform: scale(1.05);
+}
+
+.procreate-sidebar__modify-btn:active {
+    background: var(--procreate-surface-active);
+    transform: scale(0.95);
+}
+
+/* Undo/Redo */
+.procreate-sidebar__undo-redo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.procreate-sidebar__undo-btn,
+.procreate-sidebar__redo-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--procreate-radius-sm);
+    background: var(--procreate-surface);
+    border: 1px solid var(--procreate-border);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.procreate-sidebar__undo-btn:hover,
+.procreate-sidebar__redo-btn:hover {
+    background: var(--procreate-surface-hover);
+}
+
+.procreate-sidebar__undo-btn:active,
+.procreate-sidebar__redo-btn:active {
+    background: var(--procreate-surface-active);
+    transform: scale(0.95);
+}
+
+.procreate-sidebar__undo-btn:disabled,
+.procreate-sidebar__redo-btn:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.procreate-sidebar__btn-icon {
+    width: 18px;
+    height: 18px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+/* ============================================
+   FLOATING PANEL
+   ============================================ */
+.procreate-floating {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    background: var(--procreate-bg);
+    backdrop-filter: var(--procreate-glass);
+    -webkit-backdrop-filter: var(--procreate-glass);
+    border-radius: var(--procreate-radius);
+    border: 1px solid var(--procreate-border);
+    box-shadow: var(--procreate-shadow);
+    z-index: 200;
+    overflow: hidden;
+    
+    animation: floatingPanelIn 0.2s ease-out;
+}
+
+@keyframes floatingPanelIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.procreate-floating--dragging {
+    transition: none !important;
+    cursor: grabbing;
+}
+
+.procreate-floating__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 8px 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--procreate-border);
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.procreate-floating__header:active {
+    cursor: grabbing;
+}
+
+.procreate-floating__title {
+    color: var(--procreate-text);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.procreate-floating__close-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.procreate-floating__close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.procreate-floating__close-btn img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    opacity: 0.6;
+}
+
+.procreate-floating__close-btn:hover img {
+    opacity: 1;
+}
+
+.procreate-floating__body {
+    padding: 12px;
+    max-height: 60vh;
+    overflow-y: auto;
+    color: var(--procreate-text);
+}
+
+/* Custom scrollbar for floating panels */
+.procreate-floating__body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.procreate-floating__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.procreate-floating__body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.procreate-floating__body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   PROCREATE LAYOUT MODE
+   When .procreate-mode is active on body
+   ============================================ */
+.procreate-mode {
+    /* Override body background */
+    background: #2a2a2a !important;
+}
+
+.procreate-mode .kl-toolspace {
+    display: none !important;
+}
+
+.procreate-mode .g-root > .kl-mobile-ui {
+    display: none !important;
+}
+
+/* Canvas area adjustments for Procreate mode */
+.procreate-mode .kl-easel {
+    position: fixed !important;
+    left: 0 !important;
+    top: 52px !important;
+    right: 0 !important;
+    bottom: 0 !important;
+}
+
+/* ============================================
+   MICRO-ANIMATIONS
+   ============================================ */
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 var(--procreate-accent-glow);
+    }
+    50% {
+        box-shadow: 0 0 20px 4px var(--procreate-accent-glow);
+    }
+}
+
+.procreate-topbar__btn--active {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Touch feedback */
+@media (hover: none) and (pointer: coarse) {
+    .procreate-topbar__btn:active,
+    .procreate-sidebar__modify-btn:active,
+    .procreate-sidebar__undo-btn:active,
+    .procreate-sidebar__redo-btn:active {
+        transform: scale(0.9);
+    }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 768px) {
+    .procreate-topbar {
+        height: 48px;
+        padding: 0 8px;
+    }
+    
+    .procreate-topbar__btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .procreate-topbar__btn-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .procreate-topbar__color-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .procreate-sidebar {
+        right: 8px;
+        padding: 12px 6px;
+        gap: 8px;
+    }
+    
+    .procreate-sidebar__slider {
+        height: 100px;
+    }
+    
+    .procreate-sidebar__modify-btn,
+    .procreate-sidebar__undo-btn,
+    .procreate-sidebar__redo-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .procreate-floating {
+        max-width: calc(100vw - 32px);
+    }
+}
+
+@media (max-height: 600px) {
+    .procreate-sidebar__slider {
+        height: 80px;
+    }
+    
+    .procreate-sidebar {
+        gap: 6px;
+        padding: 10px 6px;
+    }
+}

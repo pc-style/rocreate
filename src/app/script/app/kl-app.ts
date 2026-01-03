@@ -83,6 +83,8 @@ import { MobileColorUi } from '../klecks/ui/mobile/mobile-color-ui';
 import { getSelectionPath2d } from '../bb/multi-polygon/get-selection-path-2d';
 import { createMatrixFromTransform } from '../bb/transform/create-matrix-from-transform';
 import { applyToPoint, inverse } from 'transformation-matrix';
+import { ProcreateLayout } from '../klecks/ui/components/procreate/procreate-layout';
+import { TTopBarTool } from '../klecks/ui/components/procreate/top-bar';
 
 importFilters();
 
@@ -147,6 +149,7 @@ export class KlApp {
     private readonly unloadWarningTrigger: UnloadWarningTrigger | undefined;
     private lastSavedHistoryIndex: number = 0;
     private readonly klHistory: KlHistory;
+    private readonly procreateLayout: ProcreateLayout;
 
     private updateLastSaved(): void {
         this.lastSavedHistoryIndex = this.klHistory.getTotalIndex();
@@ -2286,6 +2289,79 @@ export class KlApp {
                 });
             });
         }
+
+        // Initialize Procreate-style UI layout
+        this.procreateLayout = new ProcreateLayout({
+            rootEl: this.rootEl,
+            klColorSlider: this.klColorSlider,
+            layersUiEl: this.layersUi.getElement(),
+            onToolChange: (tool: TTopBarTool) => {
+                applyUncommitted();
+                if (tool === 'brush') {
+                    brushTabRow.open(lastNonEraserBrushId);
+                    this.toolspaceToolRow.setActive('brush');
+                    this.easel.setTool('brush');
+                } else if (tool === 'eraser') {
+                    brushTabRow.open('eraserBrush');
+                    this.toolspaceToolRow.setActive('brush');
+                    this.easel.setTool('brush');
+                } else if (tool === 'smudge') {
+                    brushTabRow.open('smudgeBrush');
+                    this.toolspaceToolRow.setActive('brush');
+                    this.easel.setTool('brush');
+                } else if (tool === 'hand') {
+                    this.toolspaceToolRow.setActive('hand');
+                    this.easel.setTool('hand');
+                } else if (tool === 'select') {
+                    this.toolspaceToolRow.setActive('select');
+                    this.easel.setTool('select');
+                }
+            },
+            onSizeChange: (size: number) => {
+                brushSettingService.setSize(size);
+            },
+            onOpacityChange: (opacity: number) => {
+                brushSettingService.setOpacity(opacity);
+            },
+            onUndo: () => {
+                undo(true);
+            },
+            onRedo: () => {
+                redo(true);
+            },
+            onTransform: () => {
+                // Open transform dialog
+                mainTabRow?.open('select');
+            },
+            onOpenSettings: () => {
+                mainTabRow?.open('settings');
+            },
+            onOpenActions: () => {
+                mainTabRow?.open('edit');
+            },
+            onOpenAdjustments: () => {
+                mainTabRow?.open('edit');
+            },
+            initialSize: brushSettingService.getSize(),
+            initialOpacity: brushSettingService.getOpacity(),
+        });
+
+        // Sync Procreate UI with brush changes
+        brushSettingService.subscribe({
+            onSizeChange: (size: number) => {
+                this.procreateLayout.setSize(size);
+            },
+            onOpacityChange: (opacity: number) => {
+                this.procreateLayout.setOpacity(opacity);
+            },
+            onColorChange: (color: TRgb) => {
+                this.procreateLayout.setColorPreview(color);
+            },
+        });
+
+        // Activate Procreate mode by default (remove this line to start with classic UI)
+        this.procreateLayout.activate();
+
         this.saveReminder?.init();
     }
 

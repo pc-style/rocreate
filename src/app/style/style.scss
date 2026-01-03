@@ -1,6 +1,7 @@
 /* --- entrypoint for app ---*/
 @use 'vars';
 @use './dark';
+@use './procreate';
 
 :root {
     --active-highlight-color: #{vars.$activeHighlightColor};
@@ -12,14 +13,14 @@
     --kl-note-2: #{vars.$klNote2};
     --kl-note-3: #{vars.$klNote3};
 
-    --kl-checkerboard-background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'><path d='M0,0h2v2H0z' fill='%23fff'/><path d='M0,0h1v1H0zM1,1h1v1H1z' fill='%23c8c8c8'/></svg>")
-        0 0 / 8px;
+    --kl-checkerboard-background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2 2'><path d='M0,0h2v2H0z' fill='%23fff'/><path d='M0,0h1v1H0zM1,1h1v1H1z' fill='%23c8c8c8'/></svg>") 0 0 / 8px;
 }
 
 @keyframes consoleIn {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -29,6 +30,7 @@
     0% {
         opacity: 0;
     }
+
     10% {
         opacity: 1;
     }
@@ -38,6 +40,7 @@
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -82,6 +85,7 @@ a:not([href]) {
     text-decoration: underline;
     cursor: pointer;
 }
+
 a:visited {
     color: #536184;
     text-decoration: underline;
@@ -146,6 +150,7 @@ a:not([href]):hover {
     height: 100%;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
+
 .toolspace-svg-triangle-button {
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
@@ -176,7 +181,7 @@ a:not([href]):hover {
     pointer-events: none;
 }
 
-.toolspace-row-button-activated > div:first-child {
+.toolspace-row-button-activated>div:first-child {
     opacity: 1 !important;
 }
 
@@ -197,7 +202,8 @@ a:not([href]):hover {
     background-color: #f3f3f3;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
-.kl-tooldropdown-caret > div {
+
+.kl-tooldropdown-caret>div {
     height: 100%;
     background-image: url(../img/ui/caret-down.svg);
     background-repeat: no-repeat;
@@ -205,7 +211,7 @@ a:not([href]):hover {
     background-size: 60%;
 }
 
-.toolspace-row-button-activated.kl-tool-button--hover > .kl-tooldropdown-caret {
+.toolspace-row-button-activated.kl-tool-button--hover>.kl-tooldropdown-caret {
     background-color: #fff;
 }
 
@@ -217,8 +223,7 @@ a:not([href]):hover {
     border-right: 1px solid rgb(212, 212, 212);
 }
 
-.kl-color-picker {
-}
+/* .kl-color-picker - styles applied via child selectors below */
 
 .kl-color-picker__h,
 .kl-color-picker__sv,
@@ -308,6 +313,7 @@ a:not([href]):hover {
     color: #666 !important;
     text-decoration: none !important;
     text-align: center;
+
     &:hover {
         color: #777 !important;
     }
@@ -325,12 +331,10 @@ button,
     border-radius: 4px;
     cursor: pointer;
 
-    background-image: linear-gradient(
-        to top,
-        rgba(111, 111, 111, 0.1) 0%,
-        rgba(255, 255, 255, 0) 60%,
-        rgba(255, 255, 255, 0.3) 100%
-    );
+    background-image: linear-gradient(to top,
+            rgba(111, 111, 111, 0.1) 0%,
+            rgba(255, 255, 255, 0) 60%,
+            rgba(255, 255, 255, 0.3) 100%);
 
     box-shadow:
         0 0 0 1px rgba(0, 0, 0, 0.04),
@@ -364,17 +368,14 @@ button:disabled,
     background-color: #ddd;
     border-radius: 4px;
 
-    background-image: linear-gradient(
-        to top,
-        rgba(255, 255, 255, 0) 60%,
-        rgba(255, 255, 255, 0.3) 100%
-    );
+    background-image: linear-gradient(to top,
+            rgba(255, 255, 255, 0) 60%,
+            rgba(255, 255, 255, 0.3) 100%);
     cursor: default;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 button:disabled img,
-,
 .kl-button:disabled img {
     opacity: 0.2;
 }
@@ -389,20 +390,18 @@ button img,
     background: var(--kl-color);
     color: #fff;
 }
+
 .kl-button-primary:hover {
-    background-image: linear-gradient(
-        to top,
-        var(--kl-color) -50%,
-        var(--active-highlight-color) 150%
-    );
+    background-image: linear-gradient(to top,
+            var(--kl-color) -50%,
+            var(--active-highlight-color) 150%);
     color: #fff;
 }
+
 .kl-button-primary:active {
-    background-image: linear-gradient(
-        to top,
-        var(--kl-color) -50%,
-        var(--active-highlight-color) 120%
-    );
+    background-image: linear-gradient(to top,
+            var(--kl-color) -50%,
+            var(--active-highlight-color) 120%);
     color: #fff;
     box-shadow: unset;
 }
@@ -410,10 +409,12 @@ button img,
 .kl-button-delete:not(:disabled) {
     background: linear-gradient(#f1b8b8, #f3aeae);
     color: #423333;
+
     &:hover {
         background: #ffbaba;
         color: #111;
     }
+
     &:active {
         background: #f3aeae;
         color: #000;
@@ -494,15 +495,19 @@ button img,
     float: left;
     margin-right: 5px;
 }
+
 .kl-popup__icon-error {
     background-image: url(../img/ui/error.svg);
 }
+
 .kl-popup__icon-ok {
     background-image: url(../img/ui/ok.svg);
 }
+
 .kl-popup__icon-warning {
     background-image: url(../img/ui/warning.svg);
 }
+
 .kl-popup__icon-upload {
     background-image: url(../img/ui/upload-large.svg);
 }
@@ -517,18 +522,19 @@ button img,
 }
 
 @keyframes topOverlayPulse {
-    0% {
-    }
+    0% {}
+
     10% {
         padding-top: 12px;
         background-color: var(--kl-color);
     }
+
     50% {
         padding-top: 7px;
         background-color: var(--kl-color);
     }
-    100% {
-    }
+
+    100% {}
 }
 
 .top-overlay {
@@ -546,6 +552,7 @@ button img,
     display: flex;
     justify-content: center;
 }
+
 .top-overlay--inner {
     text-align: center;
     padding: 7px 10px;
@@ -562,6 +569,7 @@ button img,
     user-select: none;
     -webkit-user-select: none; // safari
 }
+
 .kl-checkbox--highlight {
     background: #bed5ff;
 }
@@ -586,11 +594,9 @@ button img,
     transition: all 0.1s linear;
     // border-radius: 5px;
     box-sizing: border-box;
-    background-image: linear-gradient(
-        to top,
-        rgba(188, 188, 188, 0.1) 0%,
-        rgba(255, 255, 255, 0.3) 100%
-    );
+    background-image: linear-gradient(to top,
+            rgba(188, 188, 188, 0.1) 0%,
+            rgba(255, 255, 255, 0.3) 100%);
 
     .kl-layer__label,
     .kl-layer__opacity-label {
@@ -647,6 +653,7 @@ input:focus {
     -webkit-user-select: none; // safari
     filter: brightness(0.9);
 }
+
 .popup-x:hover {
     color: #000;
     filter: brightness(0.5);
@@ -706,6 +713,7 @@ iframe {
 
     z-index: 0;
 }
+
 .tabrow__tab-hover {
     background-color: #fff;
 }
@@ -731,8 +739,8 @@ iframe {
     from {
         transform: scale(0, 1);
     }
-    to {
-    }
+
+    to {}
 }
 
 /*
@@ -805,6 +813,7 @@ clip-path seems the cleanest.
         &:hover {
             background: #eee;
         }
+
         &:active {
             box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
         }
@@ -819,7 +828,7 @@ clip-path seems the cleanest.
     padding: 0;
 }
 
-.kl-option--custom-el:not(.kl-option-selected) > * {
+.kl-option--custom-el:not(.kl-option-selected)>* {
     opacity: 0.6;
 }
 
@@ -848,6 +857,7 @@ clip-path seems the cleanest.
         &:hover {
             background: #eee;
         }
+
         &:active {
             box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
         }
@@ -865,7 +875,7 @@ clip-path seems the cleanest.
     padding: 0;
 }
 
-.kl-box-toggle--custom-el:not(.kl-box-toggle--active) > * {
+.kl-box-toggle--custom-el:not(.kl-box-toggle--active)>* {
     opacity: 0.5;
 }
 
@@ -912,8 +922,8 @@ clip-path seems the cleanest.
         height: 0;
         opacity: 0;
     }
-    to {
-    }
+
+    to {}
 }
 
 .image-toggle {
@@ -926,19 +936,23 @@ clip-path seems the cleanest.
         &:hover {
             background: #fff;
         }
+
         &:active {
             box-shadow: #838383 0 0 0 2px;
         }
     }
 }
+
 .image-toggle:not(.image-toggle-active) {
     box-shadow: #838383 0 0 0 1px;
     opacity: 0.6;
 }
+
 .image-toggle-active {
     box-shadow: var(--active-highlight-color) 0 0 0 2px;
     background-color: #fff;
 }
+
 .image-toggle__im {
     width: 100%;
     height: 100%;
@@ -960,6 +974,7 @@ clip-path seems the cleanest.
     label {
         cursor: pointer;
     }
+
     label:not(:last-child) {
         margin-right: 10px;
     }
@@ -985,6 +1000,7 @@ clip-path seems the cleanest.
 
 .kl-table {
     border-spacing: 0;
+
     td {
         padding: 0;
     }
@@ -1027,6 +1043,7 @@ clip-path seems the cleanest.
         border: 1px solid var(--active-highlight-color);
         border-bottom: none;
         pointer-events: none;
+
         &:hover {
             background: #fff;
         }
@@ -1035,6 +1052,7 @@ clip-path seems the cleanest.
 
 .kl-layer-preview {
     color: #555;
+
     canvas {
         box-shadow: 0 0 0 1px #9e9e9e;
     }

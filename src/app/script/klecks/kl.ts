@@ -61,6 +61,10 @@ import { SettingsUi } from './ui/tool-tabs/settings-ui';
 import { ToolspaceScroller } from './ui/components/toolspace-scroller';
 import { GradientUi } from './ui/tool-tabs/gradient-ui';
 import { drawGradient, GradientTool } from './image-operations/gradient-tool';
+import { TopBar } from './ui/components/procreate/top-bar';
+import { SideBar } from './ui/components/procreate/side-bar';
+import { FloatingPanel } from './ui/components/procreate/floating-panel';
+import { ProcreateLayout } from './ui/components/procreate/procreate-layout';
 
 /**
  * paint tool functionality
@@ -126,6 +130,12 @@ export const KL = {
     BrowserStorageUi,
     SaveReminder,
     ToolspaceScroller,
+
+    // --- ui - procreate components ---
+    TopBar,
+    SideBar,
+    FloatingPanel,
+    ProcreateLayout,
 
     // --- ui - modals ---
     DIALOG_COUNTER,
