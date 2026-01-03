@@ -5,6 +5,9 @@ import { css } from '../../../../bb/base/base';
 import toolPaintImg from 'url:/src/app/img/ui/tool-paint.svg';
 import toolHandImg from 'url:/src/app/img/ui/tool-hand.svg';
 import toolFillImg from 'url:/src/app/img/ui/tool-fill.svg';
+import toolGradientImg from 'url:/src/app/img/ui/tool-gradient.svg';
+import toolTextImg from 'url:/src/app/img/ui/tool-text.svg';
+import toolShapeImg from 'url:/src/app/img/ui/tool-shape.svg';
 import brushEraserImg from 'url:/src/app/img/ui/brush-eraser.svg';
 import brushSmudgeImg from 'url:/src/app/img/ui/brush-smudge.svg';
 import tabLayersImg from 'url:/src/app/img/ui/tab-layers.svg';
@@ -13,7 +16,16 @@ import tabSettingsImg from 'url:/src/app/img/ui/tab-settings.svg';
 import toolSelectImg from 'url:/src/app/img/ui/tool-select.svg';
 import editTransformImg from 'url:/src/app/img/ui/edit-transform.svg';
 
-export type TTopBarTool = 'brush' | 'smudge' | 'eraser' | 'hand' | 'select';
+export type TTopBarTool =
+    | 'brush'
+    | 'smudge'
+    | 'eraser'
+    | 'hand'
+    | 'select'
+    | 'paintBucket'
+    | 'gradient'
+    | 'text'
+    | 'shape';
 
 export type TTopBarParams = {
     onToolChange: (tool: TTopBarTool) => void;
@@ -23,6 +35,9 @@ export type TTopBarParams = {
     onOpenAdjustments: () => void;
     onOpenSettings: () => void;
     onTransform: () => void;
+    onZoomIn: () => void;
+    onZoomOut: () => void;
+    onZoomFit: () => void;
 };
 
 type TTopBarButton = {
@@ -32,15 +47,17 @@ type TTopBarButton = {
 };
 
 /**
- * Procreate-style top bar with tool buttons and panel triggers
- * Left side: Actions (wrench), Adjustments (wand), Selection, Transform
- * Right side: Paint, Smudge, Eraser, Layers, Color
+ * Procreate-style top bar with all tools
+ * Left side: Settings, Edit/Actions, Selection, Transform
+ * Center: Drawing tools (brush, smudge, eraser) and Creation tools (fill, gradient, text, shape)
+ * Right side: Hand, Layers, Color
  */
 export class TopBar {
     private readonly rootEl: HTMLElement;
     private currentTool: TTopBarTool = 'brush';
     private readonly toolButtons: Map<TTopBarTool, TTopBarButton> = new Map();
     private readonly onToolChange: TTopBarParams['onToolChange'];
+    private colorInnerEl: HTMLElement;
 
     private createButton(p: {
         icon: string;
@@ -49,9 +66,12 @@ export class TopBar {
         isToolButton?: boolean;
         toolId?: TTopBarTool;
         isPanel?: boolean;
+        className?: string;
     }): TTopBarButton {
         const el = BB.el({
-            className: 'procreate-topbar__btn' + (p.isPanel ? ' procreate-topbar__btn--panel' : ''),
+            className: 'procreate-topbar__btn' +
+                (p.isPanel ? ' procreate-topbar__btn--panel' : '') +
+                (p.className ? ' ' + p.className : ''),
             title: p.title,
             onClick: p.onClick,
         });
@@ -84,6 +104,12 @@ export class TopBar {
         return button;
     }
 
+    private createSeparator(): HTMLElement {
+        return BB.el({
+            className: 'procreate-topbar__separator',
+        });
+    }
+
     private setActiveTool(tool: TTopBarTool): void {
         this.currentTool = tool;
         this.toolButtons.forEach((btn, id) => {
@@ -98,17 +124,22 @@ export class TopBar {
             className: 'procreate-topbar',
         });
 
-        // Left side container
+        // Left side container - utility buttons
         const leftSide = BB.el({
             className: 'procreate-topbar__left',
         });
 
-        // Right side container
+        // Center container - tools
+        const centerSide = BB.el({
+            className: 'procreate-topbar__center',
+        });
+
+        // Right side container - panels
         const rightSide = BB.el({
             className: 'procreate-topbar__right',
         });
 
-        // Left side buttons
+        // ========== LEFT SIDE ==========
         const settingsBtn = this.createButton({
             icon: tabSettingsImg,
             title: LANG('tab-settings'),
@@ -145,7 +176,7 @@ export class TopBar {
         });
         leftSide.append(transformBtn.el);
 
-        // Right side buttons - Tools
+        // ========== CENTER - DRAWING TOOLS ==========
         const brushBtn = this.createButton({
             icon: toolPaintImg,
             title: LANG('tool-brush'),
@@ -156,7 +187,7 @@ export class TopBar {
             isToolButton: true,
             toolId: 'brush',
         });
-        rightSide.append(brushBtn.el);
+        centerSide.append(brushBtn.el);
 
         const smudgeBtn = this.createButton({
             icon: brushSmudgeImg,
@@ -168,7 +199,7 @@ export class TopBar {
             isToolButton: true,
             toolId: 'smudge',
         });
-        rightSide.append(smudgeBtn.el);
+        centerSide.append(smudgeBtn.el);
 
         const eraserBtn = this.createButton({
             icon: brushEraserImg,
@@ -180,9 +211,72 @@ export class TopBar {
             isToolButton: true,
             toolId: 'eraser',
         });
-        rightSide.append(eraserBtn.el);
+        centerSide.append(eraserBtn.el);
 
-        // Right side buttons - Panels
+        centerSide.append(this.createSeparator());
+
+        // Creation tools
+        const fillBtn = this.createButton({
+            icon: toolFillImg,
+            title: LANG('tool-paint-bucket'),
+            onClick: () => {
+                this.setActiveTool('paintBucket');
+                this.onToolChange('paintBucket');
+            },
+            isToolButton: true,
+            toolId: 'paintBucket',
+        });
+        centerSide.append(fillBtn.el);
+
+        const gradientBtn = this.createButton({
+            icon: toolGradientImg,
+            title: LANG('tool-gradient'),
+            onClick: () => {
+                this.setActiveTool('gradient');
+                this.onToolChange('gradient');
+            },
+            isToolButton: true,
+            toolId: 'gradient',
+        });
+        centerSide.append(gradientBtn.el);
+
+        const textBtn = this.createButton({
+            icon: toolTextImg,
+            title: LANG('tool-text'),
+            onClick: () => {
+                this.setActiveTool('text');
+                this.onToolChange('text');
+            },
+            isToolButton: true,
+            toolId: 'text',
+        });
+        centerSide.append(textBtn.el);
+
+        const shapeBtn = this.createButton({
+            icon: toolShapeImg,
+            title: LANG('tool-shape'),
+            onClick: () => {
+                this.setActiveTool('shape');
+                this.onToolChange('shape');
+            },
+            isToolButton: true,
+            toolId: 'shape',
+        });
+        centerSide.append(shapeBtn.el);
+
+        // ========== RIGHT SIDE ==========
+        const handBtn = this.createButton({
+            icon: toolHandImg,
+            title: LANG('tool-hand'),
+            onClick: () => {
+                this.setActiveTool('hand');
+                this.onToolChange('hand');
+            },
+            isToolButton: true,
+            toolId: 'hand',
+        });
+        rightSide.append(handBtn.el);
+
         const layersBtn = this.createButton({
             icon: tabLayersImg,
             title: LANG('layers'),
@@ -197,16 +291,16 @@ export class TopBar {
             title: LANG('secondary-color'),
             onClick: p.onOpenColors,
         });
-        const colorInner = BB.el({
+        this.colorInnerEl = BB.el({
             className: 'procreate-topbar__color-inner',
         });
-        colorBtn.append(colorInner);
+        colorBtn.append(this.colorInnerEl);
         rightSide.append(colorBtn);
 
         // Set initial active tool
         this.setActiveTool('brush');
 
-        this.rootEl.append(leftSide, rightSide);
+        this.rootEl.append(leftSide, centerSide, rightSide);
     }
 
     getElement(): HTMLElement {
@@ -222,9 +316,6 @@ export class TopBar {
     }
 
     setColorPreview(color: { r: number; g: number; b: number }): void {
-        const colorInner = this.rootEl.querySelector('.procreate-topbar__color-inner') as HTMLElement;
-        if (colorInner) {
-            colorInner.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
-        }
+        this.colorInnerEl.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
     }
 }

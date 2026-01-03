@@ -21,7 +21,8 @@ export type TSideBarParams = {
 /**
  * Procreate-style vertical sidebar with brush size and opacity sliders
  * Features:
- * - Vertical brush size slider (top)
+ * - Vertical brush size slider with exponential scaling (top)
+ * - +/- buttons for fine control
  * - Modify button (middle)
  * - Vertical opacity slider (bottom)
  * - Undo/Redo buttons at the very bottom
@@ -41,6 +42,29 @@ export class SideBar {
     private readonly sizeFillEl: HTMLElement;
     private readonly opacityFillEl: HTMLElement;
     private readonly sizePreviewEl: HTMLElement;
+    private readonly sizeValueEl: HTMLElement;
+    private readonly opacityValueEl: HTMLElement;
+
+    /**
+     * Exponential scaling for size slider
+     * Small brushes (1-20) get more slider range
+     * Large brushes (100-500) get less slider range
+     */
+    private sizeToPercent(size: number): number {
+        // Use logarithmic scale: percent = log(size/min) / log(max/min) * 100
+        const logMin = Math.log(this.sizeMin);
+        const logMax = Math.log(this.sizeMax);
+        const logSize = Math.log(Math.max(size, this.sizeMin));
+        return ((logSize - logMin) / (logMax - logMin)) * 100;
+    }
+
+    private percentToSize(percent: number): number {
+        // Inverse of logarithmic scale
+        const logMin = Math.log(this.sizeMin);
+        const logMax = Math.log(this.sizeMax);
+        const logSize = logMin + (percent / 100) * (logMax - logMin);
+        return Math.exp(logSize);
+    }
 
     private valueToPercent(value: number, min: number, max: number): number {
         return ((value - min) / (max - min)) * 100;
@@ -51,7 +75,7 @@ export class SideBar {
     }
 
     private updateSizeVisual(): void {
-        const percent = this.valueToPercent(this.size, this.sizeMin, this.sizeMax);
+        const percent = this.sizeToPercent(this.size);
         this.sizeFillEl.style.height = `${percent}%`;
 
         // Update size preview circle
@@ -61,20 +85,53 @@ export class SideBar {
             width: `${previewSize}px`,
             height: `${previewSize}px`,
         });
+
+        // Update value label
+        this.sizeValueEl.textContent = Math.round(this.size).toString();
     }
 
     private updateOpacityVisual(): void {
         const percent = this.valueToPercent(this.opacity, 0, 1);
         this.opacityFillEl.style.height = `${percent}%`;
+        // Update opacity as percentage
+        this.opacityValueEl.textContent = `${Math.round(this.opacity * 100)}%`;
     }
 
-    private createVerticalSlider(p: {
+    /**
+     * Increment size in a way that feels natural
+     * Small sizes: +1, Medium sizes: +5, Large sizes: +20
+     */
+    private getSizeIncrement(): number {
+        if (this.size < 10) return 1;
+        if (this.size < 50) return 2;
+        if (this.size < 100) return 5;
+        if (this.size < 200) return 10;
+        return 20;
+    }
+
+    private createSliderWithButtons(p: {
         label: string;
         className: string;
         onDrag: (percent: number) => void;
-    }): { container: HTMLElement; fill: HTMLElement; pointerListener: PointerListener } {
+        onIncrement: () => void;
+        onDecrement: () => void;
+    }): { container: HTMLElement; slider: HTMLElement; fill: HTMLElement; valueLabel: HTMLElement; pointerListener: PointerListener } {
         const container = BB.el({
-            className: `procreate-sidebar__slider ${p.className}`,
+            className: `procreate-sidebar__control ${p.className}`,
+        });
+
+        // Plus button (top)
+        const plusBtn = BB.el({
+            tagName: 'button',
+            className: 'procreate-sidebar__increment-btn',
+            textContent: '+',
+            title: 'Increase',
+            onClick: p.onIncrement,
+        });
+
+        // Slider
+        const slider = BB.el({
+            className: 'procreate-sidebar__slider',
         });
 
         const track = BB.el({
@@ -85,12 +142,25 @@ export class SideBar {
             className: 'procreate-sidebar__slider-fill',
         });
 
-        const thumb = BB.el({
-            className: 'procreate-sidebar__slider-thumb',
+        track.append(fill);
+        slider.append(track);
+
+        // Value label
+        const valueLabel = BB.el({
+            className: 'procreate-sidebar__value-label',
+            textContent: '0',
         });
 
-        track.append(fill);
-        container.append(track);
+        // Minus button (bottom)
+        const minusBtn = BB.el({
+            tagName: 'button',
+            className: 'procreate-sidebar__decrement-btn',
+            textContent: '−', // minus sign
+            title: 'Decrease',
+            onClick: p.onDecrement,
+        });
+
+        container.append(plusBtn, slider, valueLabel, minusBtn);
 
         let isDragging = false;
 
@@ -103,22 +173,22 @@ export class SideBar {
         };
 
         const pointerListener = new BB.PointerListener({
-            target: container,
+            target: slider,
             onPointer: (e) => {
                 if (e.type === 'pointerdown' && e.button === 'left') {
                     isDragging = true;
-                    container.classList.add('procreate-sidebar__slider--active');
+                    slider.classList.add('procreate-sidebar__slider--active');
                     p.onDrag(calculatePercent(e));
                 } else if (e.type === 'pointermove' && isDragging) {
                     p.onDrag(calculatePercent(e));
                 } else if (e.type === 'pointerup') {
                     isDragging = false;
-                    container.classList.remove('procreate-sidebar__slider--active');
+                    slider.classList.remove('procreate-sidebar__slider--active');
                 }
             },
         });
 
-        return { container, fill, pointerListener };
+        return { container, slider, fill, valueLabel, pointerListener };
     }
 
     constructor(p: TSideBarParams) {
@@ -138,42 +208,65 @@ export class SideBar {
             className: 'procreate-sidebar__size-preview',
         });
 
-        // Size slider
-        const sizeSlider = this.createVerticalSlider({
+        // Size slider with +/- buttons
+        const sizeControl = this.createSliderWithButtons({
             label: 'Size',
-            className: 'procreate-sidebar__slider--size',
+            className: 'procreate-sidebar__control--size',
             onDrag: (percent) => {
-                this.size = this.percentToValue(percent, this.sizeMin, this.sizeMax);
+                this.size = Math.round(this.percentToSize(percent));
+                this.size = clamp(this.size, this.sizeMin, this.sizeMax);
+                this.updateSizeVisual();
+                this.onSizeChange(this.size);
+            },
+            onIncrement: () => {
+                this.size = clamp(this.size + this.getSizeIncrement(), this.sizeMin, this.sizeMax);
+                this.updateSizeVisual();
+                this.onSizeChange(this.size);
+            },
+            onDecrement: () => {
+                this.size = clamp(this.size - this.getSizeIncrement(), this.sizeMin, this.sizeMax);
                 this.updateSizeVisual();
                 this.onSizeChange(this.size);
             },
         });
-        this.sizeSliderEl = sizeSlider.container;
-        this.sizeFillEl = sizeSlider.fill;
-        this.sizePointerListener = sizeSlider.pointerListener;
+        this.sizeSliderEl = sizeControl.slider;
+        this.sizeFillEl = sizeControl.fill;
+        this.sizeValueEl = sizeControl.valueLabel;
+        this.sizePointerListener = sizeControl.pointerListener;
 
         // Modify button
         const modifyBtn = BB.el({
             tagName: 'button',
             className: 'procreate-sidebar__modify-btn',
-            title: 'Modify',
+            title: 'Brush Settings',
             onClick: p.onModify,
             textContent: '⊙',
         });
 
-        // Opacity slider
-        const opacitySlider = this.createVerticalSlider({
+        // Opacity slider with +/- buttons
+        const opacityControl = this.createSliderWithButtons({
             label: 'Opacity',
-            className: 'procreate-sidebar__slider--opacity',
+            className: 'procreate-sidebar__control--opacity',
             onDrag: (percent) => {
                 this.opacity = this.percentToValue(percent, 0, 1);
                 this.updateOpacityVisual();
                 this.onOpacityChange(this.opacity);
             },
+            onIncrement: () => {
+                this.opacity = clamp(this.opacity + 0.05, 0, 1);
+                this.updateOpacityVisual();
+                this.onOpacityChange(this.opacity);
+            },
+            onDecrement: () => {
+                this.opacity = clamp(this.opacity - 0.05, 0, 1);
+                this.updateOpacityVisual();
+                this.onOpacityChange(this.opacity);
+            },
         });
-        this.opacitySliderEl = opacitySlider.container;
-        this.opacityFillEl = opacitySlider.fill;
-        this.opacityPointerListener = opacitySlider.pointerListener;
+        this.opacitySliderEl = opacityControl.slider;
+        this.opacityFillEl = opacityControl.fill;
+        this.opacityValueEl = opacityControl.valueLabel;
+        this.opacityPointerListener = opacityControl.pointerListener;
 
         // Undo/Redo buttons
         const undoRedoContainer = BB.el({
@@ -214,9 +307,9 @@ export class SideBar {
         // Assemble
         this.rootEl.append(
             this.sizePreviewEl,
-            this.sizeSliderEl,
+            sizeControl.container,
             modifyBtn,
-            this.opacitySliderEl,
+            opacityControl.container,
             undoRedoContainer
         );
 

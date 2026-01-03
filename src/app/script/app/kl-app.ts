@@ -1643,6 +1643,9 @@ export class KlApp {
             onCanUndoRedoChange: (canUndo, canRedo) => {
                 this.toolspaceToolRow.setEnableUndo(canUndo);
                 this.toolspaceToolRow.setEnableRedo(canRedo);
+                // Sync Procreate UI undo/redo buttons
+                this.procreateLayout.setEnableUndo(canUndo);
+                this.procreateLayout.setEnableRedo(canRedo);
             },
         });
 
@@ -2294,28 +2297,77 @@ export class KlApp {
         this.procreateLayout = new ProcreateLayout({
             rootEl: this.rootEl,
             klColorSlider: this.klColorSlider,
-            layersUiEl: this.layersUi.getElement(),
+            layersUi: {
+                el: this.layersUi.getElement(),
+                onOpen: () => {
+                    this.layersUi.update();
+                    this.layersUi.getElement().style.display = 'block';
+                },
+                onClose: () => {
+                    this.layersUi.getElement().style.display = 'none';
+                },
+            },
+            settingsUi: {
+                el: settingsUi.getElement(),
+                onOpen: () => {
+                    settingsUi.getElement().style.display = 'block';
+                },
+                onClose: () => {
+                    settingsUi.getElement().style.display = 'none';
+                },
+            },
+            editUi: {
+                el: editUi.getElement(),
+                onOpen: () => {
+                    editUi.show();
+                },
+                onClose: () => {
+                    editUi.hide();
+                },
+            },
             onToolChange: (tool: TTopBarTool) => {
                 applyUncommitted();
                 if (tool === 'brush') {
                     brushTabRow.open(lastNonEraserBrushId);
                     this.toolspaceToolRow.setActive('brush');
                     this.easel.setTool('brush');
+                    mainTabRow?.open('brush');
                 } else if (tool === 'eraser') {
                     brushTabRow.open('eraserBrush');
                     this.toolspaceToolRow.setActive('brush');
                     this.easel.setTool('brush');
+                    mainTabRow?.open('brush');
                 } else if (tool === 'smudge') {
                     brushTabRow.open('smudgeBrush');
                     this.toolspaceToolRow.setActive('brush');
                     this.easel.setTool('brush');
+                    mainTabRow?.open('brush');
                 } else if (tool === 'hand') {
                     this.toolspaceToolRow.setActive('hand');
                     this.easel.setTool('hand');
+                    mainTabRow?.open('hand');
                 } else if (tool === 'select') {
                     this.toolspaceToolRow.setActive('select');
                     this.easel.setTool('select');
+                    mainTabRow?.open('select');
+                } else if (tool === 'paintBucket') {
+                    this.toolspaceToolRow.setActive('paintBucket');
+                    this.easel.setTool('paintBucket');
+                    mainTabRow?.open('paintBucket');
+                } else if (tool === 'gradient') {
+                    this.toolspaceToolRow.setActive('gradient');
+                    this.easel.setTool('gradient');
+                    mainTabRow?.open('gradient');
+                } else if (tool === 'text') {
+                    this.toolspaceToolRow.setActive('text');
+                    this.easel.setTool('text');
+                    mainTabRow?.open('text');
+                } else if (tool === 'shape') {
+                    this.toolspaceToolRow.setActive('shape');
+                    this.easel.setTool('shape');
+                    mainTabRow?.open('shape');
                 }
+                updateMainTabVisibility();
             },
             onSizeChange: (size: number) => {
                 brushSettingService.setSize(size);
@@ -2330,36 +2382,45 @@ export class KlApp {
                 redo(true);
             },
             onTransform: () => {
-                // Open transform dialog
-                mainTabRow?.open('select');
-            },
-            onOpenSettings: () => {
-                mainTabRow?.open('settings');
-            },
-            onOpenActions: () => {
-                mainTabRow?.open('edit');
+                this.procreateLayout.toggleActionsPanel();
             },
             onOpenAdjustments: () => {
-                mainTabRow?.open('edit');
+                this.procreateLayout.toggleActionsPanel();
+            },
+            onZoomIn: () => {
+                const oldScale = this.easel.getTransform().scale;
+                const newScale = zoomByStep(oldScale, 1 / 2);
+                this.easel.scale(newScale / oldScale);
+            },
+            onZoomOut: () => {
+                const oldScale = this.easel.getTransform().scale;
+                const newScale = zoomByStep(oldScale, -1 / 2);
+                this.easel.scale(newScale / oldScale);
+            },
+            onZoomFit: () => {
+                this.easel.setTransform({ scale: 1, x: 0, y: 0, angleDeg: 0 });
+            },
+            onModifyBrush: () => {
+                // Open brush settings tab
+                mainTabRow?.open('brush');
             },
             initialSize: brushSettingService.getSize(),
             initialOpacity: brushSettingService.getOpacity(),
         });
 
         // Sync Procreate UI with brush changes
-        brushSettingService.subscribe({
-            onSizeChange: (size: number) => {
-                this.procreateLayout.setSize(size);
-            },
-            onOpacityChange: (opacity: number) => {
-                this.procreateLayout.setOpacity(opacity);
-            },
-            onColorChange: (color: TRgb) => {
-                this.procreateLayout.setColorPreview(color);
-            },
+        brushSettingService.subscribe((event) => {
+            if (event.type === 'size') {
+                this.procreateLayout.setSize(event.value);
+            } else if (event.type === 'opacity') {
+                this.procreateLayout.setOpacity(event.value);
+            } else if (event.type === 'color') {
+                this.procreateLayout.setColorPreview(event.value);
+            }
         });
 
         // Activate Procreate mode by default (remove this line to start with classic UI)
+        this.procreateLayout.setColorPreview(brushSettingService.getColor());
         this.procreateLayout.activate();
 
         this.saveReminder?.init();
@@ -2422,5 +2483,19 @@ export class KlApp {
 
     isDrawing(): boolean {
         return this.lineSanitizer.getIsDrawing() || this.easel.getIsLocked();
+    }
+
+    /**
+     * Toggle between classic UI and Procreate-style UI
+     */
+    toggleProcreateMode(): void {
+        this.procreateLayout.toggle();
+    }
+
+    /**
+     * Check if Procreate mode is currently active
+     */
+    isProcreateMode(): boolean {
+        return this.procreateLayout.getIsActive();
     }
 }

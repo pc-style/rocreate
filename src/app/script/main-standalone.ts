@@ -7,6 +7,7 @@ import { KlApp } from './app/kl-app';
 import { TDeserializedKlStorageProject, TKlProject } from './klecks/kl-types';
 import { initLANG, LANG } from './language/language';
 import '../script/theme/theme';
+import { initDevTools } from './dev';
 import {
     getKlIndexedDbName,
     KL_INDEXED_DB,
@@ -69,6 +70,9 @@ function showInitError(e: Error): void {
 
         const klApp = new KlApp({ project, klRecoveryManager });
         document.body.append(klApp.getElement());
+
+        // Initialize dev tools (only in dev mode)
+        initDevTools();
 
         setTimeout(() => {
             outQueue.forEach((msg) => {
