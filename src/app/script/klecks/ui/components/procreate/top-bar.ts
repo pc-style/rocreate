@@ -3,11 +3,6 @@ import { LANG } from '../../../../language/language';
 import { PointerListener } from '../../../../bb/input/pointer-listener';
 import { css } from '../../../../bb/base/base';
 import toolPaintImg from 'url:/src/app/img/ui/procreate/brush.svg';
-import toolHandImg from 'url:/src/app/img/ui/procreate/hand.svg';
-import toolFillImg from 'url:/src/app/img/ui/procreate/bucket.svg';
-import toolGradientImg from 'url:/src/app/img/ui/procreate/gradient.svg';
-import toolTextImg from 'url:/src/app/img/ui/procreate/text.svg';
-import toolShapeImg from 'url:/src/app/img/ui/procreate/shape.svg';
 import brushEraserImg from 'url:/src/app/img/ui/procreate/eraser.svg';
 import brushSmudgeImg from 'url:/src/app/img/ui/procreate/smudge.svg';
 import tabLayersImg from 'url:/src/app/img/ui/procreate/layers.svg';
@@ -19,25 +14,18 @@ import editTransformImg from 'url:/src/app/img/ui/procreate/transform.svg';
 export type TTopBarTool =
     | 'brush'
     | 'smudge'
-    | 'eraser'
-    | 'hand'
-    | 'select'
-    | 'paintBucket'
-    | 'gradient'
-    | 'text'
-    | 'shape';
+    | 'eraser';
 
 export type TTopBarParams = {
     onToolChange: (tool: TTopBarTool) => void;
     onOpenLayers: () => void;
     onOpenColors: () => void;
+    onOpenBrushLibrary: () => void;
     onOpenActions: () => void;
     onOpenAdjustments: () => void;
-    onOpenSettings: () => void;
+    onOpenSelections: () => void;
     onTransform: () => void;
-    onZoomIn: () => void;
-    onZoomOut: () => void;
-    onZoomFit: () => void;
+    onGallery: () => void;
 };
 
 type TTopBarButton = {
@@ -47,20 +35,25 @@ type TTopBarButton = {
 };
 
 /**
- * Procreate-style top bar with all tools
- * Left side: Settings, Edit/Actions, Selection, Transform
- * Center: Drawing tools (brush, smudge, eraser) and Creation tools (fill, gradient, text, shape)
- * Right side: Hand, Layers, Color
+ * Procreate-style top bar
+ * Layout matches iPad Procreate exactly:
+ * Left: Gallery | Actions | Adjustments | Selections | Transform
+ * Right: Brush | Smudge | Eraser | Layers | Color
  */
 export class TopBar {
     private readonly rootEl: HTMLElement;
     private currentTool: TTopBarTool = 'brush';
     private readonly toolButtons: Map<TTopBarTool, TTopBarButton> = new Map();
     private readonly onToolChange: TTopBarParams['onToolChange'];
+    private readonly onOpenBrushLibrary: TTopBarParams['onOpenBrushLibrary'];
     private colorInnerEl: HTMLElement;
+    private brushBtnEl: HTMLElement;
+    private smudgeBtnEl: HTMLElement;
+    private eraserBtnEl: HTMLElement;
 
     private createButton(p: {
-        icon: string;
+        icon?: string;
+        text?: string;
         title: string;
         onClick: () => void;
         isToolButton?: boolean;
@@ -76,13 +69,20 @@ export class TopBar {
             onClick: p.onClick,
         });
 
-        const iconEl = BB.el({
-            className: 'procreate-topbar__btn-icon',
-            css: {
-                backgroundImage: `url('${p.icon}')`,
-            },
-        });
-        el.append(iconEl);
+        if (p.icon) {
+            const iconEl = BB.el({
+                className: 'procreate-topbar__btn-icon',
+                css: {
+                    backgroundImage: `url('${p.icon}')`,
+                },
+            });
+            el.append(iconEl);
+        }
+
+        if (p.text) {
+            el.textContent = p.text;
+            el.classList.add('procreate-topbar__btn--text');
+        }
 
         const pointerListener = new BB.PointerListener({
             target: el,
@@ -104,12 +104,6 @@ export class TopBar {
         return button;
     }
 
-    private createSeparator(): HTMLElement {
-        return BB.el({
-            className: 'procreate-topbar__separator',
-        });
-    }
-
     private setActiveTool(tool: TTopBarTool): void {
         this.currentTool = tool;
         this.toolButtons.forEach((btn, id) => {
@@ -119,35 +113,27 @@ export class TopBar {
 
     constructor(p: TTopBarParams) {
         this.onToolChange = p.onToolChange;
+        this.onOpenBrushLibrary = p.onOpenBrushLibrary;
 
         this.rootEl = BB.el({
             className: 'procreate-topbar',
         });
 
-        // Left side container - utility buttons
+        // ========== LEFT SIDE - Editing Tools ==========
         const leftSide = BB.el({
             className: 'procreate-topbar__left',
         });
 
-        // Center container - tools
-        const centerSide = BB.el({
-            className: 'procreate-topbar__center',
+        // Gallery button (text style, like Procreate)
+        const galleryBtn = this.createButton({
+            text: 'Gallery',
+            title: 'Gallery',
+            onClick: p.onGallery,
+            className: 'procreate-topbar__gallery-btn',
         });
+        leftSide.append(galleryBtn.el);
 
-        // Right side container - panels
-        const rightSide = BB.el({
-            className: 'procreate-topbar__right',
-        });
-
-        // ========== LEFT SIDE ==========
-        const settingsBtn = this.createButton({
-            icon: tabSettingsImg,
-            title: LANG('tab-settings'),
-            onClick: p.onOpenSettings,
-            isPanel: true,
-        });
-        leftSide.append(settingsBtn.el);
-
+        // Actions (wrench icon)
         const actionsBtn = this.createButton({
             icon: tabEditImg,
             title: LANG('tab-edit'),
@@ -156,18 +142,25 @@ export class TopBar {
         });
         leftSide.append(actionsBtn.el);
 
-        const selectBtn = this.createButton({
+        // Adjustments (wand icon)
+        const adjustmentsBtn = this.createButton({
+            icon: tabSettingsImg,
+            title: LANG('tab-settings'),
+            onClick: p.onOpenAdjustments,
+            isPanel: true,
+        });
+        leftSide.append(adjustmentsBtn.el);
+
+        // Selections (selection icon)
+        const selectionsBtn = this.createButton({
             icon: toolSelectImg,
             title: LANG('tool-select'),
-            onClick: () => {
-                this.setActiveTool('select');
-                this.onToolChange('select');
-            },
-            isToolButton: true,
-            toolId: 'select',
+            onClick: p.onOpenSelections,
+            isPanel: true,
         });
-        leftSide.append(selectBtn.el);
+        leftSide.append(selectionsBtn.el);
 
+        // Transform (transform icon)
         const transformBtn = this.createButton({
             icon: editTransformImg,
             title: LANG('filter-transform-title'),
@@ -176,107 +169,67 @@ export class TopBar {
         });
         leftSide.append(transformBtn.el);
 
-        // ========== CENTER - DRAWING TOOLS ==========
+        // ========== RIGHT SIDE - Painting Tools ==========
+        const rightSide = BB.el({
+            className: 'procreate-topbar__right',
+        });
+
+        // Brush (opens brush library on tap, activates tool)
         const brushBtn = this.createButton({
             icon: toolPaintImg,
             title: LANG('tool-brush'),
             onClick: () => {
-                this.setActiveTool('brush');
-                this.onToolChange('brush');
+                if (this.currentTool === 'brush') {
+                    // Already selected - open brush library
+                    this.onOpenBrushLibrary();
+                } else {
+                    this.setActiveTool('brush');
+                    this.onToolChange('brush');
+                }
             },
             isToolButton: true,
             toolId: 'brush',
         });
-        centerSide.append(brushBtn.el);
+        this.brushBtnEl = brushBtn.el;
+        rightSide.append(brushBtn.el);
 
+        // Smudge
         const smudgeBtn = this.createButton({
             icon: brushSmudgeImg,
             title: LANG('brush-smudge'),
             onClick: () => {
-                this.setActiveTool('smudge');
-                this.onToolChange('smudge');
+                if (this.currentTool === 'smudge') {
+                    this.onOpenBrushLibrary();
+                } else {
+                    this.setActiveTool('smudge');
+                    this.onToolChange('smudge');
+                }
             },
             isToolButton: true,
             toolId: 'smudge',
         });
-        centerSide.append(smudgeBtn.el);
+        this.smudgeBtnEl = smudgeBtn.el;
+        rightSide.append(smudgeBtn.el);
 
+        // Eraser
         const eraserBtn = this.createButton({
             icon: brushEraserImg,
             title: LANG('eraser'),
             onClick: () => {
-                this.setActiveTool('eraser');
-                this.onToolChange('eraser');
+                if (this.currentTool === 'eraser') {
+                    this.onOpenBrushLibrary();
+                } else {
+                    this.setActiveTool('eraser');
+                    this.onToolChange('eraser');
+                }
             },
             isToolButton: true,
             toolId: 'eraser',
         });
-        centerSide.append(eraserBtn.el);
+        this.eraserBtnEl = eraserBtn.el;
+        rightSide.append(eraserBtn.el);
 
-        centerSide.append(this.createSeparator());
-
-        // Creation tools
-        const fillBtn = this.createButton({
-            icon: toolFillImg,
-            title: LANG('tool-paint-bucket'),
-            onClick: () => {
-                this.setActiveTool('paintBucket');
-                this.onToolChange('paintBucket');
-            },
-            isToolButton: true,
-            toolId: 'paintBucket',
-        });
-        centerSide.append(fillBtn.el);
-
-        const gradientBtn = this.createButton({
-            icon: toolGradientImg,
-            title: LANG('tool-gradient'),
-            onClick: () => {
-                this.setActiveTool('gradient');
-                this.onToolChange('gradient');
-            },
-            isToolButton: true,
-            toolId: 'gradient',
-        });
-        centerSide.append(gradientBtn.el);
-
-        const textBtn = this.createButton({
-            icon: toolTextImg,
-            title: LANG('tool-text'),
-            onClick: () => {
-                this.setActiveTool('text');
-                this.onToolChange('text');
-            },
-            isToolButton: true,
-            toolId: 'text',
-        });
-        centerSide.append(textBtn.el);
-
-        const shapeBtn = this.createButton({
-            icon: toolShapeImg,
-            title: LANG('tool-shape'),
-            onClick: () => {
-                this.setActiveTool('shape');
-                this.onToolChange('shape');
-            },
-            isToolButton: true,
-            toolId: 'shape',
-        });
-        centerSide.append(shapeBtn.el);
-
-        // ========== RIGHT SIDE ==========
-        const handBtn = this.createButton({
-            icon: toolHandImg,
-            title: LANG('tool-hand'),
-            onClick: () => {
-                this.setActiveTool('hand');
-                this.onToolChange('hand');
-            },
-            isToolButton: true,
-            toolId: 'hand',
-        });
-        rightSide.append(handBtn.el);
-
+        // Layers
         const layersBtn = this.createButton({
             icon: tabLayersImg,
             title: LANG('layers'),
@@ -300,7 +253,7 @@ export class TopBar {
         // Set initial active tool
         this.setActiveTool('brush');
 
-        this.rootEl.append(leftSide, centerSide, rightSide);
+        this.rootEl.append(leftSide, rightSide);
     }
 
     getElement(): HTMLElement {

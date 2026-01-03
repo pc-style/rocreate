@@ -1,45 +1,47 @@
 /* Procreate-style UI Components */
 
-/* CSS Custom Properties for Procreate theme */
+/* CSS Custom Properties for Procreate theme - AUTHENTIC DARK */
 :root {
-    --procreate-bg: rgba(30, 30, 30, 0.95);
-    --procreate-bg-solid: #1e1e1e;
-    --procreate-surface: rgba(50, 50, 50, 0.9);
-    --procreate-surface-hover: rgba(70, 70, 70, 0.9);
-    --procreate-surface-active: rgba(90, 90, 90, 0.95);
-    --procreate-border: rgba(255, 255, 255, 0.1);
+    --procreate-bg: rgba(18, 18, 18, 0.98);
+    --procreate-bg-solid: #121212;
+    --procreate-surface: rgba(40, 40, 40, 0.95);
+    --procreate-surface-hover: rgba(60, 60, 60, 0.95);
+    --procreate-surface-active: rgba(80, 80, 80, 0.95);
+    --procreate-border: rgba(255, 255, 255, 0.06);
     --procreate-text: #ffffff;
-    --procreate-text-secondary: rgba(255, 255, 255, 0.6);
-    --procreate-accent: #4a9eff;
-    --procreate-accent-glow: rgba(74, 158, 255, 0.4);
-    --procreate-slider-track: rgba(255, 255, 255, 0.15);
-    --procreate-slider-fill: #4a9eff;
-    --procreate-radius: 12px;
-    --procreate-radius-sm: 8px;
-    --procreate-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --procreate-glass: blur(20px);
+    --procreate-text-secondary: rgba(255, 255, 255, 0.5);
+    --procreate-accent: #0a84ff;
+    --procreate-accent-glow: rgba(10, 132, 255, 0.3);
+    --procreate-slider-track: rgba(255, 255, 255, 0.08);
+    --procreate-slider-fill: rgba(255, 255, 255, 0.9);
+    --procreate-radius: 16px;
+    --procreate-radius-sm: 10px;
+    --procreate-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+    --procreate-glass: blur(30px) saturate(180%);
 }
 
 /* ============================================
-   TOP BAR
+   TOP BAR - Procreate Authentic Style
    ============================================ */
 .procreate-topbar {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 52px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    height: 44px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 8px;
     background: var(--procreate-bg);
     backdrop-filter: var(--procreate-glass);
     -webkit-backdrop-filter: var(--procreate-glass);
-    border-bottom: 1px solid var(--procreate-border);
+    border-radius: 22px;
+    border: 1px solid var(--procreate-border);
     z-index: 100;
     user-select: none;
     -webkit-user-select: none;
+    box-shadow: var(--procreate-shadow);
 }
 
 .procreate-topbar__left,
@@ -47,59 +49,83 @@
 .procreate-topbar__right {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 2px;
 }
 
 .procreate-topbar__center {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    gap: 4px;
+    gap: 2px;
 }
 
 .procreate-topbar__separator {
     width: 1px;
-    height: 24px;
+    height: 20px;
     background: var(--procreate-border);
-    margin: 0 4px;
+    margin: 0 6px;
 }
 
 .procreate-topbar__btn {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--procreate-radius-sm);
+    border-radius: 18px;
     background: transparent;
     border: none;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.12s ease;
     position: relative;
 }
 
 .procreate-topbar__btn-icon {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     filter: brightness(0) invert(1);
-    opacity: 0.75;
-    transition: opacity 0.15s ease;
+    opacity: 0.6;
+    transition: opacity 0.12s ease;
 }
 
 .procreate-topbar__btn--hover {
-    background: var(--procreate-surface-hover);
+    background: var(--procreate-surface);
 }
 
 .procreate-topbar__btn--hover .procreate-topbar__btn-icon {
-    opacity: 1;
+    opacity: 0.9;
 }
 
 .procreate-topbar__btn:active {
     background: var(--procreate-surface-active);
     transform: scale(0.95);
+}
+
+.procreate-topbar__btn--active {
+    background: var(--procreate-surface);
+}
+
+.procreate-topbar__btn--active .procreate-topbar__btn-icon {
+    opacity: 1;
+}
+
+/* Color preview circle */
+.procreate-topbar__color-preview {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.procreate-topbar__color-preview:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .procreate-topbar__btn--active {
@@ -153,22 +179,22 @@
 }
 
 /* ============================================
-   SIDE BAR
+   SIDE BAR - Procreate Minimal Style
    ============================================ */
 .procreate-sidebar {
     position: fixed;
-    right: 16px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 12px 8px;
+    gap: 6px;
+    padding: 10px 6px;
     background: var(--procreate-bg);
     backdrop-filter: var(--procreate-glass);
     -webkit-backdrop-filter: var(--procreate-glass);
-    border-radius: var(--procreate-radius);
+    border-radius: 24px;
     border: 1px solid var(--procreate-border);
     box-shadow: var(--procreate-shadow);
     z-index: 99;
@@ -235,10 +261,10 @@
     padding: 2px 0;
 }
 
-/* Vertical Slider */
+/* Vertical Slider - Procreate Minimal */
 .procreate-sidebar__slider {
-    width: 28px;
-    height: 100px;
+    width: 24px;
+    height: 90px;
     cursor: pointer;
     position: relative;
 }
@@ -248,10 +274,10 @@
     left: 50%;
     top: 0;
     bottom: 0;
-    width: 8px;
+    width: 4px;
     transform: translateX(-50%);
     background: var(--procreate-slider-track);
-    border-radius: 4px;
+    border-radius: 2px;
     overflow: hidden;
 }
 
@@ -261,14 +287,14 @@
     right: 0;
     bottom: 0;
     height: 50%;
-    background: linear-gradient(to top, var(--procreate-slider-fill), var(--procreate-accent-glow));
-    border-radius: 4px;
+    background: var(--procreate-slider-fill);
+    border-radius: 2px;
     transition: height 0.05s ease-out;
 }
 
 .procreate-sidebar__slider--active .procreate-sidebar__slider-fill {
-    background: linear-gradient(to top, var(--procreate-accent), #7ec4ff);
-    box-shadow: 0 0 12px var(--procreate-accent-glow);
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
 }
 
 .procreate-sidebar__slider-thumb {
@@ -991,4 +1017,272 @@
     .procreate-sidebar__size-preview {
         display: none;
     }
+}
+
+/* ============================================
+   GALLERY BUTTON (Text Style)
+   ============================================ */
+.procreate-topbar__gallery-btn {
+    background: transparent !important;
+    border: none !important;
+    color: var(--procreate-text);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 12px;
+    letter-spacing: 0.02em;
+}
+
+.procreate-topbar__gallery-btn:hover {
+    background: var(--procreate-surface-hover) !important;
+}
+
+.procreate-topbar__btn--text {
+    width: auto;
+    padding: 8px 14px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* ============================================
+   BRUSH LIBRARY PANEL
+   ============================================ */
+.procreate-brush-library {
+    width: 100%;
+    min-height: 300px;
+}
+
+.procreate-brush-library__container {
+    display: flex;
+    gap: 0;
+    height: 100%;
+    min-height: 350px;
+}
+
+.procreate-brush-library__categories {
+    width: 140px;
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 1px solid var(--procreate-border);
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.procreate-brush-library__category {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--procreate-text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 0;
+    margin: 0 4px;
+    border-radius: 8px;
+}
+
+.procreate-brush-library__category:hover {
+    background: var(--procreate-surface-hover);
+    color: var(--procreate-text);
+}
+
+.procreate-brush-library__category--active {
+    background: var(--procreate-accent);
+    color: white;
+}
+
+.procreate-brush-library__category--active:hover {
+    background: var(--procreate-accent);
+}
+
+.procreate-brush-library__brushes {
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+}
+
+.procreate-brush-library__brush {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.procreate-brush-library__brush:hover {
+    background: var(--procreate-surface-hover);
+    border-color: var(--procreate-border);
+}
+
+.procreate-brush-library__brush--active {
+    background: rgba(74, 158, 255, 0.12);
+    border-color: var(--procreate-accent);
+}
+
+.procreate-brush-library__brush-preview {
+    width: 100%;
+    height: 32px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center left;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.procreate-brush-library__brush-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--procreate-text);
+}
+
+.procreate-brush-library__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px 8px 8px;
+    border-bottom: 1px solid var(--procreate-border);
+    margin-bottom: 8px;
+}
+
+.procreate-brush-library__add-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--procreate-surface);
+    border: 1px solid var(--procreate-border);
+    color: var(--procreate-text);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.procreate-brush-library__add-btn:hover {
+    background: var(--procreate-surface-hover);
+}
+
+/* ============================================
+   QUICK MENU (Radial Floating Action Menu)
+   ============================================ */
+.procreate-quickmenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.procreate-quickmenu--visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.procreate-quickmenu__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+.procreate-quickmenu__menu {
+    position: absolute;
+    width: 0;
+    height: 0;
+    transform: translate(-50%, -50%);
+}
+
+.procreate-quickmenu__action {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--procreate-surface);
+    border: 1px solid var(--procreate-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--procreate-shadow);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--procreate-text);
+    margin-left: -28px;
+    margin-top: -28px;
+}
+
+.procreate-quickmenu__action:hover {
+    background: var(--procreate-accent);
+    border-color: var(--procreate-accent);
+    transform: scale(1.1);
+}
+
+.procreate-quickmenu__action-icon {
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) invert(1);
+}
+
+.procreate-quickmenu__action-label {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--procreate-text);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.procreate-quickmenu__action:hover .procreate-quickmenu__action-label {
+    opacity: 1;
+}
+
+.procreate-quickmenu__center {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--procreate-surface);
+    border: 2px solid var(--procreate-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--procreate-text-secondary);
+    margin-left: -24px;
+    margin-top: -24px;
+    transition: all 0.15s ease;
+    box-shadow: var(--procreate-shadow);
+}
+
+.procreate-quickmenu__center:hover {
+    background: var(--procreate-surface-hover);
+    color: var(--procreate-text);
 }

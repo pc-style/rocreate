@@ -2,6 +2,7 @@ import { BB } from '../../../../bb/bb';
 import { TopBar, TTopBarTool } from './top-bar';
 import { SideBar } from './side-bar';
 import { FloatingPanel } from './floating-panel';
+import { BrushLibrary } from './brush-library';
 import { css } from '../../../../bb/base/base';
 import { TRgb, TUiLayout } from '../../../kl-types'
 import { KlColorSlider } from '../kl-color-slider';
@@ -14,18 +15,19 @@ export type TProcreateLayoutParams = {
     settingsUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     editUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     onToolChange: (tool: TTopBarTool) => void;
+    onBrushSelect: (brushId: string) => void;
     onSizeChange: (size: number) => void;
     onOpacityChange: (opacity: number) => void;
     onUndo: () => void;
     onRedo: () => void;
     onTransform: () => void;
     onOpenAdjustments: () => void;
-    onZoomIn: () => void;
-    onZoomOut: () => void;
-    onZoomFit: () => void;
+    onOpenSelections: () => void;
+    onGallery: () => void;
     onModifyBrush: () => void;
     initialSize: number;
     initialOpacity: number;
+    currentBrushId: string;
 };
 
 /**
@@ -40,7 +42,7 @@ export class ProcreateLayout {
     private readonly containerEl: HTMLElement;
     private layersPanel: FloatingPanel | null = null;
     private colorsPanel: FloatingPanel | null = null;
-    private settingsPanel: FloatingPanel | null = null;
+    private brushLibraryPanel: FloatingPanel | null = null;
     private actionsPanel: FloatingPanel | null = null;
     private isActive: boolean = false;
     private readonly klColorSlider: KlColorSlider;
@@ -48,7 +50,9 @@ export class ProcreateLayout {
     private readonly settingsUi: TProcreateLayoutParams['settingsUi'];
     private readonly editUi: TProcreateLayoutParams['editUi'];
     private readonly onToolChange: TProcreateLayoutParams['onToolChange'];
+    private readonly onBrushSelect: TProcreateLayoutParams['onBrushSelect'];
     private currentTool: TTopBarTool = 'brush';
+    private currentBrushId: string;
 
     constructor(p: TProcreateLayoutParams) {
         this.rootEl = p.rootEl;
@@ -57,6 +61,8 @@ export class ProcreateLayout {
         this.settingsUi = p.settingsUi;
         this.editUi = p.editUi;
         this.onToolChange = p.onToolChange;
+        this.onBrushSelect = p.onBrushSelect;
+        this.currentBrushId = p.currentBrushId;
 
         // Create container for Procreate UI
         this.containerEl = BB.el({
@@ -86,17 +92,16 @@ export class ProcreateLayout {
             onOpenColors: () => {
                 this.toggleColorsPanel();
             },
-            onOpenSettings: () => {
-                this.toggleSettingsPanel();
+            onOpenBrushLibrary: () => {
+                this.toggleBrushLibraryPanel();
             },
             onOpenActions: () => {
                 this.toggleActionsPanel();
             },
             onOpenAdjustments: p.onOpenAdjustments,
+            onOpenSelections: p.onOpenSelections,
             onTransform: p.onTransform,
-            onZoomIn: p.onZoomIn,
-            onZoomOut: p.onZoomOut,
-            onZoomFit: p.onZoomFit,
+            onGallery: p.onGallery,
         });
         this.topBar.getElement().style.pointerEvents = 'auto';
 
@@ -132,7 +137,7 @@ export class ProcreateLayout {
     private closeAllPanels(): void {
         this.closeLayersPanel();
         this.closeColorsPanel();
-        this.closeSettingsPanel();
+        this.closeBrushLibraryPanel();
         this.closeActionsPanel();
     }
 
@@ -218,53 +223,48 @@ export class ProcreateLayout {
         this.colorsPanel = null;
     }
 
-    public toggleSettingsPanel(): void {
-        if (this.settingsPanel) {
-            this.closeSettingsPanel();
+    public toggleBrushLibraryPanel(): void {
+        if (this.brushLibraryPanel) {
+            this.closeBrushLibraryPanel();
         } else {
             this.closeAllPanels();
-            this.openSettingsPanel();
+            this.openBrushLibraryPanel();
         }
     }
 
-    private openSettingsPanel(): void {
-        if (this.settingsPanel) return;
+    private openBrushLibraryPanel(): void {
+        if (this.brushLibraryPanel) return;
 
-        // Style the settings UI for the floating panel
-        css(this.settingsUi.el, {
-            width: '280px',
-            maxHeight: '450px',
-            overflow: 'auto',
+        // Create the BrushLibrary component
+        const brushLibrary = new BrushLibrary({
+            onBrushSelect: (brushId) => {
+                this.currentBrushId = brushId;
+                this.onBrushSelect(brushId);
+                this.closeBrushLibraryPanel();
+            },
+            currentBrushId: this.currentBrushId,
+            currentToolType: this.currentTool,
         });
 
-        this.settingsUi.onOpen();
-
-        this.settingsPanel = new FloatingPanel({
-            title: LANG('tab-settings'),
-            content: this.settingsUi.el,
-            position: { x: 16, y: 60 },
-            width: 300,
+        this.brushLibraryPanel = new FloatingPanel({
+            title: 'Brush Library',
+            content: brushLibrary.getElement(),
+            position: { x: window.innerWidth - 450, y: 60 },
+            width: 420,
             onClose: () => {
-                this.closeSettingsPanel();
+                this.closeBrushLibraryPanel();
             },
         });
 
-        this.settingsPanel.getElement().style.pointerEvents = 'auto';
-        this.containerEl.append(this.settingsPanel.getElement());
+        this.brushLibraryPanel.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.brushLibraryPanel.getElement());
     }
 
-    private closeSettingsPanel(): void {
-        if (!this.settingsPanel) return;
-        // Reset settings UI styles
-        css(this.settingsUi.el, {
-            width: '',
-            maxHeight: '',
-            overflow: '',
-        });
-        this.settingsUi.onClose();
-        this.settingsPanel.destroy();
-        this.settingsPanel.getElement().remove();
-        this.settingsPanel = null;
+    private closeBrushLibraryPanel(): void {
+        if (!this.brushLibraryPanel) return;
+        this.brushLibraryPanel.destroy();
+        this.brushLibraryPanel.getElement().remove();
+        this.brushLibraryPanel = null;
     }
 
     public toggleActionsPanel(): void {
@@ -383,7 +383,7 @@ export class ProcreateLayout {
     hasOpenPanel(): boolean {
         return this.layersPanel !== null ||
             this.colorsPanel !== null ||
-            this.settingsPanel !== null ||
+            this.brushLibraryPanel !== null ||
             this.actionsPanel !== null;
     }
 

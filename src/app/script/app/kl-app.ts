@@ -2397,30 +2397,10 @@ export class KlApp {
                     this.toolspaceToolRow.setActive('brush');
                     this.easel.setTool('brush');
                     mainTabRow?.open('brush');
-                } else if (tool === 'hand') {
-                    this.toolspaceToolRow.setActive('hand');
-                    this.easel.setTool('hand');
-                    mainTabRow?.open('hand');
                 } else if (tool === 'select') {
                     this.toolspaceToolRow.setActive('select');
                     this.easel.setTool('select');
                     mainTabRow?.open('select');
-                } else if (tool === 'paintBucket') {
-                    this.toolspaceToolRow.setActive('paintBucket');
-                    this.easel.setTool('paintBucket');
-                    mainTabRow?.open('paintBucket');
-                } else if (tool === 'gradient') {
-                    this.toolspaceToolRow.setActive('gradient');
-                    this.easel.setTool('gradient');
-                    mainTabRow?.open('gradient');
-                } else if (tool === 'text') {
-                    this.toolspaceToolRow.setActive('text');
-                    this.easel.setTool('text');
-                    mainTabRow?.open('text');
-                } else if (tool === 'shape') {
-                    this.toolspaceToolRow.setActive('shape');
-                    this.easel.setTool('shape');
-                    mainTabRow?.open('shape');
                 }
                 updateMainTabVisibility();
             },
@@ -2440,20 +2420,25 @@ export class KlApp {
                 this.procreateLayout.toggleActionsPanel();
             },
             onOpenAdjustments: () => {
-                this.procreateLayout.toggleActionsPanel();
+                // Toggle adjustments/filters panel
             },
-            onZoomIn: () => {
-                const oldScale = this.easel.getTransform().scale;
-                const newScale = zoomByStep(oldScale, 1 / 2);
-                this.easel.scale(newScale / oldScale);
+            onOpenSelections: () => {
+                // Open selections tool
+                this.toolspaceToolRow.setActive('select');
+                this.easel.setTool('select');
+                mainTabRow?.open('select');
             },
-            onZoomOut: () => {
-                const oldScale = this.easel.getTransform().scale;
-                const newScale = zoomByStep(oldScale, -1 / 2);
-                this.easel.scale(newScale / oldScale);
+            onGallery: () => {
+                // open file panel / gallery
+                if (fileUi) {
+                    fileUi.getElement().style.display = 'block';
+                    fileUi.setIsVisible(true);
+                    mainTabRow?.open('file');
+                }
             },
-            onZoomFit: () => {
-                this.easel.setTransform({ scale: 1, x: 0, y: 0, angleDeg: 0 });
+            onBrushSelect: (brushId: string) => {
+                // Select the brush via the existing brush tab row
+                brushTabRow.open(brushId);
             },
             onModifyBrush: () => {
                 // Open brush settings tab
@@ -2461,6 +2446,7 @@ export class KlApp {
             },
             initialSize: brushSettingService.getSize(),
             initialOpacity: brushSettingService.getOpacity(),
+            currentBrushId: 'penBrush',
         });
 
         // Sync Procreate UI with brush changes

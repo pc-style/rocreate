@@ -269,4 +269,17 @@ export const FILTER_LIB: {
         apply: null,
         inEmbed: true,
     },
+    bloom: {
+        lang: {
+            name: 'Bloom' as any,
+            button: 'Bloom' as any,
+            description: 'Add glow effect to bright areas' as any,
+        },
+        icon: glBlurImg, // Reuse blur icon for now
+        updatePos: false,
+        getDialog: null,
+        apply: null,
+        inEmbed: true,
+        webGL: true,
+    },
 };
