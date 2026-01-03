@@ -47,6 +47,7 @@ export class TopBar {
     private readonly onToolChange: TTopBarParams['onToolChange'];
     private readonly onOpenBrushLibrary: TTopBarParams['onOpenBrushLibrary'];
     private colorInnerEl: HTMLElement;
+    private currentColorRgb: { r: number; g: number; b: number } = { r: 0, g: 0, b: 0 };
     private brushBtnEl: HTMLElement;
     private smudgeBtnEl: HTMLElement;
     private eraserBtnEl: HTMLElement;
@@ -250,6 +251,27 @@ export class TopBar {
         colorBtn.append(this.colorInnerEl);
         rightSide.append(colorBtn);
 
+        // ColorDrop Support
+        colorBtn.draggable = true;
+        colorBtn.addEventListener('dragstart', (e) => {
+            if (!e.dataTransfer) return;
+            const colorStr = JSON.stringify(this.currentColorRgb);
+            e.dataTransfer.setData('text/plain', colorStr);
+            e.dataTransfer.effectAllowed = 'copy';
+
+            // Create a small circular preview for dragging
+            const dragEl = document.createElement('div');
+            dragEl.style.width = '30px';
+            dragEl.style.height = '30px';
+            dragEl.style.borderRadius = '50%';
+            dragEl.style.backgroundColor = `rgb(${this.currentColorRgb.r}, ${this.currentColorRgb.g}, ${this.currentColorRgb.b})`;
+            dragEl.style.position = 'fixed';
+            dragEl.style.top = '-100px';
+            document.body.appendChild(dragEl);
+            e.dataTransfer.setDragImage(dragEl, 15, 15);
+            setTimeout(() => dragEl.remove(), 0);
+        });
+
         // Set initial active tool
         this.setActiveTool('brush');
 
@@ -269,6 +291,7 @@ export class TopBar {
     }
 
     setColorPreview(color: { r: number; g: number; b: number }): void {
+        this.currentColorRgb = color;
         this.colorInnerEl.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
     }
 }

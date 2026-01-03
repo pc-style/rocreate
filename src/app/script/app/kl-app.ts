@@ -84,6 +84,7 @@ import { getSelectionPath2d } from '../bb/multi-polygon/get-selection-path-2d';
 import { createMatrixFromTransform } from '../bb/transform/create-matrix-from-transform';
 import { applyToPoint, inverse } from 'transformation-matrix';
 import { ProcreateLayout } from '../klecks/ui/components/procreate/procreate-layout';
+import { Gallery } from '../klecks/ui/components/procreate/gallery';
 import { TTopBarTool } from '../klecks/ui/components/procreate/top-bar';
 
 importFilters();
@@ -150,6 +151,7 @@ export class KlApp {
     private lastSavedHistoryIndex: number = 0;
     private readonly klHistory: KlHistory;
     private readonly procreateLayout: ProcreateLayout;
+    private readonly gallery: Gallery;
 
     private updateLastSaved(): void {
         this.lastSavedHistoryIndex = this.klHistory.getTotalIndex();
@@ -165,9 +167,13 @@ export class KlApp {
             }
         }
         this.mobileUi.setOrientation(this.uiLayout);
+
+        const isProcreate = this.procreateLayout && this.procreateLayout.getIsActive();
+        const currentToolWidth = isProcreate ? 180 : this.toolWidth;
+
         if (this.uiWidth < this.collapseThreshold) {
             this.mobileUi.setIsVisible(true);
-            if (this.mobileUi.getToolspaceIsOpen()) {
+            if (this.mobileUi.getToolspaceIsOpen() && !isProcreate) {
                 if (this.uiLayout === 'left') {
                     css(this.easel.getElement(), {
                         left: '271px',
@@ -181,33 +187,49 @@ export class KlApp {
                 this.easel.setSize(Math.max(0, this.uiWidth - this.toolWidth), this.uiHeight);
                 this.statusOverlay.setWide(false);
             } else {
+                css(this.easel.getElement(), {
+                    left: '0',
+                });
+                this.toolspace.style.display = 'none';
+                const effectiveWidth = isProcreate ? this.uiWidth - 180 : this.uiWidth;
+                this.easel.setSize(Math.max(0, effectiveWidth), this.uiHeight);
+                css(this.easel.getElement(), {
+                    background: isProcreate ? '#1a1a1a' : '',
+                });
+                this.statusOverlay.setWide(!isProcreate);
+            }
+        } else {
+            this.mobileColorUi.closeColorPicker();
+            this.mobileUi.setIsVisible(false);
+
+            if (isProcreate) {
+                this.toolspace.style.display = 'none';
+                css(this.easel.getElement(), {
+                    left: '0',
+                });
+                this.easel.setSize(Math.max(0, this.uiWidth - 180), this.uiHeight);
+                css(this.easel.getElement(), {
+                    background: '#1a1a1a',
+                });
+                this.statusOverlay.setWide(false);
+            } else {
                 if (this.uiLayout === 'left') {
                     css(this.easel.getElement(), {
-                        left: '0',
+                        left: '271px',
                     });
                 } else {
                     css(this.easel.getElement(), {
                         left: '0',
                     });
                 }
-                this.toolspace.style.display = 'none';
-                this.easel.setSize(Math.max(0, this.uiWidth), this.uiHeight);
-                this.statusOverlay.setWide(true);
+                this.toolspace.style.display = 'block';
+                this.easel.setSize(Math.max(0, this.uiWidth - this.toolWidth), this.uiHeight);
+                this.statusOverlay.setWide(false);
             }
-        } else {
-            this.mobileColorUi.closeColorPicker();
-            this.mobileUi.setIsVisible(false);
-            if (this.uiLayout === 'left') {
-                css(this.easel.getElement(), {
-                    left: '271px',
-                });
-            }
-            this.toolspace.style.display = 'block';
-            this.easel.setSize(Math.max(0, this.uiWidth - this.toolWidth), this.uiHeight);
-            this.statusOverlay.setWide(false);
         }
         this.mobileUi.update();
     }
+
 
     private updateBottomBar(): void {
         if (!this.bottomBar) {
@@ -1443,6 +1465,40 @@ export class KlApp {
             this.layerPreview.setLayer(currentLayer);
         };
 
+        const loadProject = (project: TDeserializedKlStorageProject) => {
+            applyUncommitted();
+            const layerIndex = this.klCanvas.reset({
+                projectId: project.project.projectId,
+                width: project.project.width,
+                height: project.project.height,
+                layers: project.project.layers.map((item) => {
+                    let image = item.image;
+                    if (!(image instanceof HTMLCanvasElement)) {
+                        image = BB.canvas(project.project.width, project.project.height);
+                        if (item.image instanceof HTMLImageElement) {
+                            const ctx = BB.ctx(image);
+                            ctx.drawImage(item.image, 0, 0);
+                        }
+                    }
+                    return {
+                        ...item,
+                        id: randomUuid(),
+                        image,
+                        mixModeStr: item.mixModeStr ?? 'source-over',
+                    };
+                }),
+            });
+            this.layersUi.update(layerIndex);
+            setCurrentLayer(this.klCanvas.getLayer(layerIndex));
+            this.easelProjectUpdater.update();
+            this.easel.resetOrFitTransform(true);
+
+            setTimeout(() => {
+                // timeout to overwrite zoom overlay msg
+                this.statusOverlay.out(LANG('file-storage-restored'));
+            });
+        };
+
         const brushDiv = BB.el();
         const colorDiv = BB.el({
             css: {
@@ -1863,39 +1919,26 @@ export class KlApp {
                 showFailureMessage();
                 return;
             }
-            applyUncommitted();
-            const layerIndex = this.klCanvas.reset({
-                projectId: project.project.projectId,
-                width: project.project.width,
-                height: project.project.height,
-                layers: project.project.layers.map((item) => {
-                    let image = item.image;
-                    if (!(image instanceof HTMLCanvasElement)) {
-                        image = BB.canvas(project.project.width, project.project.height);
-                        if (item.image instanceof HTMLImageElement) {
-                            const ctx = BB.ctx(image);
-                            ctx.drawImage(item.image, 0, 0);
-                        }
-                    }
-                    return {
-                        ...item,
-                        id: randomUuid(),
-                        image,
-                        mixModeStr: item.mixModeStr ?? 'source-over',
-                    };
-                }),
-            });
-            this.layersUi.update(layerIndex);
-            setCurrentLayer(this.klCanvas.getLayer(layerIndex));
-            this.easelProjectUpdater.update();
-            this.easel.resetOrFitTransform(true);
-
-            setTimeout(() => {
-                // timeout to overwrite zoom overlay msg
-                this.statusOverlay.out(LANG('file-storage-restored'));
-            });
+            loadProject(project);
             closeLoader?.();
         };
+
+        this.gallery = new Gallery({
+            klRecoveryManager: klRecoveryManager!,
+            onNew: () => {
+                this.gallery.hide();
+                showNewImageDialog();
+            },
+            onSelect: async (id) => {
+                if (!klRecoveryManager) return;
+                const recovery = await klRecoveryManager.getRecoveryById(id);
+                if (recovery) {
+                    this.gallery.hide();
+                    loadProject(recovery);
+                }
+            }
+        });
+        this.rootEl.append(this.gallery.getElement());
 
         const fileUi = this.embed
             ? null
@@ -2352,6 +2395,29 @@ export class KlApp {
         this.procreateLayout = new ProcreateLayout({
             rootEl: this.rootEl,
             klColorSlider: this.klColorSlider,
+            klCanvas: this.klCanvas,
+            onLayerSelect: (idx) => {
+                this.layersUi.activateLayer(idx);
+            },
+            onAddLayer: () => {
+                const activeLayerIndex = this.layersUi.getSelected();
+                this.klCanvas.addLayer(activeLayerIndex);
+                this.layersUi.update();
+                this.procreateLayout?.updateLayers();
+            },
+            onDuplicateLayer: () => {
+                const activeLayerIndex = this.layersUi.getSelected();
+                this.klCanvas.duplicateLayer(activeLayerIndex);
+                this.layersUi.update();
+                this.procreateLayout?.updateLayers();
+            },
+            onRemoveLayer: () => {
+                const activeLayerIndex = this.layersUi.getSelected();
+                this.klCanvas.removeLayer(activeLayerIndex);
+                this.layersUi.update();
+                this.procreateLayout?.updateLayers();
+            },
+
             layersUi: {
                 el: this.layersUi.getElement(),
                 onOpen: () => {
@@ -2429,12 +2495,7 @@ export class KlApp {
                 mainTabRow?.open('select');
             },
             onGallery: () => {
-                // open file panel / gallery
-                if (fileUi) {
-                    fileUi.getElement().style.display = 'block';
-                    fileUi.setIsVisible(true);
-                    mainTabRow?.open('file');
-                }
+                this.gallery.show();
             },
             onBrushSelect: (brushId: string) => {
                 // Select the brush via the existing brush tab row
@@ -2463,6 +2524,9 @@ export class KlApp {
         // Activate Procreate mode by default (remove this line to start with classic UI)
         this.procreateLayout.setColorPreview(brushSettingService.getColor());
         this.procreateLayout.activate();
+        this.gallery.show();
+        this.updateCollapse();
+        this.easel.resetOrFitTransform(true);
 
         this.saveReminder?.init();
     }

@@ -65,6 +65,7 @@ import { TopBar } from './ui/components/procreate/top-bar';
 import { SideBar } from './ui/components/procreate/side-bar';
 import { FloatingPanel } from './ui/components/procreate/floating-panel';
 import { ProcreateLayout } from './ui/components/procreate/procreate-layout';
+import { Gallery } from './ui/components/procreate/gallery';
 
 /**
  * paint tool functionality
@@ -136,6 +137,7 @@ export const KL = {
     SideBar,
     FloatingPanel,
     ProcreateLayout,
+    Gallery,
 
     // --- ui - modals ---
     DIALOG_COUNTER,

@@ -1,4 +1,7 @@
 /* Procreate-style UI Components */
+.kl-app {
+    background: #1a1a1a !important;
+}
 
 /* CSS Custom Properties for Procreate theme - AUTHENTIC DARK */
 :root {
@@ -27,8 +30,10 @@
     position: fixed;
     top: 8px;
     left: 8px;
-    right: 8px;
+    right: 188px;
+    /* 180px sidebar + 8px gap */
     height: 44px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -183,8 +188,9 @@
    ============================================ */
 .procreate-sidebar {
     position: fixed;
-    right: 12px;
+    left: 12px;
     top: 50%;
+
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
@@ -219,6 +225,156 @@
     align-items: center;
     gap: 4px;
 }
+
+.procreate-sidebar__color-picker {
+    margin: 6px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--procreate-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease;
+    cursor: crosshair;
+}
+
+.procreate-sidebar__color-picker:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.procreate-sidebar__color-picker:active {
+    transform: scale(0.98);
+}
+
+/* Utility Side Bar */
+.procreate-utility-sidebar {
+    width: 180px;
+
+
+
+    height: 100%;
+    background: #1a1a1a;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    position: absolute;
+    right: 0;
+    top: 0;
+    pointer-events: auto;
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 0 20px;
+    gap: 16px;
+
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.procreate-utility-sidebar__section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+
+.procreate-utility-sidebar__section--color {
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.procreate-utility-sidebar__brush-list,
+.procreate-utility-sidebar__layer-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.procreate-utility-sidebar__layer-controls {
+    display: flex;
+    gap: 8px;
+    padding: 0 10px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.procreate-utility-sidebar__control-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--procreate-surface);
+    border: 1px solid var(--procreate-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.procreate-utility-sidebar__control-btn:hover {
+    background: var(--procreate-surface-hover);
+    transform: scale(1.05);
+}
+
+.procreate-utility-sidebar__control-btn img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+
+
+.procreate-utility-sidebar__brush-btn,
+.procreate-utility-sidebar__layer-item {
+    width: 64px;
+    height: 64px;
+    background: var(--procreate-surface);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--procreate-border);
+    overflow: hidden;
+}
+
+.procreate-utility-sidebar__brush-btn:hover,
+.procreate-utility-sidebar__layer-item:hover {
+    background: var(--procreate-surface-hover);
+    border-color: var(--procreate-accent);
+}
+
+.procreate-utility-sidebar__brush-btn.active,
+.procreate-utility-sidebar__layer-item.active {
+    border-color: var(--procreate-accent);
+    background: var(--procreate-surface-active);
+}
+
+.procreate-utility-sidebar__brush-btn img {
+    width: 32px;
+    height: 32px;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.procreate-utility-sidebar__layer-item canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.procreate-utility-sidebar__layer-item.active {
+    border-color: #3b82f6;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+
 
 /* Increment/Decrement buttons */
 .procreate-sidebar__increment-btn,

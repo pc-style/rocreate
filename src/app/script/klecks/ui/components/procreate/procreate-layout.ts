@@ -1,8 +1,11 @@
 import { BB } from '../../../../bb/bb';
+import { KlCanvas } from '../../../canvas/kl-canvas';
 import { TopBar, TTopBarTool } from './top-bar';
 import { SideBar } from './side-bar';
 import { FloatingPanel } from './floating-panel';
 import { BrushLibrary } from './brush-library';
+import { UtilitySideBar } from './utility-side-bar';
+
 import { css } from '../../../../bb/base/base';
 import { TRgb, TUiLayout } from '../../../kl-types'
 import { KlColorSlider } from '../kl-color-slider';
@@ -11,11 +14,16 @@ import { LANG } from '../../../../language/language';
 export type TProcreateLayoutParams = {
     rootEl: HTMLElement;
     klColorSlider: KlColorSlider;
+    klCanvas: KlCanvas;
     layersUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     settingsUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     editUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     onToolChange: (tool: TTopBarTool) => void;
     onBrushSelect: (brushId: string) => void;
+    onLayerSelect?: (layerIndex: number) => void;
+    onAddLayer: () => void;
+    onRemoveLayer: () => void;
+    onDuplicateLayer: () => void;
     onSizeChange: (size: number) => void;
     onOpacityChange: (opacity: number) => void;
     onUndo: () => void;
@@ -53,6 +61,8 @@ export class ProcreateLayout {
     private readonly onBrushSelect: TProcreateLayoutParams['onBrushSelect'];
     private currentTool: TTopBarTool = 'brush';
     private currentBrushId: string;
+    private readonly utilitySideBar: UtilitySideBar;
+
 
     constructor(p: TProcreateLayoutParams) {
         this.rootEl = p.rootEl;
@@ -68,7 +78,9 @@ export class ProcreateLayout {
         this.containerEl = BB.el({
             className: 'procreate-layout',
             css: {
-                display: 'none',
+                display: 'flex', // This is used to show/hide, wait.
+                // Actually, 'none' vs 'flex' was used?
+                // I'll just remove the flex positioning properties.
                 position: 'absolute',
                 left: '0',
                 top: '0',
@@ -117,12 +129,32 @@ export class ProcreateLayout {
         });
         this.sideBar.getElement().style.pointerEvents = 'auto';
 
+        this.utilitySideBar = new UtilitySideBar({
+            klCanvas: p.klCanvas,
+            initialColor: this.klColorSlider.getColor(),
+            onColorChange: (rgb) => {
+                this.klColorSlider.pickColor(rgb);
+            },
+            onBrushSelect: (id) => {
+                this.onBrushSelect(id);
+            },
+            onLayerSelect: (idx) => {
+                if (p.onLayerSelect) p.onLayerSelect(idx);
+            },
+            onAddLayer: p.onAddLayer,
+            onRemoveLayer: p.onRemoveLayer,
+            onDuplicateLayer: p.onDuplicateLayer,
+        });
+
+
         this.containerEl.append(
             this.topBar.getElement(),
-            this.sideBar.getElement()
+            this.sideBar.getElement(),
+            this.utilitySideBar.getElement()
         );
 
         this.rootEl.append(this.containerEl);
+
     }
 
     private updateSidebarForTool(tool: TTopBarTool): void {
@@ -377,6 +409,13 @@ export class ProcreateLayout {
 
     setColorPreview(color: TRgb): void {
         this.topBar.setColorPreview(color);
+        this.utilitySideBar.setColor(color);
+    }
+
+
+
+    public updateLayers(): void {
+        this.utilitySideBar.updateLayers();
     }
 
     // Check if any floating panel is open

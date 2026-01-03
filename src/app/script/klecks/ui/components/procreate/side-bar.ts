@@ -5,6 +5,8 @@ import { css } from '../../../../bb/base/base';
 import toolUndoImg from 'url:/src/app/img/ui/procreate/undo.svg';
 import { TPointerEvent } from '../../../../bb/input/event.types';
 import { clamp } from '../../../../bb/math/math';
+import { KlColorSliderSmall } from '../kl-color-slider-small';
+import { TRgb } from '../../../kl-types';
 
 export type TSideBarParams = {
     initialSize: number;
@@ -15,6 +17,7 @@ export type TSideBarParams = {
     onRedo: () => void;
     onModify: () => void;
     sizeMin?: number;
+
     sizeMax?: number;
 };
 
@@ -44,6 +47,9 @@ export class SideBar {
     private readonly sizePreviewEl: HTMLElement;
     private readonly sizeValueEl: HTMLElement;
     private readonly opacityValueEl: HTMLElement;
+
+
+
 
     /**
      * Exponential scaling for size slider
@@ -196,6 +202,7 @@ export class SideBar {
         this.opacity = p.initialOpacity;
         this.sizeMin = p.sizeMin ?? 1;
         this.sizeMax = p.sizeMax ?? 500;
+        this.sizeMax = p.sizeMax ?? 500;
         this.onSizeChange = p.onSizeChange;
         this.onOpacityChange = p.onOpacityChange;
 
@@ -268,8 +275,10 @@ export class SideBar {
         this.opacityValueEl = opacityControl.valueLabel;
         this.opacityPointerListener = opacityControl.pointerListener;
 
-        // Undo/Redo buttons
+        this.opacityPointerListener = opacityControl.pointerListener;
+
         const undoRedoContainer = BB.el({
+
             className: 'procreate-sidebar__undo-redo',
         });
 
@@ -313,6 +322,7 @@ export class SideBar {
             undoRedoContainer
         );
 
+
         // Initial visual update
         this.updateSizeVisual();
         this.updateOpacityVisual();
@@ -340,6 +350,9 @@ export class SideBar {
         return this.opacity;
     }
 
+
+
+
     setEnableUndo(b: boolean): void {
         const btn = this.rootEl.querySelector('.procreate-sidebar__undo-btn') as HTMLButtonElement;
         if (btn) {
@@ -358,4 +371,5 @@ export class SideBar {
         this.sizePointerListener.destroy();
         this.opacityPointerListener.destroy();
     }
+
 }

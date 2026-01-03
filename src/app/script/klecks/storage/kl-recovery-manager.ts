@@ -255,6 +255,10 @@ export class KlRecoveryManager {
         return result;
     }
 
+    async getRecoveryById(id: number): Promise<TDeserializedKlStorageProject | undefined> {
+        return await getRecovery(id);
+    }
+
     setKlHistory(klHistory: KlHistory) {
         this.klHistory = klHistory;
         let startTime = new Date().getTime();

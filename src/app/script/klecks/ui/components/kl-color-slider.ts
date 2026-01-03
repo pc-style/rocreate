@@ -641,4 +641,9 @@ export class KlColorSlider {
     getOutputElement(): HTMLElement {
         return this.outputDiv;
     }
+
+    pickColor(c: TRgb): void {
+        this.setColor(c);
+        this.emitColor(new BB.RGB(c.r, c.g, c.b));
+    }
 }
