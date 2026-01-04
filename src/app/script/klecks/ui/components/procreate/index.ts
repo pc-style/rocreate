@@ -5,3 +5,7 @@ export { ProcreateLayout, TProcreateLayoutParams } from './procreate-layout';
 export { SymmetryGuide, TSymmetryGuideParams, TSymmetryMode } from './symmetry-guide';
 export { QuickMenu, TQuickMenuParams, TQuickMenuAction } from './quick-menu';
 export { Gallery, TGalleryParams } from './gallery';
+export { BrushLibrary, TBrushLibraryParams, TBrushCategory, TBrushItem, TBrushSettings } from './brush-library';
+export { SelectionToolbar, TSelectionToolbarParams } from './selection-toolbar';
+export { UtilitySideBar } from './utility-side-bar';
+export { CanvasResizeUI, TCanvasResizeParams } from './canvas-resize-ui';

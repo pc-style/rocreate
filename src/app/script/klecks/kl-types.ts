@@ -22,12 +22,12 @@ export type TFilterGetDialogParam = {
 
 export type TFilterGetDialogResult<T = unknown> =
     | {
-          element: HTMLElement; // contents of modal (excluding title, dialog buttons)
-          destroy?: () => void; // called when modal closed
-          width?: number; // custom modal width
-          getInput?: () => T; // called when Ok pressed
-          errorCallback?: (e: Error) => void; // dialog can call this if error happens and cancel dialog
-      }
+        element: HTMLElement; // contents of modal (excluding title, dialog buttons)
+        destroy?: () => void; // called when modal closed
+        width?: number; // custom modal width
+        getInput?: () => T; // called when Ok pressed
+        errorCallback?: (e: Error) => void; // dialog can call this if error happens and cancel dialog
+    }
     | { error: string };
 
 export type TFilter = {
@@ -55,7 +55,9 @@ export type TLayerFromKlCanvas = {
 };
 
 // a subset of CanvasRenderingContext2D.globalCompositeOperation
+// Extended with additional Procreate-style blend modes
 export type TMixMode =
+    // Standard blend modes
     | 'source-over' // default aka normal
     | 'darken'
     | 'multiply'
@@ -71,7 +73,14 @@ export type TMixMode =
     | 'hue'
     | 'saturation'
     | 'color'
-    | 'luminosity';
+    | 'luminosity'
+    // Extended blend modes (Procreate-style)
+    | 'vivid-light'      // combination of color burn and color dodge
+    | 'linear-light'     // combination of linear burn and linear dodge  
+    | 'pin-light'        // combination of darken and lighten
+    | 'hard-mix'         // posterizes based on blend
+    | 'plus-darker'      // adds colors and clamps to black
+    | 'plus-lighter';    // adds colors and clamps to white
 
 export type TLayerFill = { fill: string }; // css color string. hex, rgb, rgba, color name
 
