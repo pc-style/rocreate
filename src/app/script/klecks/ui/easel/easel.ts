@@ -49,6 +49,11 @@ export type TEaselParams<GToolId extends string> = {
     onTransformChange: (transform: TViewportTransform, scaleOrAngleChanged: boolean) => void; // whenever Viewport changes
     onUndo?: () => void; // gesture triggers undo
     onRedo?: () => void; // gesture triggers redo
+    onQuickMenu?: (p: { relX: number; relY: number }) => void; // 4-finger tap for Quick Menu
+    // Touch+hold → Eyedropper gesture (Procreate-style)
+    onLongPressEyedropper?: (p: { relX: number; relY: number }) => void;
+    onLongPressEyedropperMove?: (p: { relX: number; relY: number }) => void;
+    onLongPressEyedropperEnd?: () => void;
 };
 
 /**
@@ -418,6 +423,16 @@ export class Easel<GToolId extends string> {
         this.pointerPreprocessor = new EaselPointerPreprocessor({
             onUndo: this.onUndo,
             onRedo: this.onRedo,
+            // 4-finger tap for Quick Menu
+            onQuickMenu: p.onQuickMenu,
+            // Touch+hold → Eyedropper gesture
+            onLongPress: p.onLongPressEyedropper
+                ? (e) => p.onLongPressEyedropper!({ relX: e.relX, relY: e.relY })
+                : undefined,
+            onLongPressMove: p.onLongPressEyedropperMove
+                ? (e) => p.onLongPressEyedropperMove!({ relX: e.relX, relY: e.relY })
+                : undefined,
+            onLongPressEnd: p.onLongPressEyedropperEnd,
             onPinch: (event) => {
                 if (event.type === 'move') {
                     const transform = this.viewport.getTransform();
@@ -550,7 +565,7 @@ export class Easel<GToolId extends string> {
             },
             useDirtyWheel: true,
             isWheelPassive: false,
-            maxPointers: 3, // 3 fingers needed for redo gesture
+            maxPointers: 4, // 4 fingers needed for Quick Menu gesture
         });
 
         this.windowPointerListener = (e: PointerEvent) => {

@@ -24,6 +24,7 @@ export type TTopBarParams = {
     onOpenActions: () => void;
     onOpenAdjustments: () => void;
     onOpenSelections: () => void;
+    onOpenQuickMenu: (p: { relX: number; relY: number }) => void;
     onTransform: () => void;
     onGallery: () => void;
 };
@@ -51,6 +52,7 @@ export class TopBar {
     private brushBtnEl: HTMLElement;
     private smudgeBtnEl: HTMLElement;
     private eraserBtnEl: HTMLElement;
+    private colorBtnPointerListener: PointerListener;
 
     private createButton(p: {
         icon?: string;
@@ -67,7 +69,6 @@ export class TopBar {
                 (p.isPanel ? ' procreate-topbar__btn--panel' : '') +
                 (p.className ? ' ' + p.className : ''),
             title: p.title,
-            onClick: p.onClick,
         });
 
         if (p.icon) {
@@ -90,6 +91,17 @@ export class TopBar {
             onEnterLeave: (isOver) => {
                 el.classList.toggle('procreate-topbar__btn--hover', isOver);
             },
+            onPointer: (e) => {
+                if (e.type === 'pointerup') {
+                    // check if still within bounds
+                    const width = el.offsetWidth;
+                    const height = el.offsetHeight;
+                    const buffer = 5;
+                    if (e.relX >= -buffer && e.relX <= width + buffer && e.relY >= -buffer && e.relY <= height + buffer) {
+                        p.onClick();
+                    }
+                }
+            }
         });
 
         const setActive = (b: boolean) => {
@@ -161,7 +173,7 @@ export class TopBar {
         });
         leftSide.append(selectionsBtn.el);
 
-        // Transform (transform icon)
+        // Transform
         const transformBtn = this.createButton({
             icon: editTransformImg,
             title: LANG('filter-transform-title'),
@@ -169,6 +181,18 @@ export class TopBar {
             isPanel: true,
         });
         leftSide.append(transformBtn.el);
+
+        // Quick Access (lightning icon / custom icon)
+        const quickAccessBtn = this.createButton({
+            text: '⚡', // Lightning bolt for Quick Access
+            title: 'Quick Access',
+            onClick: () => {
+                const rect = quickAccessBtn.el.getBoundingClientRect();
+                p.onOpenQuickMenu({ relX: rect.left + rect.width / 2, relY: rect.bottom + 40 });
+            },
+            className: 'procreate-topbar__btn--quick-access',
+        });
+        leftSide.append(quickAccessBtn.el);
 
         // ========== RIGHT SIDE - Painting Tools ==========
         const rightSide = BB.el({
@@ -241,14 +265,26 @@ export class TopBar {
 
         // Color button (circular)
         const colorBtn = BB.el({
-            className: 'procreate-topbar__color-btn',
+            className: 'procreate-topbar__color-preview',
             title: LANG('secondary-color'),
-            onClick: p.onOpenColors,
         });
         this.colorInnerEl = BB.el({
             className: 'procreate-topbar__color-inner',
+            parent: colorBtn,
         });
-        colorBtn.append(this.colorInnerEl);
+
+        this.colorBtnPointerListener = new BB.PointerListener({
+            target: colorBtn,
+            onPointer: (e) => {
+                if (e.type === 'pointerup') {
+                    const rect = colorBtn.getBoundingClientRect();
+                    if (e.relX >= 0 && e.relX <= colorBtn.offsetWidth && e.relY >= 0 && e.relY <= colorBtn.offsetHeight) {
+                        p.onOpenColors();
+                    }
+                }
+            }
+        });
+
         rightSide.append(colorBtn);
 
         // ColorDrop Support
@@ -293,5 +329,16 @@ export class TopBar {
     setColorPreview(color: { r: number; g: number; b: number }): void {
         this.currentColorRgb = color;
         this.colorInnerEl.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+    }
+
+    destroy(): void {
+        // clean up tool button listeners
+        this.toolButtons.forEach((btn) => {
+            btn.pointerListener.destroy();
+        });
+        this.toolButtons.clear();
+        // clean up color button listener
+        this.colorBtnPointerListener.destroy();
+        this.rootEl.remove();
     }
 }

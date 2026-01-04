@@ -19,6 +19,8 @@ export type TEaselBrushEvent = {
     y: number;
     isCoalesced: boolean;
     pressure: number;
+    tiltX?: number;
+    tiltY?: number;
 };
 
 export type TEaselBrushParams = {
@@ -80,6 +82,8 @@ export class EaselBrush implements TEaselTool {
 
         const pressure = e.pressure ?? 1;
         const isCoalesced = e.isCoalesced;
+        const tiltX = e.tiltX;
+        const tiltY = e.tiltY;
         const shiftIsPressed = this.easel.keyListener.isPressed('shift');
 
         if (shiftIsPressed && !this.firstShiftPos) {
@@ -98,7 +102,7 @@ export class EaselBrush implements TEaselTool {
                 return;
             }
 
-            this.onLineStart({ x, y, pressure, isCoalesced });
+            this.onLineStart({ x, y, pressure, isCoalesced, tiltX, tiltY });
             this.isDragging = true;
         }
         if (e.type === 'pointermove' && e.button === 'left') {
@@ -116,10 +120,10 @@ export class EaselBrush implements TEaselTool {
                         y: this.lineToolDirection === 'y' ? e.relY : this.firstShiftPos!.y,
                     };
                     const canvasP = applyToPoint(inverse(m), viewportP);
-                    this.onLineGo({ ...canvasP, pressure, isCoalesced });
+                    this.onLineGo({ ...canvasP, pressure, isCoalesced, tiltX, tiltY });
                 }
             } else {
-                this.onLineGo({ x, y, pressure, isCoalesced });
+                this.onLineGo({ x, y, pressure, isCoalesced, tiltX, tiltY });
             }
         }
         if (e.type === 'pointerup' && e.button === undefined && this.isDragging) {

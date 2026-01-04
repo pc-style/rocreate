@@ -1,5 +1,4 @@
 import { BB } from '../../../../bb/bb';
-import { PointerListener } from '../../../../bb/input/pointer-listener';
 
 export type TQuickMenuAction = {
     id: string;
@@ -23,7 +22,6 @@ export class QuickMenu {
     private readonly overlayEl: HTMLElement;
     private readonly menuEl: HTMLElement;
     private readonly onClose: TQuickMenuParams['onClose'];
-    private pointerListener: PointerListener | null = null;
 
     constructor(p: TQuickMenuParams) {
         this.onClose = p.onClose;
@@ -128,9 +126,6 @@ export class QuickMenu {
     }
 
     destroy(): void {
-        if (this.pointerListener) {
-            this.pointerListener.destroy();
-        }
         this.rootEl.remove();
     }
 }

@@ -86,6 +86,10 @@ import { applyToPoint, inverse } from 'transformation-matrix';
 import { ProcreateLayout } from '../klecks/ui/components/procreate/procreate-layout';
 import { Gallery } from '../klecks/ui/components/procreate/gallery';
 import { TTopBarTool } from '../klecks/ui/components/procreate/top-bar';
+import { QuickMenu } from '../klecks/ui/components/procreate/quick-menu';
+import { SymmetryGuide, TSymmetryMode } from '../klecks/ui/components/procreate/symmetry-guide';
+import { QuickShapeHandler } from '../klecks/events/quick-shape-handler';
+import { alphaLockManager } from '../klecks/canvas/alpha-lock-manager';
 
 importFilters();
 
@@ -152,6 +156,9 @@ export class KlApp {
     private readonly klHistory: KlHistory;
     private readonly procreateLayout: ProcreateLayout;
     private readonly gallery: Gallery;
+    private readonly symmetryGuide: SymmetryGuide;
+    private readonly quickShapeHandler: QuickShapeHandler;
+    private readonly overlayToolspace: any;
 
     private updateLastSaved(): void {
         this.lastSavedHistoryIndex = this.klHistory.getTotalIndex();
@@ -374,6 +381,73 @@ export class KlApp {
                         : LANG('cleared-layer'),
                     true,
                 );
+        };
+
+        const openQuickMenu = (p: { relX: number; relY: number }) => {
+            if (!this.procreateLayout.getIsActive()) return;
+
+            // Create Quick Menu with common actions
+            const quickMenu = new QuickMenu({
+                actions: [
+                    {
+                        id: 'alpha-lock',
+                        label: 'Alpha Lock',
+                        onClick: () => {
+                            const layerId = currentLayer.id;
+                            const isLocked = alphaLockManager.toggle(layerId);
+                            this.statusOverlay.out(`Alpha Lock: ${isLocked ? 'On' : 'Off'}`, true);
+                            this.procreateLayout.updateLayers();
+                        },
+                    },
+                    {
+                        id: 'flip-h',
+                        label: 'Flip Horizontally',
+                        onClick: () => {
+                            this.klCanvas.flip(true, false);
+                            this.easelProjectUpdater.update();
+                            this.statusOverlay.out('Flip Horizontal', true);
+                        },
+                    },
+                    {
+                        id: 'clear',
+                        label: 'Clear Layer',
+                        onClick: () => {
+                            clearLayer(true);
+                            this.statusOverlay.out('Layer Cleared', true);
+                        },
+                    },
+                    {
+                        id: 'symmetry',
+                        label: 'Symmetry',
+                        onClick: () => {
+                            const mode = this.symmetryGuide.cycleMode();
+                            this.statusOverlay.out(`Symmetry: ${mode === 'off' ? 'Off' : mode}`, true);
+                        },
+                    },
+                    {
+                        id: 'flip-v',
+                        label: 'Flip Vertically',
+                        onClick: () => {
+                            this.klCanvas.flip(false, true);
+                            this.easelProjectUpdater.update();
+                            this.statusOverlay.out('Flip Vertical', true);
+                        },
+                    },
+                    {
+                        id: 'fit',
+                        label: 'Fit Screen',
+                        onClick: () => {
+                            this.easel.fitTransform();
+                            this.easel.requestRender();
+                            this.statusOverlay.out('Fit Screen', true);
+                        },
+                    },
+                ],
+                onClose: () => {
+                    // Menu closed
+                },
+            });
+            quickMenu.show(p.relX, p.relY);
         };
 
         let currentColor = new BB.RGB(0, 0, 0);
@@ -604,6 +678,8 @@ export class KlApp {
                     isCoalesced: e.isCoalesced,
                     x: e.x,
                     y: e.y,
+                    tiltX: e.tiltX,
+                    tiltY: e.tiltY,
                 } as any);
             },
             onLineGo: (e) => {
@@ -616,6 +692,8 @@ export class KlApp {
                     isCoalesced: e.isCoalesced,
                     x: e.x,
                     y: e.y,
+                    tiltX: e.tiltX,
+                    tiltY: e.tiltY,
                 } as any);
             },
             onLineEnd: () => {
@@ -791,6 +869,30 @@ export class KlApp {
             onRedo: () => {
                 redo(true);
             },
+            // Touch+hold → Eyedropper gesture (Procreate-style)
+            onLongPressEyedropper: (p) => {
+                const transform = this.easel.getTransform();
+                const m = createMatrixFromTransform(transform);
+                const canvasP = applyToPoint(inverse(m), { x: p.relX, y: p.relY });
+                const color = this.klCanvas.getColorAt(canvasP.x, canvasP.y);
+                brushSettingService.setColor(color);
+                // Show eyedropper status
+                this.statusOverlay.out(LANG('eyedropper'), true);
+            },
+            onLongPressEyedropperMove: (p) => {
+                const transform = this.easel.getTransform();
+                const m = createMatrixFromTransform(transform);
+                const canvasP = applyToPoint(inverse(m), { x: p.relX, y: p.relY });
+                const color = this.klCanvas.getColorAt(canvasP.x, canvasP.y);
+                brushSettingService.setColor(color);
+            },
+            onLongPressEyedropperEnd: () => {
+                // Optionally trigger any cleanup or UI updates
+            },
+            // 4-finger tap for Quick Menu (Procreate-style)
+            onQuickMenu: (p) => {
+                openQuickMenu(p);
+            },
         });
         css(this.easel.getElement(), {
             position: 'absolute',
@@ -842,6 +944,29 @@ export class KlApp {
         });
         this.klHistory.addListener(() => {
             this.easelProjectUpdater.update();
+        });
+
+        // Initialize Symmetry Guide
+        this.symmetryGuide = new SymmetryGuide({
+            width: this.klCanvas.getWidth(),
+            height: this.klCanvas.getHeight(),
+            onModeChange: (mode) => {
+                this.statusOverlay.out(`Symmetry: ${mode === 'off' ? 'Off' : mode.charAt(0).toUpperCase() + mode.slice(1)}`, true);
+            },
+        });
+
+        // Initialize Quick Shape Handler (hold-to-snap)
+        this.quickShapeHandler = new QuickShapeHandler({
+            onShapeDetected: (result, originalPoints) => {
+                if (result.type) {
+                    this.statusOverlay.out(`Quick Shape: ${result.type}`, true);
+                    // TODO: Replace freehand stroke with detected shape
+                    // This would involve clearing the current stroke and drawing the shape
+                    // using the shape tool's drawing functions
+                }
+            },
+            holdDurationMs: 500,
+            holdMaxMovePx: 8,
         });
         KL.DIALOG_COUNTER.subscribe((count) => {
             this.easel.setIsFrozen(count > 0);
@@ -1080,6 +1205,23 @@ export class KlApp {
                     event.preventDefault();
                     this.klColorSlider.swapColors();
                 }
+                // Toggle symmetry mode with 's' key when Procreate mode is active
+                if (comboStr === 's') {
+                    if (this.procreateLayout.getIsActive()) {
+                        event.preventDefault();
+                        const mode = this.symmetryGuide.cycleMode();
+                        this.statusOverlay.out(`Symmetry: ${mode === 'off' ? 'Off' : mode}`, true);
+                    }
+                }
+                // Toggle alpha lock with 'alt+a' when in Procreate mode
+                if (comboStr === 'alt+a') {
+                    if (this.procreateLayout.getIsActive()) {
+                        event.preventDefault();
+                        const layerId = currentLayer.id;
+                        const isLocked = alphaLockManager.toggle(layerId);
+                        this.statusOverlay.out(`Alpha Lock: ${isLocked ? 'On' : 'Off'}`, true);
+                    }
+                }
             },
             onUp: (keyStr, event) => { },
         });
@@ -1111,8 +1253,28 @@ export class KlApp {
         });
 
         drawEventChain.setChainOut(((event: TDrawEvent) => {
+            // Get symmetry mirrored points
+            const getMirroredPoints = (x: number, y: number) => {
+                if (this.symmetryGuide.isActive()) {
+                    return this.symmetryGuide.getMirroredPoints({ x, y });
+                }
+                return [{ x, y }];
+            };
+
+            // Get alpha lock composite operation
+            const getAlphaLockOp = (): GlobalCompositeOperation | undefined => {
+                const layerId = currentLayer.id;
+                if (alphaLockManager.isLocked(layerId)) {
+                    return alphaLockManager.getCompositeOp(layerId);
+                }
+                return undefined;
+            };
+
             if (event.type === 'down') {
                 this.toolspace.style.pointerEvents = 'none';
+
+                // Track points for Quick Shape detection
+                this.quickShapeHandler.onStrokeStart({ x: event.x, y: event.y });
 
                 const brush = currentBrushUi.getBrush();
                 if (brush && 'setStrokeContext' in brush) {
@@ -1123,6 +1285,7 @@ export class KlApp {
 
                     const selection = this.klCanvas.getSelection();
                     const selectionPath = selection ? getSelectionPath2d(selection) : undefined;
+                    const alphaLockOp = getAlphaLockOp();
 
                     this.klCanvas.setComposite(currentLayer.index, {
                         draw: (ctx) => {
@@ -1131,7 +1294,10 @@ export class KlApp {
                                 if (selectionPath) {
                                     ctx.clip(selectionPath);
                                 }
-                                if (currentBrushId === 'eraserBrush') {
+                                // Apply Alpha Lock composite operation if active
+                                if (alphaLockOp && currentBrushId !== 'eraserBrush') {
+                                    ctx.globalCompositeOperation = alphaLockOp;
+                                } else if (currentBrushId === 'eraserBrush') {
                                     if (currentLayer.index === 0 && !brushUiMap.eraserBrush.getIsTransparentBg()) {
                                         ctx.globalCompositeOperation = 'source-atop';
                                     } else {
@@ -1148,17 +1314,36 @@ export class KlApp {
                     this.easelProjectUpdater.update();
                 }
 
-                currentBrushUi.startLine(event.x, event.y, event.pressure);
+                // Draw with symmetry mirroring
+                const points = getMirroredPoints(event.x, event.y);
+                points.forEach((p) => {
+                    currentBrushUi.startLine(p.x, p.y, event.pressure, event.tiltX, event.tiltY);
+                });
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
                 this.easel.requestRender();
             }
             if (event.type === 'move') {
-                currentBrushUi.goLine(event.x, event.y, event.pressure, event.isCoalesced);
+                // Track points for Quick Shape detection
+                this.quickShapeHandler.onStrokePoint({ x: event.x, y: event.y });
+
+                // Draw with symmetry mirroring
+                const points = getMirroredPoints(event.x, event.y);
+                points.forEach((p) => {
+                    currentBrushUi.goLine(p.x, p.y, event.pressure, event.isCoalesced, event.tiltX, event.tiltY);
+                });
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
                 this.easel.requestRender();
             }
             if (event.type === 'up') {
                 this.toolspace.style.pointerEvents = '';
+
+                // Check for Quick Shape detection
+                const shapeResult = this.quickShapeHandler.onStrokeEnd();
+                if (shapeResult && shapeResult.type) {
+                    // Shape was detected - could replace stroke with clean shape
+                    // For now just show status, proper shape drawing to be implemented
+                    this.statusOverlay.out(`Quick Shape: ${shapeResult.type}`, true);
+                }
 
                 currentBrushUi.endLine();
 
@@ -1172,8 +1357,15 @@ export class KlApp {
                 this.easel.requestRender();
             }
             if (event.type === 'line') {
-                currentBrushUi.getBrush().drawLineSegment(event.x0, event.y0, event.x1, event.y1);
-                this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
+                // Draw with symmetry mirroring for line segments
+                if (event.x0 !== null && event.y0 !== null && event.x1 !== null && event.y1 !== null) {
+                    const points1 = getMirroredPoints(event.x0, event.y0);
+                    const points2 = getMirroredPoints(event.x1, event.y1);
+                    for (let i = 0; i < points1.length; i++) {
+                        currentBrushUi.getBrush().drawLineSegment(points1[i].x, points1[i].y, points2[i].x, points2[i].y);
+                    }
+                    this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
+                }
                 this.easel.requestRender();
             }
         }) as any);
@@ -1233,16 +1425,13 @@ export class KlApp {
 
         this.updateCollapse(true);
 
-        let overlayToolspace;
-        setTimeout(() => {
-            overlayToolspace = new KL.OverlayToolspace({
-                enabledTest: () => {
-                    return KL.DIALOG_COUNTER.get() === 0 && !this.easel.getIsLocked();
-                },
-                brushSettingService,
-            });
-            this.rootEl.append(overlayToolspace.getElement());
-        }, 0);
+        this.overlayToolspace = new KL.OverlayToolspace({
+            enabledTest: () => {
+                return KL.DIALOG_COUNTER.get() === 0 && !this.easel.getIsLocked();
+            },
+            brushSettingService,
+        });
+        this.rootEl.append(this.overlayToolspace.getElement());
 
         BB.append(this.rootEl, [
             this.easel.getElement(),
@@ -1936,7 +2125,21 @@ export class KlApp {
                     this.gallery.hide();
                     loadProject(recovery);
                 }
-            }
+            },
+            onImport: () => {
+                this.gallery.hide();
+                // Trigger file picker via a click on hidden input
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*,.psd,.kleki,.kl,.klecks';
+                input.multiple = true;
+                input.onchange = () => {
+                    if (input.files && input.files.length > 0) {
+                        importHandler.handleFileSelect(input.files, 'default');
+                    }
+                };
+                input.click();
+            },
         });
         this.rootEl.append(this.gallery.getElement());
 
@@ -2394,10 +2597,26 @@ export class KlApp {
         // Initialize Procreate-style UI layout
         this.procreateLayout = new ProcreateLayout({
             rootEl: this.rootEl,
+            toolspaceEl: this.toolspace,
             klColorSlider: this.klColorSlider,
             klCanvas: this.klCanvas,
             onLayerSelect: (idx) => {
+                // Activate layer in UI and push to history (same as original layer click)
                 this.layersUi.activateLayer(idx);
+                const activeLayer = this.klCanvas.getLayer(idx);
+                // Update current layer for painting
+                currentLayer = activeLayer;
+                currentBrushUi.setLayer(currentLayer);
+                this.layerPreview.setLayer(currentLayer);
+                // Push to history
+                const topEntry = this.klHistory.getEntries().at(-1)!.data;
+                const replaceTop = isHistoryEntryActiveLayerChange(topEntry);
+                this.klHistory.push(
+                    {
+                        activeLayerId: activeLayer.id,
+                    },
+                    replaceTop,
+                );
             },
             onAddLayer: () => {
                 const activeLayerIndex = this.layersUi.getSelected();
@@ -2446,6 +2665,28 @@ export class KlApp {
                     editUi.hide();
                 },
             },
+            fileUi: {
+                el: fileUi!.getElement(),
+                onOpen: () => {
+                    fileUi!.getElement().style.display = 'block';
+                    fileUi!.setIsVisible(true);
+                },
+                onClose: () => {
+                    fileUi!.getElement().style.display = 'none';
+                    fileUi!.setIsVisible(false);
+                },
+            },
+            selectUi: {
+                el: klAppSelect.getSelectUi().getElement(),
+                onOpen: () => {
+                    klAppSelect.getSelectUi().getElement().style.display = 'block';
+                    klAppSelect.getSelectUi().setIsVisible(true);
+                },
+                onClose: () => {
+                    klAppSelect.getSelectUi().getElement().style.display = 'none';
+                    klAppSelect.getSelectUi().setIsVisible(false);
+                },
+            },
             onToolChange: (tool: TTopBarTool) => {
                 applyUncommitted();
                 if (tool === 'brush') {
@@ -2483,31 +2724,47 @@ export class KlApp {
                 redo(true);
             },
             onTransform: () => {
-                this.procreateLayout.toggleActionsPanel();
-            },
-            onOpenAdjustments: () => {
-                // Toggle adjustments/filters panel
-            },
-            onOpenSelections: () => {
-                // Open selections tool
                 this.toolspaceToolRow.setActive('select');
                 this.easel.setTool('select');
                 mainTabRow?.open('select');
+                // Note: don't call closeAllPanels - procreate-layout manages its own panels
+            },
+            onOpenAdjustments: () => {
+                mainTabRow?.open('edit');
+                // Note: don't call closeAllPanels - procreate-layout manages its own panels
+            },
+            onOpenSelections: () => {
+                this.toolspaceToolRow.setActive('select');
+                this.easel.setTool('select');
+                mainTabRow?.open('select');
+                // Note: don't call closeAllPanels - procreate-layout manages its own panels
+            },
+            onOpenLayers: () => {
+                this.procreateLayout.toggleLayersPanel();
+            },
+            onOpenColors: () => {
+                this.procreateLayout.toggleColorsPanel();
             },
             onGallery: () => {
                 this.gallery.show();
+                this.procreateLayout.hideUI();
+            },
+            onQuickMenu: (p) => {
+                openQuickMenu(p);
             },
             onBrushSelect: (brushId: string) => {
-                // Select the brush via the existing brush tab row
                 brushTabRow.open(brushId);
             },
             onModifyBrush: () => {
-                // Open brush settings tab
                 mainTabRow?.open('brush');
             },
             initialSize: brushSettingService.getSize(),
             initialOpacity: brushSettingService.getOpacity(),
             currentBrushId: 'penBrush',
+            classicUiEls: [
+                this.mobileUi.getElement(),
+                this.overlayToolspace.getElement(),
+            ],
         });
 
         // Sync Procreate UI with brush changes
@@ -2524,7 +2781,26 @@ export class KlApp {
         // Activate Procreate mode by default (remove this line to start with classic UI)
         this.procreateLayout.setColorPreview(brushSettingService.getColor());
         this.procreateLayout.activate();
-        this.gallery.show();
+        this.gallery.show(); // Initial show
+        this.procreateLayout.hideUI(); // Hide UI initially because Gallery is showing
+
+        // Coordination between Gallery and Procreate UI
+        const originalGalleryShow = this.gallery.show.bind(this.gallery);
+        this.gallery.show = () => {
+            originalGalleryShow();
+            if (this.procreateLayout.getIsActive()) {
+                this.procreateLayout.hideUI();
+            }
+        };
+
+        const originalGalleryHide = this.gallery.hide.bind(this.gallery);
+        this.gallery.hide = () => {
+            originalGalleryHide();
+            if (this.procreateLayout.getIsActive()) {
+                this.procreateLayout.showUI();
+            }
+        };
+
         this.updateCollapse();
         this.easel.resetOrFitTransform(true);
 

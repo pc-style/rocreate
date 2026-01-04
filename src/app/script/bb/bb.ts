@@ -87,6 +87,7 @@ import { PinchZoomer } from './input/event-chain/pinch-zoomer';
 import { DoubleTapper } from './input/event-chain/double-tapper';
 import { OnePointerLimiter } from './input/event-chain/one-pointer-limiter';
 import { EventChain } from './input/event-chain/event-chain';
+import { LongPressTapper } from './input/event-chain/long-press-tapper';
 
 export const BB = {
     // ---- browser ----
@@ -188,6 +189,7 @@ export const BB = {
     PinchZoomer,
     CoalescedExploder,
     OnePointerLimiter,
+    LongPressTapper,
 };
 
 Object.keys(BB); // without this, parcel build may break this object

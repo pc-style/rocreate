@@ -56,7 +56,40 @@ function workaroundForChromium1281185(ctx: CanvasRenderingContext2D): void {
     ctx.restore();
 }
 
+// legacy constant for compatibility - actual limit is now dynamic
 export const MAX_LAYERS = 16;
+
+// memory budget for layers (in bytes) - 1.5GB default, can be adjusted
+const LAYER_MEMORY_BUDGET = 1.5 * 1024 * 1024 * 1024;
+
+// minimum layers regardless of canvas size
+const MIN_LAYERS = 8;
+
+// absolute maximum layers to prevent UI performance issues
+const ABSOLUTE_MAX_LAYERS = 128;
+
+/**
+ * Calculate the maximum number of layers based on canvas dimensions and memory budget.
+ * Larger canvases = fewer layers, smaller canvases = more layers.
+ */
+export function calculateMaxLayers(width: number, height: number): number {
+    // handle zero or invalid dimensions
+    if (width <= 0 || height <= 0) {
+        return MIN_LAYERS;
+    }
+
+    // each layer uses 4 bytes per pixel (RGBA)
+    const bytesPerLayer = width * height * 4;
+
+    // reserve some memory for undo history (roughly 30% of budget)
+    const availableForLayers = LAYER_MEMORY_BUDGET * 0.7;
+
+    // calculate how many layers fit in the budget
+    const calculatedMax = Math.floor(availableForLayers / bytesPerLayer);
+
+    // clamp between min and absolute max
+    return Math.max(MIN_LAYERS, Math.min(ABSOLUTE_MAX_LAYERS, calculatedMax));
+}
 
 export type TKlCanvasLayer = {
     id: TLayerId;
@@ -235,7 +268,11 @@ export class KlCanvas {
     }
 
     isLayerLimitReached(): boolean {
-        return this.layers.length >= MAX_LAYERS;
+        return this.layers.length >= this.getMaxLayers();
+    }
+
+    getMaxLayers(): number {
+        return calculateMaxLayers(this.width, this.height);
     }
 
     getWidth(): number {

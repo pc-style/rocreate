@@ -181,7 +181,7 @@ export class SideBar {
         const pointerListener = new BB.PointerListener({
             target: slider,
             onPointer: (e) => {
-                if (e.type === 'pointerdown' && e.button === 'left') {
+                if (e.type === 'pointerdown') {
                     isDragging = true;
                     slider.classList.add('procreate-sidebar__slider--active');
                     p.onDrag(calculatePercent(e));
@@ -201,7 +201,6 @@ export class SideBar {
         this.size = p.initialSize;
         this.opacity = p.initialOpacity;
         this.sizeMin = p.sizeMin ?? 1;
-        this.sizeMax = p.sizeMax ?? 500;
         this.sizeMax = p.sizeMax ?? 500;
         this.onSizeChange = p.onSizeChange;
         this.onOpacityChange = p.onOpacityChange;
@@ -273,8 +272,6 @@ export class SideBar {
         this.opacitySliderEl = opacityControl.slider;
         this.opacityFillEl = opacityControl.fill;
         this.opacityValueEl = opacityControl.valueLabel;
-        this.opacityPointerListener = opacityControl.pointerListener;
-
         this.opacityPointerListener = opacityControl.pointerListener;
 
         const undoRedoContainer = BB.el({

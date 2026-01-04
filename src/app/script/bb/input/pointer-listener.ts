@@ -46,6 +46,8 @@ type TCoalescedPointerEvent = {
     movementY: number;
     timeStamp: number;
     pressure: number;
+    tiltX: number;
+    tiltY: number;
 };
 
 type TCorrectedPointerEvent = {
@@ -59,6 +61,8 @@ type TCorrectedPointerEvent = {
     movementY: number;
     timeStamp: number;
     pressure: number; // normalized
+    tiltX: number; // stylus tilt along X axis in degrees [-90, 90]
+    tiltY: number; // stylus tilt along Y axis in degrees [-90, 90]
     buttons: number;
     button: number;
     coalescedArr: TCoalescedPointerEvent[];
@@ -151,6 +155,10 @@ function correctPointerEvent(
         return 0;
     }
 
+    // capture tilt data from stylus (0 for mouse/touch)
+    const tiltX = event.pointerType === 'pen' ? (event.tiltX ?? 0) : 0;
+    const tiltY = event.pointerType === 'pen' ? (event.tiltY ?? 0) : 0;
+
     const correctedObj: TCorrectedPointerEvent = {
         pointerId: event.pointerId,
         pointerType: event.pointerType,
@@ -162,6 +170,8 @@ function correctPointerEvent(
         movementY: event.movementY,
         timeStamp: event.timeStamp + timeStampOffset,
         pressure: pressureNormalizer.normalize(event.pressure, event.type, event.pointerType),
+        tiltX,
+        tiltY,
         buttons: determineButtons(),
         button: event.button,
         coalescedArr: [],
@@ -218,6 +228,10 @@ function correctPointerEvent(
     for (let i = 0; i < coalescedEventArr.length; i++) {
         const eventItem = coalescedEventArr[i];
 
+        // capture tilt from coalesced events (0 for non-pen)
+        const coalescedTiltX = eventItem.pointerType === 'pen' ? (eventItem.tiltX ?? 0) : 0;
+        const coalescedTiltY = eventItem.pointerType === 'pen' ? (eventItem.tiltY ?? 0) : 0;
+
         correctedObj.coalescedArr.push({
             pageX: eventItem.pageX,
             pageY: eventItem.pageY,
@@ -233,6 +247,8 @@ function correctPointerEvent(
                 customPressure === null
                     ? pressureNormalizer.normalize(eventItem.pressure)
                     : customPressure,
+            tiltX: coalescedTiltX,
+            tiltY: coalescedTiltY,
         });
 
         pointerObj.lastPageX = eventItem.pageX;
@@ -338,6 +354,8 @@ export class PointerListener {
             dX: correctedEvent.movementX,
             dY: correctedEvent.movementY,
             time: correctedEvent.timeStamp,
+            tiltX: correctedEvent.tiltX,
+            tiltY: correctedEvent.tiltY,
             eventPreventDefault: correctedEvent.eventPreventDefault,
             eventStopPropagation: correctedEvent.eventStopPropagation,
             ...custom,
@@ -359,6 +377,9 @@ export class PointerListener {
                         dX: coalescedItem.movementX,
                         dY: coalescedItem.movementY,
                         time: coalescedItem.timeStamp,
+                        pressure: coalescedItem.pressure,
+                        tiltX: coalescedItem.tiltX,
+                        tiltY: coalescedItem.tiltY,
                     });
                 }
             }
@@ -569,6 +590,7 @@ export class PointerListener {
                 const outEvent = this.createPointerOutEvent('pointerup', correctedEvent, {
                     downPageX: dragObj.downPageX,
                     downPageY: dragObj.downPageY,
+                    button: getButtonStr(correctedEvent.button),
                 });
                 this.onPointerCallback?.(outEvent);
             };

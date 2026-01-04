@@ -1,6 +1,10 @@
 import { NFingerTapper } from '../../../bb/input/event-chain/n-finger-tapper';
 import { DoubleTapper, TDoubleTapperEvent } from '../../../bb/input/event-chain/double-tapper';
 import { PinchZoomer, TPinchZoomerEvent } from '../../../bb/input/event-chain/pinch-zoomer';
+import {
+    LongPressTapper,
+    TLongPressEvent,
+} from '../../../bb/input/event-chain/long-press-tapper';
 import { BB } from '../../../bb/bb';
 import { EventChain } from '../../../bb/input/event-chain/event-chain';
 import { TChainElement } from '../../../bb/input/event-chain/event-chain.types';
@@ -11,7 +15,11 @@ export type TEaselPointerPreprocessor = {
     onDoubleTap: (e: TDoubleTapperEvent) => void;
     onUndo?: () => void;
     onRedo?: () => void;
+    onQuickMenu?: (e: { relX: number; relY: number }) => void;
     onPinch: (e: TPinchZoomerEvent) => void;
+    onLongPress?: (e: TLongPressEvent) => void;
+    onLongPressMove?: (e: TLongPressEvent) => void;
+    onLongPressEnd?: () => void;
 };
 
 /**
@@ -23,9 +31,12 @@ export class EaselPointerPreprocessor {
     private readonly pointerEventChain: EventChain;
     private readonly twoFingerTap: NFingerTapper | undefined;
     private readonly threeFingerTap: NFingerTapper | undefined;
+    private readonly fourFingerTap: NFingerTapper | undefined;
     private readonly mainDoubleTapper: DoubleTapper;
     private readonly middleDoubleTapper: DoubleTapper;
     private readonly pinchZoomer: PinchZoomer;
+    private readonly longPressTapper: LongPressTapper | undefined;
+    private lastTouchCenter: { relX: number; relY: number } = { relX: 0, relY: 0 };
 
     // ----------------------------------- public -----------------------------------
     constructor(p: TEaselPointerPreprocessor) {
@@ -44,6 +55,26 @@ export class EaselPointerPreprocessor {
             });
             nFingerSubChain.push(this.threeFingerTap as TChainElement);
         }
+        // 4-finger tap for Quick Menu (Procreate-style)
+        if (p.onQuickMenu) {
+            this.fourFingerTap = new BB.NFingerTapper({
+                fingers: 4,
+                onTap: () => p.onQuickMenu!(this.lastTouchCenter),
+            });
+            nFingerSubChain.push(this.fourFingerTap as TChainElement);
+        }
+
+        // Long press for eyedropper (Procreate-style touch+hold gesture)
+        if (p.onLongPress) {
+            this.longPressTapper = new LongPressTapper({
+                onLongPress: p.onLongPress,
+                onLongPressMove: p.onLongPressMove,
+                onLongPressEnd: p.onLongPressEnd,
+                holdDurationMs: 400, // Slightly faster than default for responsiveness
+                maxMoveDistancePx: 15, // Allow slight movement during hold
+            });
+        }
+
         this.mainDoubleTapper = new BB.DoubleTapper({ onDoubleTap: p.onDoubleTap });
         this.mainDoubleTapper.setAllowedPointerTypeArr(['touch']);
         this.middleDoubleTapper = new BB.DoubleTapper({ onDoubleTap: p.onDoubleTap });
@@ -55,6 +86,7 @@ export class EaselPointerPreprocessor {
         this.pointerEventChain = new EventChain({
             chainArr: [
                 ...nFingerSubChain,
+                ...(this.longPressTapper ? [this.longPressTapper as TChainElement] : []),
                 this.mainDoubleTapper as TChainElement,
                 this.middleDoubleTapper as TChainElement,
                 this.pinchZoomer as TChainElement,
@@ -65,6 +97,10 @@ export class EaselPointerPreprocessor {
     }
 
     chainIn(e: TPointerEvent): void {
+        // Track the touch position for Quick Menu center
+        if (e.type === 'pointerdown' || e.type === 'pointermove') {
+            this.lastTouchCenter = { relX: e.relX, relY: e.relY };
+        }
         this.pointerEventChain.chainIn(e);
     }
 
@@ -72,7 +108,12 @@ export class EaselPointerPreprocessor {
         this.mainDoubleTapper.setAllowedPointerTypeArr(p);
     }
 
+    isLongPressing(): boolean {
+        return this.longPressTapper?.isActive() ?? false;
+    }
+
     destroy() {
-        // todo
+        this.longPressTapper?.destroy();
     }
 }
+

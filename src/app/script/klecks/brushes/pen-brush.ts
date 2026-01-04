@@ -37,6 +37,11 @@ export class PenBrush {
     private strokeContext: CanvasRenderingContext2D | null = null;
     private strokeAlpha: number = 1;
 
+    // tilt settings
+    private settingTiltToAngle: number = 0; // 0-1, how much tilt affects brush angle
+    private settingTiltToSize: number = 0; // 0-1, how much tilt affects size
+    private settingTiltToOpacity: number = 0; // 0-1, how much tilt affects opacity
+
     private hasDrawnDot: boolean = false;
     private lineToolLastDot: number = 0;
     private lastInput: TPressureInput = { x: 0, y: 0, pressure: 0 };
@@ -117,14 +122,49 @@ export class PenBrush {
         }
     }
 
-    private calcOpacity(pressure: number): number {
-        return this.settingOpacity * (this.settingHasOpacityPressure ? pressure * pressure : 1);
+    private calcOpacity(pressure: number, tiltX?: number, tiltY?: number): number {
+        let opacity = this.settingOpacity * (this.settingHasOpacityPressure ? pressure * pressure : 1);
+        // apply tilt to opacity: more perpendicular (less tilt) = more opaque
+        if (this.settingTiltToOpacity > 0 && tiltX !== undefined && tiltY !== undefined) {
+            const tiltMagnitude = Math.sqrt(tiltX * tiltX + tiltY * tiltY) / 90; // normalize to 0-1
+            const tiltOpacityFactor = 1 - (tiltMagnitude * this.settingTiltToOpacity);
+            opacity *= tiltOpacityFactor;
+        }
+        return opacity;
     }
 
     private calcScatter(pressure: number): number {
         return (
             this.settingScatter * this.settingSize * (this.settingHasScatterPressure ? pressure : 1)
         );
+    }
+
+    private calcSize(pressure: number, tiltX?: number, tiltY?: number): number {
+        let size = this.settingSize * (this.settingHasSizePressure ? pressure : 1);
+        // apply tilt to size: more tilt = larger brush (like natural pencil held at angle)
+        if (this.settingTiltToSize > 0 && tiltX !== undefined && tiltY !== undefined) {
+            const tiltMagnitude = Math.sqrt(tiltX * tiltX + tiltY * tiltY) / 90; // normalize to 0-1
+            const tiltSizeFactor = 1 + (tiltMagnitude * this.settingTiltToSize);
+            size *= tiltSizeFactor;
+        }
+        return Math.max(0.1, size);
+    }
+
+    // convert tilt values to brush rotation angle in degrees
+    private calcTiltAngle(tiltX?: number, tiltY?: number, strokeAngle?: number): number | undefined {
+        if (this.settingTiltToAngle <= 0) {
+            return strokeAngle;
+        }
+        if (tiltX === undefined || tiltY === undefined || (tiltX === 0 && tiltY === 0)) {
+            return strokeAngle;
+        }
+        // convert tilt to angle: atan2 gives us the angle of the tilt direction
+        const tiltAngle = Math.atan2(tiltY, tiltX) * (180 / Math.PI);
+        if (strokeAngle === undefined) {
+            return tiltAngle * this.settingTiltToAngle;
+        }
+        // blend between stroke angle and tilt angle based on setting
+        return BB.mix(strokeAngle, tiltAngle, this.settingTiltToAngle);
     }
 
     /**
@@ -222,11 +262,24 @@ export class PenBrush {
     }
 
     // continueLine
-    private continueLine(x: number | null, y: number | null, size: number, pressure: number): void {
+    private continueLine(
+        x: number | null,
+        y: number | null,
+        size: number,
+        pressure: number,
+        tiltX?: number,
+        tiltY?: number,
+    ): void {
         if (this.bezierLine === null) {
             this.bezierLine = new BB.BezierLine();
             this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, () => { });
         }
+
+        // store previous tilt for interpolation
+        const prevTiltX = this.lastInput.tiltX ?? 0;
+        const prevTiltY = this.lastInput.tiltY ?? 0;
+        const currTiltX = tiltX ?? 0;
+        const currTiltY = tiltY ?? 0;
 
         const drawArr: [number, number, number, number, number, number | undefined][] = []; //draw instructions. will be all drawn at once
 
@@ -238,13 +291,15 @@ export class PenBrush {
             dAngle: number;
         }): void => {
             const localPressure = BB.mix(this.lastInput2.pressure, pressure, val.t);
-            const localOpacity = this.calcOpacity(localPressure);
-            const localSize = Math.max(
-                0.1,
-                this.settingSize * (this.settingHasSizePressure ? localPressure : 1),
-            );
+            // interpolate tilt between previous and current
+            const localTiltX = BB.mix(prevTiltX, currTiltX, val.t);
+            const localTiltY = BB.mix(prevTiltY, currTiltY, val.t);
+            const localOpacity = this.calcOpacity(localPressure, localTiltX, localTiltY);
+            const localSize = this.calcSize(localPressure, localTiltX, localTiltY);
             const localScatter = this.calcScatter(localPressure);
-            drawArr.push([val.x, val.y, localSize, localOpacity, localScatter, val.angle]);
+            // calculate angle from tilt or stroke direction
+            const localAngle = this.calcTiltAngle(localTiltX, localTiltY, val.angle);
+            drawArr.push([val.x, val.y, localSize, localOpacity, localScatter, localAngle]);
         };
 
         const localSpacing = size * this.settingSpacing;
@@ -278,7 +333,7 @@ export class PenBrush {
 
     // ---- interface ----
 
-    startLine(x: number, y: number, p: number): void {
+    startLine(x: number, y: number, p: number, tiltX?: number, tiltY?: number): void {
         this.selection = this.klHistory.getComposed().selection.value;
         this.selectionPath = this.selection ? getSelectionPath2d(this.selection) : undefined;
         this.selectionBounds = this.selection
@@ -287,23 +342,22 @@ export class PenBrush {
 
         this.changedTiles = [];
         p = BB.clamp(p, 0, 1);
-        const localOpacity = this.calcOpacity(p);
-        const localSize = this.settingHasSizePressure
-            ? Math.max(0.1, p * this.settingSize)
-            : Math.max(0.1, this.settingSize);
+        const localOpacity = this.calcOpacity(p, tiltX, tiltY);
+        const localSize = this.calcSize(p, tiltX, tiltY);
         const localScatter = this.calcScatter(p);
+        const localAngle = this.calcTiltAngle(tiltX, tiltY);
 
         this.hasDrawnDot = false;
 
         this.inputIsDrawing = true;
         if (this.strokeContext) {
             this.strokeContext.save();
-            this.drawDot(x, y, localSize, localOpacity, localScatter);
+            this.drawDot(x, y, localSize, localOpacity, localScatter, localAngle);
             this.strokeContext.restore();
         } else {
             this.context.save();
             this.selectionPath && this.context.clip(this.selectionPath);
-            this.drawDot(x, y, localSize, localOpacity, localScatter);
+            this.drawDot(x, y, localSize, localOpacity, localScatter, localAngle);
             this.context.restore();
         }
 
@@ -311,6 +365,8 @@ export class PenBrush {
         this.lastInput.x = x;
         this.lastInput.y = y;
         this.lastInput.pressure = p;
+        this.lastInput.tiltX = tiltX;
+        this.lastInput.tiltY = tiltY;
         this.lastInput2.pressure = p;
 
         this.inputArr = [
@@ -318,28 +374,28 @@ export class PenBrush {
                 x,
                 y,
                 pressure: p,
+                tiltX,
+                tiltY,
             },
         ];
     }
 
-    goLine(x: number, y: number, p: number): void {
+    goLine(x: number, y: number, p: number, tiltX?: number, tiltY?: number): void {
         if (!this.inputIsDrawing) {
             return;
         }
 
         const pressure = BB.clamp(p, 0, 1);
-        const localSize = this.settingHasSizePressure
-            ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
-            : Math.max(0.1, this.settingSize);
+        const localSize = this.calcSize(this.lastInput.pressure, this.lastInput.tiltX, this.lastInput.tiltY);
 
         if (this.strokeContext) {
             this.strokeContext.save();
-            this.continueLine(x, y, localSize, this.lastInput.pressure);
+            this.continueLine(x, y, localSize, this.lastInput.pressure, tiltX, tiltY);
             this.strokeContext.restore();
         } else {
             this.context.save();
             this.selectionPath && this.context.clip(this.selectionPath);
-            this.continueLine(x, y, localSize, this.lastInput.pressure);
+            this.continueLine(x, y, localSize, this.lastInput.pressure, tiltX, tiltY);
             this.context.restore();
         }
 
@@ -347,26 +403,28 @@ export class PenBrush {
         this.lastInput.y = y;
         this.lastInput2.pressure = this.lastInput.pressure;
         this.lastInput.pressure = pressure;
+        this.lastInput.tiltX = tiltX;
+        this.lastInput.tiltY = tiltY;
 
         this.inputArr.push({
             x,
             y,
             pressure: p,
+            tiltX,
+            tiltY,
         });
     }
 
     endLine(): void {
-        const localSize = this.settingHasSizePressure
-            ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
-            : Math.max(0.1, this.settingSize);
+        const localSize = this.calcSize(this.lastInput.pressure, this.lastInput.tiltX, this.lastInput.tiltY);
         if (this.strokeContext) {
             this.strokeContext.save();
-            this.continueLine(null, null, localSize, this.lastInput.pressure);
+            this.continueLine(null, null, localSize, this.lastInput.pressure, this.lastInput.tiltX, this.lastInput.tiltY);
             this.strokeContext.restore();
         } else {
             this.context.save();
             this.selectionPath && this.context.clip(this.selectionPath);
-            this.continueLine(null, null, localSize, this.lastInput.pressure);
+            this.continueLine(null, null, localSize, this.lastInput.pressure, this.lastInput.tiltX, this.lastInput.tiltY);
             this.context.restore();
         }
 
@@ -554,5 +612,30 @@ export class PenBrush {
 
     getLockAlpha(): boolean {
         return this.settingLockLayerAlpha;
+    }
+
+    // tilt settings
+    setTiltToAngle(v: number): void {
+        this.settingTiltToAngle = BB.clamp(v, 0, 1);
+    }
+
+    setTiltToSize(v: number): void {
+        this.settingTiltToSize = BB.clamp(v, 0, 1);
+    }
+
+    setTiltToOpacity(v: number): void {
+        this.settingTiltToOpacity = BB.clamp(v, 0, 1);
+    }
+
+    getTiltToAngle(): number {
+        return this.settingTiltToAngle;
+    }
+
+    getTiltToSize(): number {
+        return this.settingTiltToSize;
+    }
+
+    getTiltToOpacity(): number {
+        return this.settingTiltToOpacity;
     }
 }
