@@ -158,6 +158,7 @@ export class KlApp {
     private readonly gallery: Gallery;
     private readonly symmetryGuide: SymmetryGuide;
     private readonly quickShapeHandler: QuickShapeHandler;
+    private readonly overlayToolspace: any;
 
     private updateLastSaved(): void {
         this.lastSavedHistoryIndex = this.klHistory.getTotalIndex();
@@ -1424,16 +1425,13 @@ export class KlApp {
 
         this.updateCollapse(true);
 
-        let overlayToolspace;
-        setTimeout(() => {
-            overlayToolspace = new KL.OverlayToolspace({
-                enabledTest: () => {
-                    return KL.DIALOG_COUNTER.get() === 0 && !this.easel.getIsLocked();
-                },
-                brushSettingService,
-            });
-            this.rootEl.append(overlayToolspace.getElement());
-        }, 0);
+        this.overlayToolspace = new KL.OverlayToolspace({
+            enabledTest: () => {
+                return KL.DIALOG_COUNTER.get() === 0 && !this.easel.getIsLocked();
+            },
+            brushSettingService,
+        });
+        this.rootEl.append(this.overlayToolspace.getElement());
 
         BB.append(this.rootEl, [
             this.easel.getElement(),
@@ -2712,6 +2710,7 @@ export class KlApp {
             },
             onGallery: () => {
                 this.gallery.show();
+                this.procreateLayout.hideUI();
             },
             onQuickMenu: (p) => {
                 openQuickMenu(p);
@@ -2725,6 +2724,10 @@ export class KlApp {
             initialSize: brushSettingService.getSize(),
             initialOpacity: brushSettingService.getOpacity(),
             currentBrushId: 'penBrush',
+            classicUiEls: [
+                this.mobileUi.getElement(),
+                this.overlayToolspace.getElement(),
+            ],
         });
 
         // Sync Procreate UI with brush changes
@@ -2741,7 +2744,26 @@ export class KlApp {
         // Activate Procreate mode by default (remove this line to start with classic UI)
         this.procreateLayout.setColorPreview(brushSettingService.getColor());
         this.procreateLayout.activate();
-        this.gallery.show();
+        this.gallery.show(); // Initial show
+        this.procreateLayout.hideUI(); // Hide UI initially because Gallery is showing
+
+        // Coordination between Gallery and Procreate UI
+        const originalGalleryShow = this.gallery.show.bind(this.gallery);
+        this.gallery.show = () => {
+            originalGalleryShow();
+            if (this.procreateLayout.getIsActive()) {
+                this.procreateLayout.hideUI();
+            }
+        };
+
+        const originalGalleryHide = this.gallery.hide.bind(this.gallery);
+        this.gallery.hide = () => {
+            originalGalleryHide();
+            if (this.procreateLayout.getIsActive()) {
+                this.procreateLayout.showUI();
+            }
+        };
+
         this.updateCollapse();
         this.easel.resetOrFitTransform(true);
 

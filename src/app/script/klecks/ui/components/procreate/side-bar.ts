@@ -181,7 +181,7 @@ export class SideBar {
         const pointerListener = new BB.PointerListener({
             target: slider,
             onPointer: (e) => {
-                if (e.type === 'pointerdown' && e.button === 'left') {
+                if (e.type === 'pointerdown') {
                     isDragging = true;
                     slider.classList.add('procreate-sidebar__slider--active');
                     p.onDrag(calculatePercent(e));

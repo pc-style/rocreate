@@ -40,6 +40,7 @@ export type TProcreateLayoutParams = {
     initialOpacity: number;
     currentBrushId: string;
     toolspaceEl: HTMLElement;
+    classicUiEls: HTMLElement[];
 };
 
 /**
@@ -67,6 +68,7 @@ export class ProcreateLayout {
     private currentBrushId: string;
     private readonly utilitySideBar: UtilitySideBar;
     private readonly toolspaceEl: HTMLElement;
+    private readonly classicUiEls: HTMLElement[];
 
 
     constructor(p: TProcreateLayoutParams) {
@@ -79,6 +81,7 @@ export class ProcreateLayout {
         this.onBrushSelect = p.onBrushSelect;
         this.currentBrushId = p.currentBrushId;
         this.toolspaceEl = p.toolspaceEl;
+        this.classicUiEls = p.classicUiEls;
 
         // Create container for Procreate UI
         this.containerEl = BB.el({
@@ -90,10 +93,8 @@ export class ProcreateLayout {
                 position: 'absolute',
                 left: '0',
                 top: '0',
-                right: '0',
-                bottom: '0',
                 pointerEvents: 'none',
-                zIndex: '100',
+                zIndex: '9999',
             },
         });
 
@@ -361,20 +362,26 @@ export class ProcreateLayout {
     activate(): void {
         if (this.isActive) return;
         this.isActive = true;
-        this.containerEl.style.display = 'block';
+        this.showUI();
         if (this.toolspaceEl) {
             this.toolspaceEl.style.display = 'none';
         }
+        this.classicUiEls.forEach(el => {
+            if (el) el.style.display = 'none';
+        });
         document.documentElement.classList.add('procreate-mode');
     }
 
     deactivate(): void {
         if (!this.isActive) return;
         this.isActive = false;
-        this.containerEl.style.display = 'none';
+        this.hideUI();
         if (this.toolspaceEl) {
             this.toolspaceEl.style.display = 'block';
         }
+        this.classicUiEls.forEach(el => {
+            if (el) el.style.display = '';
+        });
         document.documentElement.classList.remove('procreate-mode');
         this.closeAllPanels();
     }
@@ -443,6 +450,14 @@ export class ProcreateLayout {
     // Close all floating panels
     closePanels(): void {
         this.closeAllPanels();
+    }
+
+    public showUI(): void {
+        this.containerEl.style.display = 'block';
+    }
+
+    public hideUI(): void {
+        this.containerEl.style.display = 'none';
     }
 
     destroy(): void {

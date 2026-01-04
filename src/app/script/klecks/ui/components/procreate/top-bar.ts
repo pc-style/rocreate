@@ -91,7 +91,7 @@ export class TopBar {
                 el.classList.toggle('procreate-topbar__btn--hover', isOver);
             },
             onPointer: (e) => {
-                if (e.type === 'pointerup' && e.button === 'left') {
+                if (e.type === 'pointerup') {
                     // check if still within bounds
                     const width = el.offsetWidth;
                     const height = el.offsetHeight;
@@ -274,7 +274,7 @@ export class TopBar {
         const colorBtnPointerListener = new BB.PointerListener({
             target: colorBtn,
             onPointer: (e) => {
-                if (e.type === 'pointerup' && e.button === 'left') {
+                if (e.type === 'pointerup') {
                     const rect = colorBtn.getBoundingClientRect();
                     if (e.relX >= 0 && e.relX <= colorBtn.offsetWidth && e.relY >= 0 && e.relY <= colorBtn.offsetHeight) {
                         p.onOpenColors();
