@@ -95,7 +95,8 @@ export class TopBar {
                     // check if still within bounds
                     const width = el.offsetWidth;
                     const height = el.offsetHeight;
-                    if (e.relX >= 0 && e.relX <= width && e.relY >= 0 && e.relY <= height) {
+                    const buffer = 5;
+                    if (e.relX >= -buffer && e.relX <= width + buffer && e.relY >= -buffer && e.relY <= height + buffer) {
                         p.onClick();
                     }
                 }

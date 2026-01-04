@@ -18,6 +18,8 @@ export type TProcreateLayoutParams = {
     layersUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     settingsUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     editUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
+    fileUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
+    selectUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     onToolChange: (tool: TTopBarTool) => void;
     onBrushSelect: (brushId: string) => void;
     onLayerSelect?: (layerIndex: number) => void;
@@ -57,11 +59,16 @@ export class ProcreateLayout {
     private colorsPanel: FloatingPanel | null = null;
     private brushLibraryPanel: FloatingPanel | null = null;
     private actionsPanel: FloatingPanel | null = null;
+    private adjustmentsPanel: FloatingPanel | null = null;
+    private selectionsPanel: FloatingPanel | null = null;
+    private transformPanel: FloatingPanel | null = null;
     private isActive: boolean = false;
     private readonly klColorSlider: KlColorSlider;
     private readonly layersUi: TProcreateLayoutParams['layersUi'];
     private readonly settingsUi: TProcreateLayoutParams['settingsUi'];
     private readonly editUi: TProcreateLayoutParams['editUi'];
+    private readonly fileUi: TProcreateLayoutParams['fileUi'];
+    private readonly selectUi: TProcreateLayoutParams['selectUi'];
     private readonly onToolChange: TProcreateLayoutParams['onToolChange'];
     private readonly onBrushSelect: TProcreateLayoutParams['onBrushSelect'];
     private currentTool: TTopBarTool = 'brush';
@@ -77,6 +84,8 @@ export class ProcreateLayout {
         this.layersUi = p.layersUi;
         this.settingsUi = p.settingsUi;
         this.editUi = p.editUi;
+        this.fileUi = p.fileUi;
+        this.selectUi = p.selectUi;
         this.onToolChange = p.onToolChange;
         this.onBrushSelect = p.onBrushSelect;
         this.currentBrushId = p.currentBrushId;
@@ -114,10 +123,16 @@ export class ProcreateLayout {
             onOpenActions: () => {
                 this.toggleActionsPanel();
             },
-            onOpenAdjustments: p.onOpenAdjustments,
-            onOpenSelections: p.onOpenSelections,
+            onOpenAdjustments: () => {
+                this.toggleAdjustmentsPanel();
+            },
+            onOpenSelections: () => {
+                this.toggleSelectionsPanel();
+            },
             onOpenQuickMenu: p.onQuickMenu,
-            onTransform: p.onTransform,
+            onTransform: () => {
+                this.toggleTransformPanel();
+            },
             onGallery: p.onGallery,
         });
         this.topBar.getElement().style.pointerEvents = 'auto';
@@ -180,6 +195,9 @@ export class ProcreateLayout {
         this.closeColorsPanel();
         this.closeBrushLibraryPanel();
         this.closeActionsPanel();
+        this.closeAdjustmentsPanel();
+        this.closeSelectionsPanel();
+        this.closeTransformPanel();
     }
 
     public toggleLayersPanel(): void {
@@ -320,18 +338,18 @@ export class ProcreateLayout {
     private openActionsPanel(): void {
         if (this.actionsPanel) return;
 
-        // Style the edit UI for the floating panel
-        css(this.editUi.el, {
+        // Style the file UI for the floating panel
+        css(this.fileUi.el, {
             width: '260px',
             maxHeight: '450px',
             overflow: 'auto',
         });
 
-        this.editUi.onOpen();
+        this.fileUi.onOpen();
 
         this.actionsPanel = new FloatingPanel({
-            title: LANG('tab-edit'),
-            content: this.editUi.el,
+            title: LANG('tab-file'),
+            content: this.fileUi.el,
             position: { x: 16, y: 60 },
             width: 280,
             onClose: () => {
@@ -345,6 +363,55 @@ export class ProcreateLayout {
 
     private closeActionsPanel(): void {
         if (!this.actionsPanel) return;
+        // Reset file UI styles
+        css(this.fileUi.el, {
+            width: '',
+            maxHeight: '',
+            overflow: '',
+        });
+        this.fileUi.onClose();
+        this.actionsPanel.destroy();
+        this.actionsPanel.getElement().remove();
+        this.actionsPanel = null;
+    }
+
+    public toggleAdjustmentsPanel(): void {
+        if (this.adjustmentsPanel) {
+            this.closeAdjustmentsPanel();
+        } else {
+            this.closeAllPanels();
+            this.openAdjustmentsPanel();
+        }
+    }
+
+    private openAdjustmentsPanel(): void {
+        if (this.adjustmentsPanel) return;
+
+        // Style the edit UI (filters) for the floating panel
+        css(this.editUi.el, {
+            width: '260px',
+            maxHeight: '450px',
+            overflow: 'auto',
+        });
+
+        this.editUi.onOpen();
+
+        this.adjustmentsPanel = new FloatingPanel({
+            title: LANG('tab-edit'),
+            content: this.editUi.el,
+            position: { x: 70, y: 60 },
+            width: 280,
+            onClose: () => {
+                this.closeAdjustmentsPanel();
+            },
+        });
+
+        this.adjustmentsPanel.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.adjustmentsPanel.getElement());
+    }
+
+    private closeAdjustmentsPanel(): void {
+        if (!this.adjustmentsPanel) return;
         // Reset edit UI styles
         css(this.editUi.el, {
             width: '',
@@ -352,9 +419,109 @@ export class ProcreateLayout {
             overflow: '',
         });
         this.editUi.onClose();
-        this.actionsPanel.destroy();
-        this.actionsPanel.getElement().remove();
-        this.actionsPanel = null;
+        this.adjustmentsPanel.destroy();
+        this.adjustmentsPanel.getElement().remove();
+        this.adjustmentsPanel = null;
+    }
+
+    public toggleSelectionsPanel(): void {
+        if (this.selectionsPanel) {
+            this.closeSelectionsPanel();
+        } else {
+            this.closeAllPanels();
+            this.openSelectionsPanel();
+        }
+    }
+
+    private openSelectionsPanel(): void {
+        if (this.selectionsPanel) return;
+
+        // Switch tool to select
+        this.onToolChange('brush'); // ensure we are in a drawing mode first? No.
+        // kl-app does the direct tool change usually via p.onOpenSelections
+        // We'll let KlApp handle the tool state via its own logic if possible, 
+        // but here we just show the UI.
+
+        css(this.selectUi.el, {
+            width: '260px',
+            maxHeight: '400px',
+            overflow: 'auto',
+        });
+
+        this.selectUi.onOpen();
+
+        this.selectionsPanel = new FloatingPanel({
+            title: LANG('tool-select'),
+            content: this.selectUi.el,
+            position: { x: 130, y: 60 },
+            width: 280,
+            onClose: () => {
+                this.closeSelectionsPanel();
+            },
+        });
+
+        this.selectionsPanel.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.selectionsPanel.getElement());
+    }
+
+    private closeSelectionsPanel(): void {
+        if (!this.selectionsPanel) return;
+        css(this.selectUi.el, {
+            width: '',
+            maxHeight: '',
+            overflow: '',
+        });
+        this.selectUi.onClose();
+        this.selectionsPanel.destroy();
+        this.selectionsPanel.getElement().remove();
+        this.selectionsPanel = null;
+    }
+
+    public toggleTransformPanel(): void {
+        if (this.transformPanel) {
+            this.closeTransformPanel();
+        } else {
+            this.closeAllPanels();
+            this.openTransformPanel();
+        }
+    }
+
+    private openTransformPanel(): void {
+        if (this.transformPanel) return;
+
+        css(this.selectUi.el, {
+            width: '260px',
+            maxHeight: '400px',
+            overflow: 'auto',
+        });
+
+        this.selectUi.onOpen();
+
+        this.transformPanel = new FloatingPanel({
+            title: LANG('filter-transform-title'),
+            content: this.selectUi.el,
+            position: { x: 190, y: 60 },
+            width: 280,
+            onClose: () => {
+                this.closeTransformPanel();
+            },
+        });
+
+        this.transformPanel.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.transformPanel.getElement());
+    }
+
+    private closeTransformPanel(): void {
+        if (!this.transformPanel) return;
+        css(this.selectUi.el, {
+            width: '',
+            maxHeight: '',
+            overflow: '',
+        });
+        this.selectUi.onClose();
+        this.transformPanel.destroy();
+        this.transformPanel.getElement().remove();
+        this.transformPanel = null;
     }
 
     // --- Public API ---
@@ -444,7 +611,10 @@ export class ProcreateLayout {
         return this.layersPanel !== null ||
             this.colorsPanel !== null ||
             this.brushLibraryPanel !== null ||
-            this.actionsPanel !== null;
+            this.actionsPanel !== null ||
+            this.adjustmentsPanel !== null ||
+            this.selectionsPanel !== null ||
+            this.transformPanel !== null;
     }
 
     // Close all floating panels

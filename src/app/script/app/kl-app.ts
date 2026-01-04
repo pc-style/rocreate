@@ -2650,6 +2650,28 @@ export class KlApp {
                     editUi.hide();
                 },
             },
+            fileUi: {
+                el: fileUi!.getElement(),
+                onOpen: () => {
+                    fileUi!.getElement().style.display = 'block';
+                    fileUi!.setIsVisible(true);
+                },
+                onClose: () => {
+                    fileUi!.getElement().style.display = 'none';
+                    fileUi!.setIsVisible(false);
+                },
+            },
+            selectUi: {
+                el: klAppSelect.getSelectUi().getElement(),
+                onOpen: () => {
+                    klAppSelect.getSelectUi().getElement().style.display = 'block';
+                    klAppSelect.getSelectUi().setIsVisible(true);
+                },
+                onClose: () => {
+                    klAppSelect.getSelectUi().getElement().style.display = 'none';
+                    klAppSelect.getSelectUi().setIsVisible(false);
+                },
+            },
             onToolChange: (tool: TTopBarTool) => {
                 applyUncommitted();
                 if (tool === 'brush') {
