@@ -1,26 +1,30 @@
 /* Procreate-style UI Components */
+.kl-app.procreate-mode .kl-toolspace {
+    display: none !important;
+}
+
 .kl-app {
     background: #1a1a1a !important;
 }
 
 /* CSS Custom Properties for Procreate theme - AUTHENTIC DARK */
 :root {
-    --procreate-bg: rgba(18, 18, 18, 0.98);
+    --procreate-bg: rgba(18, 18, 18, 0.96);
     --procreate-bg-solid: #121212;
-    --procreate-surface: rgba(40, 40, 40, 0.95);
-    --procreate-surface-hover: rgba(60, 60, 60, 0.95);
-    --procreate-surface-active: rgba(80, 80, 80, 0.95);
-    --procreate-border: rgba(255, 255, 255, 0.06);
+    --procreate-surface: rgba(28, 28, 28, 0.95);
+    --procreate-surface-hover: rgba(45, 45, 45, 0.95);
+    --procreate-surface-active: rgba(60, 60, 60, 0.95);
+    --procreate-border: rgba(255, 255, 255, 0.08);
     --procreate-text: #ffffff;
-    --procreate-text-secondary: rgba(255, 255, 255, 0.5);
+    --procreate-text-secondary: rgba(255, 255, 255, 0.6);
     --procreate-accent: #0a84ff;
-    --procreate-accent-glow: rgba(10, 132, 255, 0.3);
-    --procreate-slider-track: rgba(255, 255, 255, 0.08);
-    --procreate-slider-fill: rgba(255, 255, 255, 0.9);
-    --procreate-radius: 16px;
+    --procreate-accent-glow: rgba(10, 132, 255, 0.4);
+    --procreate-slider-track: rgba(255, 255, 255, 0.1);
+    --procreate-slider-fill: #ffffff;
+    --procreate-radius: 20px;
     --procreate-radius-sm: 10px;
-    --procreate-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-    --procreate-glass: blur(30px) saturate(180%);
+    --procreate-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --procreate-glass: blur(40px) saturate(180%);
 }
 
 /* ============================================
@@ -133,6 +137,17 @@
     border-color: rgba(255, 255, 255, 0.4);
 }
 
+.procreate-topbar__btn--quick-access {
+    font-size: 18px;
+    color: #ffcc00 !important;
+    /* Lightning yellow */
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+
+    &:active {
+        transform: scale(0.9);
+    }
+}
+
 .procreate-topbar__btn--active {
     background: var(--procreate-surface-active);
     box-shadow:
@@ -200,12 +215,13 @@
     background: var(--procreate-bg);
     backdrop-filter: var(--procreate-glass);
     -webkit-backdrop-filter: var(--procreate-glass);
-    border-radius: 24px;
+    border-radius: 26px;
     border: 1px solid var(--procreate-border);
     box-shadow: var(--procreate-shadow);
     z-index: 99;
     user-select: none;
     -webkit-user-select: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .procreate-sidebar__size-preview {
@@ -248,26 +264,23 @@
 /* Utility Side Bar */
 .procreate-utility-sidebar {
     width: 180px;
-
-
-
     height: 100%;
-    background: #1a1a1a;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    position: absolute;
-    right: 0;
-    top: 0;
-    pointer-events: auto;
-
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 80px 0 20px;
-    gap: 16px;
-
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    background: #1a1a1a !important;
+    /* Back to dark premium */
+    border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+    position: fixed !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 85px 0 20px !important;
+    gap: 20px !important;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5) !important;
+    z-index: 9999 !important;
+    /* OVER EVERYTHING */
 }
 
 .procreate-utility-sidebar__section {
@@ -367,11 +380,39 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 10px;
 }
 
 .procreate-utility-sidebar__layer-item.active {
-    border-color: #3b82f6;
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    border-color: var(--procreate-accent);
+    box-shadow:
+        0 0 0 2px var(--procreate-accent),
+        0 0 12px var(--procreate-accent-glow);
+}
+
+.layer-alpha-lock {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a84ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+    z-index: 2;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.6));
+    animation: procreate-pop 0.2s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+}
+
+@keyframes procreate-pop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 
@@ -1368,23 +1409,25 @@
 
 .procreate-quickmenu__action {
     position: absolute;
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: var(--procreate-surface);
+    background: var(--procreate-bg);
+    backdrop-filter: var(--procreate-glass);
+    -webkit-backdrop-filter: var(--procreate-glass);
     border: 1px solid var(--procreate-border);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--procreate-shadow);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     font-size: 18px;
     font-weight: 600;
     color: var(--procreate-text);
-    margin-left: -28px;
-    margin-top: -28px;
+    margin-left: -30px;
+    margin-top: -30px;
 }
 
 .procreate-quickmenu__action:hover {
@@ -1441,4 +1484,65 @@
 .procreate-quickmenu__center:hover {
     background: var(--procreate-surface-hover);
     color: var(--procreate-text);
+}
+
+/* ============================================
+   SYMMETRY GUIDE
+   ============================================ */
+.symmetry-guide line {
+    pointer-events: none;
+}
+
+.symmetry-toggle {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--procreate-bg);
+    backdrop-filter: var(--procreate-glass);
+    -webkit-backdrop-filter: var(--procreate-glass);
+    border-radius: 20px;
+    border: 1px solid var(--procreate-border);
+    z-index: 90;
+    font-size: 12px;
+    color: var(--procreate-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.symmetry-toggle--active {
+    border-color: var(--procreate-accent);
+    color: var(--procreate-text);
+    box-shadow: 0 0 20px var(--procreate-accent-glow);
+}
+
+.symmetry-toggle__icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+
+.symmetry-toggle--active .symmetry-toggle__icon {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px var(--procreate-accent));
+}
+
+/* Alpha Lock indicator on layer items */
+.layer-alpha-lock {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 14px;
+    height: 14px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a84ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'%3E%3C/path%3E%3C/svg%3E") no-repeat center;
+    background-size: contain;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.layer-alpha-lock--active {
+    opacity: 1;
 }

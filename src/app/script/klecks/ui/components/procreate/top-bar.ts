@@ -24,6 +24,7 @@ export type TTopBarParams = {
     onOpenActions: () => void;
     onOpenAdjustments: () => void;
     onOpenSelections: () => void;
+    onOpenQuickMenu: (p: { relX: number; relY: number }) => void;
     onTransform: () => void;
     onGallery: () => void;
 };
@@ -67,7 +68,6 @@ export class TopBar {
                 (p.isPanel ? ' procreate-topbar__btn--panel' : '') +
                 (p.className ? ' ' + p.className : ''),
             title: p.title,
-            onClick: p.onClick,
         });
 
         if (p.icon) {
@@ -90,6 +90,16 @@ export class TopBar {
             onEnterLeave: (isOver) => {
                 el.classList.toggle('procreate-topbar__btn--hover', isOver);
             },
+            onPointer: (e) => {
+                if (e.type === 'pointerup' && e.button === 'left') {
+                    // check if still within bounds
+                    const width = el.offsetWidth;
+                    const height = el.offsetHeight;
+                    if (e.relX >= 0 && e.relX <= width && e.relY >= 0 && e.relY <= height) {
+                        p.onClick();
+                    }
+                }
+            }
         });
 
         const setActive = (b: boolean) => {
@@ -161,7 +171,7 @@ export class TopBar {
         });
         leftSide.append(selectionsBtn.el);
 
-        // Transform (transform icon)
+        // Transform (pointer icon)
         const transformBtn = this.createButton({
             icon: editTransformImg,
             title: LANG('filter-transform-title'),
@@ -169,6 +179,18 @@ export class TopBar {
             isPanel: true,
         });
         leftSide.append(transformBtn.el);
+
+        // Quick Access (lightning icon / custom icon)
+        const quickAccessBtn = this.createButton({
+            text: '⚡', // Lightning bolt for Quick Access
+            title: 'Quick Access',
+            onClick: () => {
+                const rect = quickAccessBtn.el.getBoundingClientRect();
+                p.onOpenQuickMenu({ relX: rect.left + rect.width / 2, relY: rect.bottom + 40 });
+            },
+            className: 'procreate-topbar__btn--quick-access',
+        });
+        leftSide.append(quickAccessBtn.el);
 
         // ========== RIGHT SIDE - Painting Tools ==========
         const rightSide = BB.el({
@@ -241,14 +263,26 @@ export class TopBar {
 
         // Color button (circular)
         const colorBtn = BB.el({
-            className: 'procreate-topbar__color-btn',
+            className: 'procreate-topbar__color-preview',
             title: LANG('secondary-color'),
-            onClick: p.onOpenColors,
         });
         this.colorInnerEl = BB.el({
             className: 'procreate-topbar__color-inner',
+            parent: colorBtn,
         });
-        colorBtn.append(this.colorInnerEl);
+
+        const colorBtnPointerListener = new BB.PointerListener({
+            target: colorBtn,
+            onPointer: (e) => {
+                if (e.type === 'pointerup' && e.button === 'left') {
+                    const rect = colorBtn.getBoundingClientRect();
+                    if (e.relX >= 0 && e.relX <= colorBtn.offsetWidth && e.relY >= 0 && e.relY <= colorBtn.offsetHeight) {
+                        p.onOpenColors();
+                    }
+                }
+            }
+        });
+
         rightSide.append(colorBtn);
 
         // ColorDrop Support

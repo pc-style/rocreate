@@ -25,11 +25,16 @@ export type TPointerEvent = {
         dX: number;
         dY: number;
         time: number; // same timescale as performance.now() - might be exact same number as in parent
+        pressure?: number; // float [0,1]
+        tiltX?: number; // stylus tilt angle along X axis in degrees [-90, 90]
+        tiltY?: number; // stylus tilt angle along Y axis in degrees [-90, 90]
     }[];
     time: number; // same timescale as performance.now()
 
     button?: TPointerButton;
     pressure?: number; // float [0,1] always 1 for touch and mouse
+    tiltX?: number; // stylus tilt angle along X axis in degrees [-90, 90], 0 for non-pen
+    tiltY?: number; // stylus tilt angle along Y axis in degrees [-90, 90], 0 for non-pen
     downPageX?: number; // where was pointer when down-event occurred - set for down|move|up
     downPageY?: number;
 

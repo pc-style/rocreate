@@ -31,11 +31,15 @@ export type TProcreateLayoutParams = {
     onTransform: () => void;
     onOpenAdjustments: () => void;
     onOpenSelections: () => void;
+    onQuickMenu: (p: { relX: number; relY: number }) => void;
     onGallery: () => void;
+    onOpenLayers: () => void;
+    onOpenColors: () => void;
     onModifyBrush: () => void;
     initialSize: number;
     initialOpacity: number;
     currentBrushId: string;
+    toolspaceEl: HTMLElement;
 };
 
 /**
@@ -62,6 +66,7 @@ export class ProcreateLayout {
     private currentTool: TTopBarTool = 'brush';
     private currentBrushId: string;
     private readonly utilitySideBar: UtilitySideBar;
+    private readonly toolspaceEl: HTMLElement;
 
 
     constructor(p: TProcreateLayoutParams) {
@@ -73,6 +78,7 @@ export class ProcreateLayout {
         this.onToolChange = p.onToolChange;
         this.onBrushSelect = p.onBrushSelect;
         this.currentBrushId = p.currentBrushId;
+        this.toolspaceEl = p.toolspaceEl;
 
         // Create container for Procreate UI
         this.containerEl = BB.el({
@@ -87,6 +93,7 @@ export class ProcreateLayout {
                 right: '0',
                 bottom: '0',
                 pointerEvents: 'none',
+                zIndex: '100',
             },
         });
 
@@ -98,12 +105,8 @@ export class ProcreateLayout {
                 // Update sidebar visibility based on tool
                 this.updateSidebarForTool(tool);
             },
-            onOpenLayers: () => {
-                this.toggleLayersPanel();
-            },
-            onOpenColors: () => {
-                this.toggleColorsPanel();
-            },
+            onOpenLayers: p.onOpenLayers,
+            onOpenColors: p.onOpenColors,
             onOpenBrushLibrary: () => {
                 this.toggleBrushLibraryPanel();
             },
@@ -112,6 +115,7 @@ export class ProcreateLayout {
             },
             onOpenAdjustments: p.onOpenAdjustments,
             onOpenSelections: p.onOpenSelections,
+            onOpenQuickMenu: p.onQuickMenu,
             onTransform: p.onTransform,
             onGallery: p.onGallery,
         });
@@ -153,6 +157,10 @@ export class ProcreateLayout {
             this.utilitySideBar.getElement()
         );
 
+        this.topBar.getElement().style.pointerEvents = 'auto';
+        this.sideBar.getElement().style.pointerEvents = 'auto';
+        this.utilitySideBar.getElement().style.pointerEvents = 'auto';
+
         this.rootEl.append(this.containerEl);
 
     }
@@ -166,7 +174,7 @@ export class ProcreateLayout {
         // In future, could hide/show based on tool
     }
 
-    private closeAllPanels(): void {
+    public closeAllPanels(): void {
         this.closeLayersPanel();
         this.closeColorsPanel();
         this.closeBrushLibraryPanel();
@@ -354,6 +362,9 @@ export class ProcreateLayout {
         if (this.isActive) return;
         this.isActive = true;
         this.containerEl.style.display = 'block';
+        if (this.toolspaceEl) {
+            this.toolspaceEl.style.display = 'none';
+        }
         document.documentElement.classList.add('procreate-mode');
     }
 
@@ -361,6 +372,9 @@ export class ProcreateLayout {
         if (!this.isActive) return;
         this.isActive = false;
         this.containerEl.style.display = 'none';
+        if (this.toolspaceEl) {
+            this.toolspaceEl.style.display = 'block';
+        }
         document.documentElement.classList.remove('procreate-mode');
         this.closeAllPanels();
     }

@@ -1,7 +1,7 @@
 import { BB } from '../../../../bb/bb';
 import { Select } from '../../components/select';
 import { PointSlider } from '../../components/point-slider';
-import { KlCanvas, MAX_LAYERS } from '../../../canvas/kl-canvas';
+import { KlCanvas } from '../../../canvas/kl-canvas';
 import { TMixMode, TUiLayout } from '../../../kl-types';
 import { LANG } from '../../../../language/language';
 import { translateBlending } from '../../../canvas/translate-blending';
@@ -519,7 +519,7 @@ export class LayersUi {
     }
 
     private updateButtons(): void {
-        const maxReached = this.klCanvasLayerArr.length === MAX_LAYERS;
+        const maxReached = this.klCanvas.isLayerLimitReached();
         const oneLayer = this.klCanvasLayerArr.length === 1;
 
         this.addBtn.disabled = maxReached;

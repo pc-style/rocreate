@@ -287,11 +287,11 @@ export const penBrushUi = (function () {
         this.setLayer = function (layer) {
             brush.setContext(layer.context);
         };
-        this.startLine = function (x, y, p) {
-            brush.startLine(x, y, p);
+        this.startLine = function (x, y, p, tiltX, tiltY) {
+            brush.startLine(x, y, p, tiltX, tiltY);
         };
-        this.goLine = function (x, y, p) {
-            brush.goLine(x, y, p);
+        this.goLine = function (x, y, p, isCoalesced, tiltX, tiltY) {
+            brush.goLine(x, y, p, tiltX, tiltY);
         };
         this.endLine = function () {
             brush.endLine();

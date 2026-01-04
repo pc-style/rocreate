@@ -2,6 +2,7 @@ import { BB } from '../../../../bb/bb';
 import { KlColorSliderSmall } from '../kl-color-slider-small';
 import { KlCanvas, TKlCanvasLayer } from '../../../canvas/kl-canvas';
 import { TRgb } from '../../../kl-types';
+import { alphaLockManager } from '../../../canvas/alpha-lock-manager';
 
 import brushIcon from 'url:/src/app/img/ui/procreate/brush.svg';
 import layersIcon from 'url:/src/app/img/ui/procreate/layers.svg';
@@ -17,7 +18,7 @@ export type TUtilitySideBarParams = {
     initialColor: TRgb;
     onColorChange: (rgb: TRgb) => void;
     onBrushSelect: (brushId: string) => void;
-    onLayerSelect: (layerIndex: number) => void;
+    onLayerSelect?: (layerIndex: number) => void;
     onAddLayer: () => void;
     onRemoveLayer: () => void;
     onDuplicateLayer: () => void;
@@ -29,6 +30,7 @@ export class UtilitySideBar {
     private readonly brushContainer: HTMLElement;
     private readonly layerContainer: HTMLElement;
     private readonly klCanvas: KlCanvas;
+    private onLayerSelectCallback?: (idx: number) => void;
 
     private readonly brushes = [
         { id: 'penBrush', name: 'Pen', icon: brushIcon },
@@ -113,7 +115,21 @@ export class UtilitySideBar {
             parent: layerSection,
         });
 
-        this.renderLayers(p.onLayerSelect);
+        this.onLayerSelectCallback = p.onLayerSelect;
+
+        // Use a small delay to ensure everything is ready
+        setTimeout(() => {
+            try {
+                this.renderBrushes(p.onBrushSelect);
+            } catch (e) {
+                console.error('Failed to render brushes', e);
+            }
+            try {
+                this.renderLayers(this.onLayerSelectCallback);
+            } catch (e) {
+                console.error('Failed to render layers', e);
+            }
+        }, 0);
     }
 
     private renderBrushes(onSelect: (id: string) => void): void {
@@ -129,16 +145,30 @@ export class UtilitySideBar {
         });
     }
 
-    private renderLayers(onSelect: (idx: number) => void): void {
+    private renderLayers(onSelect?: (idx: number) => void): void {
         this.layerContainer.innerHTML = '';
         const layers = this.klCanvas.getLayers();
+        const activeLayerId = this.klCanvas.getKlHistory().getComposed().activeLayerId;
+
         // Show last 6 layers
-        [...layers].reverse().slice(0, 6).forEach((layer, i) => {
+        [...layers].reverse().slice(0, 8).forEach((layer, i) => { // Show 8 instead of 6
             const idx = layers.length - 1 - i;
+            if (!layer) return;
+            const isAlphaLocked = layer.id ? alphaLockManager.isLocked(layer.id) : false;
+            const isActive = layer.id === activeLayerId;
+
             const item = BB.el({
-                className: 'procreate-utility-sidebar__layer-item' + (layer === this.klCanvas.getLayer(this.klCanvas.getLayerCount() - 1) ? ' active' : ''),
+                className: 'procreate-utility-sidebar__layer-item' + (isActive ? ' active' : ''),
                 parent: this.layerContainer,
             });
+
+            // Alpha Lock Indicator
+            if (isAlphaLocked) {
+                BB.el({
+                    className: 'layer-alpha-lock layer-alpha-lock--active',
+                    parent: item,
+                });
+            }
 
             const thumb = BB.canvas(32, 32);
             const ctx = thumb.getContext('2d');
@@ -147,7 +177,10 @@ export class UtilitySideBar {
             }
 
             item.append(thumb);
-            item.onclick = () => onSelect(idx);
+            item.onclick = () => {
+                if (onSelect) onSelect(idx);
+                this.updateLayers(); // Re-render to update active state
+            };
         });
     }
 
@@ -156,7 +189,7 @@ export class UtilitySideBar {
     }
 
     public updateLayers(): void {
-        this.renderLayers(() => { });
+        this.renderLayers(this.onLayerSelectCallback);
     }
 
     getElement(): HTMLElement {

@@ -214,8 +214,8 @@ export type TBrushUiInstance<GBrush> = {
     setScatter: (opacity: number) => void;
     setColor: (c: TRgb) => void;
     setLayer: (layer: TKlCanvasLayer) => void;
-    startLine: (x: number, y: number, p: number) => void;
-    goLine: (x: number, y: number, p: number, isCoalesced?: boolean) => void;
+    startLine: (x: number, y: number, p: number, tiltX?: number, tiltY?: number) => void;
+    goLine: (x: number, y: number, p: number, isCoalesced?: boolean, tiltX?: number, tiltY?: number) => void;
     endLine: () => void;
     getBrush: () => GBrush;
     isDrawing: () => boolean;
@@ -245,6 +245,8 @@ export type TPressureInput = {
     x: number;
     y: number;
     pressure: number;
+    tiltX?: number; // stylus tilt along X axis in degrees [-90, 90]
+    tiltY?: number; // stylus tilt along Y axis in degrees [-90, 90]
 };
 
 export type TDrawDownEvent = {
@@ -255,6 +257,8 @@ export type TDrawDownEvent = {
     isCoalesced: boolean;
     x: number;
     y: number;
+    tiltX?: number;
+    tiltY?: number;
 };
 
 export type TDrawMoveEvent = {
@@ -265,6 +269,8 @@ export type TDrawMoveEvent = {
     isCoalesced: boolean;
     x: number;
     y: number;
+    tiltX?: number;
+    tiltY?: number;
 };
 
 export type TDrawUpEvent = {

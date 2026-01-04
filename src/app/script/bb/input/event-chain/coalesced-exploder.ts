@@ -42,6 +42,9 @@ export class CoalescedExploder {
                     eventCopy.dX = coalescedItem.dX;
                     eventCopy.dY = coalescedItem.dY;
                     eventCopy.time = coalescedItem.time;
+                    eventCopy.pressure = coalescedItem.pressure ?? eventCopy.pressure;
+                    eventCopy.tiltX = coalescedItem.tiltX ?? eventCopy.tiltX;
+                    eventCopy.tiltY = coalescedItem.tiltY ?? eventCopy.tiltY;
                     eventCopy.isCoalesced = i < event.coalescedArr.length - 1;
 
                     this.chainOut && this.chainOut(eventCopy);
