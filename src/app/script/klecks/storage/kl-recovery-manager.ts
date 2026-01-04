@@ -98,38 +98,46 @@ export class KlRecoveryManager {
         | 'idNotFound'
         | 'idChangeFailed'
         | undefined;
+    private isDestroyed: boolean = false;
+    private visibilityHandler: (() => void) | undefined;
+    private focusHandler: (() => void) | undefined;
+    private crossTabHandler: ((message: { type: string; id?: number }) => void) | undefined;
 
     private announceTabId(): void {
         this.crossTabChannel.postMessage({ type: 'new-tab' });
     }
 
     private initListeners(): void {
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
+        this.visibilityHandler = () => {
+            if (document.hidden || this.isDestroyed) {
                 return;
             }
             // changes may have happened since tab last visible
 
             // might not register a tab is closed without timeout
             setTimeout(() => {
-                this.update();
+                if (!this.isDestroyed) this.update();
             }, 500);
-        });
+        };
+        document.addEventListener('visibilitychange', this.visibilityHandler);
 
-        window.addEventListener('focus', () => {
+        this.focusHandler = () => {
+            if (this.isDestroyed) return;
             setTimeout(() => {
-                this.update();
+                if (!this.isDestroyed) this.update();
             }, 500);
-        });
+        };
+        window.addEventListener('focus', this.focusHandler);
 
-        this.crossTabChannel.subscribe((message) => {
+        this.crossTabHandler = (message) => {
+            if (this.isDestroyed) return;
             if (message.type === 'new-tab') {
                 if (document.hidden) {
                     // we'll update when tab visible. noop.
                     return;
                 }
                 setTimeout(() => {
-                    this.update();
+                    if (!this.isDestroyed) this.update();
                 }, 500);
             }
             if (message.type === 'request-ids') {
@@ -137,7 +145,8 @@ export class KlRecoveryManager {
                     this.crossTabChannel.postMessage({ type: 'response-ids', id: this.tabId });
                 }
             }
-        });
+        };
+        this.crossTabChannel.subscribe(this.crossTabHandler);
 
         // I think this is not needed
         let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -354,7 +363,17 @@ export class KlRecoveryManager {
     }
 
     destroy(): void {
-        // todo
+        this.isDestroyed = true;
+        this.listeners.clear();
+        if (this.visibilityHandler) {
+            document.removeEventListener('visibilitychange', this.visibilityHandler);
+        }
+        if (this.focusHandler) {
+            window.removeEventListener('focus', this.focusHandler);
+        }
+        if (this.crossTabHandler) {
+            this.crossTabChannel.unsubscribe(this.crossTabHandler);
+        }
     }
 }
 

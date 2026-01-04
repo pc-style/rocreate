@@ -31,6 +31,7 @@ export class UtilitySideBar {
     private readonly layerContainer: HTMLElement;
     private readonly klCanvas: KlCanvas;
     private onLayerSelectCallback?: (idx: number) => void;
+    private isDestroyed: boolean = false;
 
     private readonly brushes = [
         { id: 'penBrush', name: 'Pen', icon: brushIcon },
@@ -70,8 +71,6 @@ export class UtilitySideBar {
             className: 'procreate-utility-sidebar__brush-list',
             parent: brushSection,
         });
-        this.renderBrushes(p.onBrushSelect);
-
         // 3. Layer Controls
         const layerControls = BB.el({
             className: 'procreate-utility-sidebar__layer-controls',
@@ -119,6 +118,7 @@ export class UtilitySideBar {
 
         // Use a small delay to ensure everything is ready
         setTimeout(() => {
+            if (this.isDestroyed) return;
             try {
                 this.renderBrushes(p.onBrushSelect);
             } catch (e) {
@@ -150,8 +150,8 @@ export class UtilitySideBar {
         const layers = this.klCanvas.getLayers();
         const activeLayerId = this.klCanvas.getKlHistory().getComposed().activeLayerId;
 
-        // Show last 6 layers
-        [...layers].reverse().slice(0, 8).forEach((layer, i) => { // Show 8 instead of 6
+        // Show last 8 layers
+        [...layers].reverse().slice(0, 8).forEach((layer, i) => {
             const idx = layers.length - 1 - i;
             if (!layer) return;
             const isAlphaLocked = layer.id ? alphaLockManager.isLocked(layer.id) : false;
@@ -197,6 +197,7 @@ export class UtilitySideBar {
     }
 
     destroy(): void {
+        this.isDestroyed = true;
         this.colorSlider.destroy();
         this.rootEl.remove();
     }

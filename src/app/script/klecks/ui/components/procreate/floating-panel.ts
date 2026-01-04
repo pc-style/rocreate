@@ -135,8 +135,10 @@ export class FloatingPanel {
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointerdown') {
-                    downPosition = { ...this.position };
-                    this.rootEl.classList.add('procreate-floating--dragging');
+                    if (event.button === 0) { // left button only
+                        downPosition = { ...this.position };
+                        this.rootEl.classList.add('procreate-floating--dragging');
+                    }
                 }
                 if (event.type === 'pointermove' && this.rootEl.classList.contains('procreate-floating--dragging')) {
                     this.position.x = downPosition.x + event.pageX - event.downPageX!;

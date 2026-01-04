@@ -202,7 +202,6 @@ export class SideBar {
         this.opacity = p.initialOpacity;
         this.sizeMin = p.sizeMin ?? 1;
         this.sizeMax = p.sizeMax ?? 500;
-        this.sizeMax = p.sizeMax ?? 500;
         this.onSizeChange = p.onSizeChange;
         this.onOpacityChange = p.onOpacityChange;
 
@@ -273,8 +272,6 @@ export class SideBar {
         this.opacitySliderEl = opacityControl.slider;
         this.opacityFillEl = opacityControl.fill;
         this.opacityValueEl = opacityControl.valueLabel;
-        this.opacityPointerListener = opacityControl.pointerListener;
-
         this.opacityPointerListener = opacityControl.pointerListener;
 
         const undoRedoContainer = BB.el({

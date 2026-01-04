@@ -73,6 +73,11 @@ const ABSOLUTE_MAX_LAYERS = 128;
  * Larger canvases = fewer layers, smaller canvases = more layers.
  */
 export function calculateMaxLayers(width: number, height: number): number {
+    // handle zero or invalid dimensions
+    if (width <= 0 || height <= 0) {
+        return MIN_LAYERS;
+    }
+
     // each layer uses 4 bytes per pixel (RGBA)
     const bytesPerLayer = width * height * 4;
 

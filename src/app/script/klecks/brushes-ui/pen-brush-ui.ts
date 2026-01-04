@@ -290,7 +290,8 @@ export const penBrushUi = (function () {
         this.startLine = function (x, y, p, tiltX, tiltY) {
             brush.startLine(x, y, p, tiltX, tiltY);
         };
-        this.goLine = function (x, y, p, isCoalesced, tiltX, tiltY) {
+        this.goLine = function (x, y, p, _isCoalesced, tiltX, tiltY) {
+            // isCoalesced not used by pen brush - kept for interface compatibility
             brush.goLine(x, y, p, tiltX, tiltY);
         };
         this.endLine = function () {

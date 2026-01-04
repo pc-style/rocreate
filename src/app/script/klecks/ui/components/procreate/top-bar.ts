@@ -52,6 +52,7 @@ export class TopBar {
     private brushBtnEl: HTMLElement;
     private smudgeBtnEl: HTMLElement;
     private eraserBtnEl: HTMLElement;
+    private colorBtnPointerListener: PointerListener;
 
     private createButton(p: {
         icon?: string;
@@ -172,7 +173,7 @@ export class TopBar {
         });
         leftSide.append(selectionsBtn.el);
 
-        // Transform (pointer icon)
+        // Transform
         const transformBtn = this.createButton({
             icon: editTransformImg,
             title: LANG('filter-transform-title'),
@@ -272,7 +273,7 @@ export class TopBar {
             parent: colorBtn,
         });
 
-        const colorBtnPointerListener = new BB.PointerListener({
+        this.colorBtnPointerListener = new BB.PointerListener({
             target: colorBtn,
             onPointer: (e) => {
                 if (e.type === 'pointerup') {
@@ -328,5 +329,16 @@ export class TopBar {
     setColorPreview(color: { r: number; g: number; b: number }): void {
         this.currentColorRgb = color;
         this.colorInnerEl.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+    }
+
+    destroy(): void {
+        // clean up tool button listeners
+        this.toolButtons.forEach((btn) => {
+            btn.pointerListener.destroy();
+        });
+        this.toolButtons.clear();
+        // clean up color button listener
+        this.colorBtnPointerListener.destroy();
+        this.rootEl.remove();
     }
 }

@@ -53,7 +53,12 @@ export class AlphaLockManager {
      * Clear all alpha lock states
      */
     clear(): void {
+        const lockedLayers = this.getLockedLayers();
         this.state.clear();
+        // notify listeners about cleared locks
+        lockedLayers.forEach((layerId) => {
+            this.listeners.forEach((listener) => listener(layerId, false));
+        });
     }
 
     /**

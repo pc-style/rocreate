@@ -144,6 +144,11 @@ export class QuickShapeDetector {
      * Detect if stroke is a circle/ellipse
      */
     private detectCircle(center: TVector2D, width: number, height: number): TQuickShapeResult {
+        // handle degenerate ellipse with zero dimension
+        if (width <= 0 || height <= 0) {
+            return { type: null, points: [], confidence: 0 };
+        }
+
         const avgRadius = (width + height) / 4;
 
         if (avgRadius < 15) {
@@ -273,7 +278,7 @@ export class QuickShapeDetector {
         // Look for exactly 3 corners
         const corners = this.findCorners(3);
         if (corners.length !== 3) {
-            return { type: null, points: [], confidence: 0.3 };
+            return { type: null, points: [], confidence: 0 };
         }
 
         // Calculate how well points fit between the corners (along edges)

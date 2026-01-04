@@ -24,12 +24,22 @@ export class Gallery {
     private readonly onNew: TGalleryParams['onNew'];
     private readonly onImport: TGalleryParams['onImport'];
     private isVisible: boolean = false;
+    private isDestroyed: boolean = false;
+    private pendingUpdate: boolean = false;
+    private readonly keydownHandler: (e: KeyboardEvent) => void;
 
     constructor(p: TGalleryParams) {
         this.klRecoveryManager = p.klRecoveryManager;
         this.onSelect = p.onSelect;
         this.onNew = p.onNew;
         this.onImport = p.onImport;
+
+        // subscribe to recovery manager for auto-refresh when gallery is visible
+        this.klRecoveryManager.subscribe(() => {
+            if (this.isVisible && !this.isDestroyed) {
+                this.update();
+            }
+        });
 
         this.rootEl = BB.el({
             className: 'procreate-gallery',
@@ -200,11 +210,12 @@ export class Gallery {
         this.rootEl.append(header, this.containerEl);
 
         // Handle escape key to close
-        document.addEventListener('keydown', (e) => {
+        this.keydownHandler = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && this.isVisible) {
                 this.hide();
             }
-        });
+        };
+        document.addEventListener('keydown', this.keydownHandler);
     }
 
     private formatDate(timestamp: number): string {
@@ -247,6 +258,8 @@ export class Gallery {
     }
 
     public async update(): Promise<void> {
+        if (this.isDestroyed) return;
+        this.pendingUpdate = true;
         this.containerEl.innerHTML = '';
 
         try {
@@ -332,6 +345,8 @@ export class Gallery {
                 }
             });
             this.containerEl.append(errorState);
+        } finally {
+            this.pendingUpdate = false;
         }
     }
 
@@ -431,16 +446,23 @@ export class Gallery {
             textContent: '🗑',
             onClick: async (e: Event) => {
                 e.stopPropagation();
+                if (this.pendingUpdate) return; // prevent race condition during pending update
                 const confirmed = await this.confirmDelete(meta);
                 if (confirmed) {
                     try {
                         await deleteRecovery(meta.id);
                         item.style.opacity = '0';
                         item.style.transform = 'scale(0.9)';
+                        // mark item as deleted to prevent double-delete
+                        item.dataset.deleted = 'true';
                         setTimeout(() => {
-                            item.remove();
-                            // Check if gallery is now empty
-                            if (this.containerEl.children.length === 0) {
+                            if (item.parentElement) {
+                                item.remove();
+                            }
+                            // Check if gallery is now empty (only count non-deleted items)
+                            const remainingItems = Array.from(this.containerEl.children)
+                                .filter(el => !(el as HTMLElement).dataset?.deleted);
+                            if (remainingItems.length === 0) {
                                 this.update();
                             }
                         }, 200);
@@ -531,5 +553,12 @@ export class Gallery {
 
     public getElement(): HTMLElement {
         return this.rootEl;
+    }
+
+    public destroy(): void {
+        this.isDestroyed = true;
+        this.isVisible = false;
+        document.removeEventListener('keydown', this.keydownHandler);
+        this.rootEl.remove();
     }
 }

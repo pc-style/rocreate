@@ -2601,7 +2601,22 @@ export class KlApp {
             klColorSlider: this.klColorSlider,
             klCanvas: this.klCanvas,
             onLayerSelect: (idx) => {
+                // Activate layer in UI and push to history (same as original layer click)
                 this.layersUi.activateLayer(idx);
+                const activeLayer = this.klCanvas.getLayer(idx);
+                // Update current layer for painting
+                currentLayer = activeLayer;
+                currentBrushUi.setLayer(currentLayer);
+                this.layerPreview.setLayer(currentLayer);
+                // Push to history
+                const topEntry = this.klHistory.getEntries().at(-1)!.data;
+                const replaceTop = isHistoryEntryActiveLayerChange(topEntry);
+                this.klHistory.push(
+                    {
+                        activeLayerId: activeLayer.id,
+                    },
+                    replaceTop,
+                );
             },
             onAddLayer: () => {
                 const activeLayerIndex = this.layersUi.getSelected();
@@ -2712,17 +2727,17 @@ export class KlApp {
                 this.toolspaceToolRow.setActive('select');
                 this.easel.setTool('select');
                 mainTabRow?.open('select');
-                this.procreateLayout.closeAllPanels();
+                // Note: don't call closeAllPanels - procreate-layout manages its own panels
             },
             onOpenAdjustments: () => {
                 mainTabRow?.open('edit');
-                this.procreateLayout.closeAllPanels();
+                // Note: don't call closeAllPanels - procreate-layout manages its own panels
             },
             onOpenSelections: () => {
                 this.toolspaceToolRow.setActive('select');
                 this.easel.setTool('select');
                 mainTabRow?.open('select');
-                this.procreateLayout.closeAllPanels();
+                // Note: don't call closeAllPanels - procreate-layout manages its own panels
             },
             onOpenLayers: () => {
                 this.procreateLayout.toggleLayersPanel();

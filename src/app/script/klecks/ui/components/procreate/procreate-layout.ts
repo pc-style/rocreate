@@ -71,6 +71,9 @@ export class ProcreateLayout {
     private readonly selectUi: TProcreateLayoutParams['selectUi'];
     private readonly onToolChange: TProcreateLayoutParams['onToolChange'];
     private readonly onBrushSelect: TProcreateLayoutParams['onBrushSelect'];
+    private readonly onOpenSelectionsCallback: TProcreateLayoutParams['onOpenSelections'];
+    private readonly onTransformCallback: TProcreateLayoutParams['onTransform'];
+    private readonly onOpenAdjustmentsCallback: TProcreateLayoutParams['onOpenAdjustments'];
     private currentTool: TTopBarTool = 'brush';
     private currentBrushId: string;
     private readonly utilitySideBar: UtilitySideBar;
@@ -88,6 +91,9 @@ export class ProcreateLayout {
         this.selectUi = p.selectUi;
         this.onToolChange = p.onToolChange;
         this.onBrushSelect = p.onBrushSelect;
+        this.onOpenSelectionsCallback = p.onOpenSelections;
+        this.onTransformCallback = p.onTransform;
+        this.onOpenAdjustmentsCallback = p.onOpenAdjustments;
         this.currentBrushId = p.currentBrushId;
         this.toolspaceEl = p.toolspaceEl;
         this.classicUiEls = p.classicUiEls;
@@ -387,6 +393,9 @@ export class ProcreateLayout {
     private openAdjustmentsPanel(): void {
         if (this.adjustmentsPanel) return;
 
+        // Activate adjustments via kl-app callback
+        this.onOpenAdjustmentsCallback();
+
         // Style the edit UI (filters) for the floating panel
         css(this.editUi.el, {
             width: '260px',
@@ -436,11 +445,8 @@ export class ProcreateLayout {
     private openSelectionsPanel(): void {
         if (this.selectionsPanel) return;
 
-        // Switch tool to select
-        this.onToolChange('brush'); // ensure we are in a drawing mode first? No.
-        // kl-app does the direct tool change usually via p.onOpenSelections
-        // We'll let KlApp handle the tool state via its own logic if possible, 
-        // but here we just show the UI.
+        // Activate the select tool via kl-app callback
+        this.onOpenSelectionsCallback();
 
         css(this.selectUi.el, {
             width: '260px',
@@ -488,6 +494,9 @@ export class ProcreateLayout {
 
     private openTransformPanel(): void {
         if (this.transformPanel) return;
+
+        // Activate transform tool via kl-app callback
+        this.onTransformCallback();
 
         css(this.selectUi.el, {
             width: '260px',
@@ -544,7 +553,7 @@ export class ProcreateLayout {
         this.isActive = false;
         this.hideUI();
         if (this.toolspaceEl) {
-            this.toolspaceEl.style.display = 'block';
+            this.toolspaceEl.style.display = '';
         }
         this.classicUiEls.forEach(el => {
             if (el) el.style.display = '';
