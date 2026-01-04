@@ -383,9 +383,9 @@ export class QuickShapeDetector {
         const corners: TVector2D[] = [];
 
         for (const a of topAngles) {
-            const isNearExisting = corners.some((c, i) => {
-                const existingIdx = angles[i]?.index ?? 0;
-                return Math.abs(a.index - existingIdx) < minDistance;
+            const isNearExisting = corners.some((corner) => {
+                const cornerIdx = this.points.indexOf(corner);
+                return Math.abs(a.index - cornerIdx) < minDistance;
             });
             if (!isNearExisting && corners.length < n) {
                 corners.push(this.points[a.index]);
