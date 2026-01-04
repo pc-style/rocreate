@@ -34,6 +34,7 @@ import {
 } from '../history/history.types';
 import { createFillColorTiles } from '../history/create-fill-color-tiles';
 import { updateLayersViaComposed } from './update-layers-via-composed';
+import { toGlobalCompositeOperation } from './translate-blending';
 import { isHistoryEntryOpacityChange } from '../history/push-helpers/is-history-entry-opacity-change';
 import { isHistoryEntryVisibilityChange } from '../history/push-helpers/is-history-entry-visibility-change';
 import { transformBounds } from '../../bb/transform/transform-bounds';
@@ -101,6 +102,8 @@ export type TKlCanvasLayer = {
     compositeObj?: TLayerComposite;
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
+    // Procreate-style clipping mask: layer renders only within alpha of layer below
+    isClippingMask?: boolean;
 };
 
 export type TLayerComposite = {
@@ -712,7 +715,7 @@ export class KlCanvas {
                 bottomCtx.drawImage(topLayer.canvas, 0, 0);
             } else {
                 if (mixModeStr) {
-                    bottomCtx.globalCompositeOperation = mixModeStr;
+                    bottomCtx.globalCompositeOperation = toGlobalCompositeOperation(mixModeStr);
                 }
                 bottomCtx.globalAlpha = topOpacity;
                 bottomCtx.drawImage(topLayer.canvas, 0, 0);
@@ -755,7 +758,7 @@ export class KlCanvas {
                 continue;
             }
             bottomCtx.save();
-            bottomCtx.globalCompositeOperation = layer.mixModeStr;
+            bottomCtx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
             bottomCtx.globalAlpha = layer.opacity;
             bottomCtx.drawImage(layer.canvas, 0, 0);
             bottomCtx.restore();
