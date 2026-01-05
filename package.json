@@ -24,6 +24,7 @@
     "@parcel/transformer-sass": "2.16.1",
     "ag-psd": "28.3.1",
     "buffer": "6.0.3",
+    "canvaskit-wasm": "^0.40.0",
     "js-beautify": "1.15.4",
     "json5": "2.2.3",
     "mdn-polyfills": "5.20.0",
@@ -34,5 +35,9 @@
   "trustedDependencies": [
     "@parcel/watcher",
     "@swc/core"
-  ]
+  ],
+  "devDependencies": {
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10"
+  }
 }

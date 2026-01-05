@@ -90,8 +90,19 @@ import { QuickMenu } from '../klecks/ui/components/procreate/quick-menu';
 import { SymmetryGuide, TSymmetryMode } from '../klecks/ui/components/procreate/symmetry-guide';
 import { QuickShapeHandler } from '../klecks/events/quick-shape-handler';
 import { alphaLockManager } from '../klecks/canvas/alpha-lock-manager';
+import { loadCanvasKit } from '../canvaskit';
 
 importFilters();
+
+// Start loading CanvasKit in background (non-blocking)
+loadCanvasKit()
+    .then(() => {
+        console.log('[KlApp] CanvasKit GPU compositor ready');
+    })
+    .catch((e) => {
+        console.log('[KlApp] GPU compositing unavailable, using Canvas 2D fallback');
+    });
+
 
 type TKlAppOptionsEmbed = {
     url: string;
@@ -528,11 +539,22 @@ export class KlApp {
         let strokeCanvas: HTMLCanvasElement | undefined;
         let strokeContext: CanvasRenderingContext2D | undefined;
 
+        const resetCanvasState = (ctx: CanvasRenderingContext2D) => {
+            // Ensure a clean baseline for brush rendering (prevents stale composite/alpha).
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.globalAlpha = 1;
+        };
+
         const getStrokeContext = () => {
-            if (!strokeCanvas || strokeCanvas.width !== this.klCanvas.getWidth() || strokeCanvas.height !== this.klCanvas.getHeight()) {
+            if (
+                !strokeCanvas ||
+                strokeCanvas.width !== this.klCanvas.getWidth() ||
+                strokeCanvas.height !== this.klCanvas.getHeight()
+            ) {
                 strokeCanvas = BB.canvas(this.klCanvas.getWidth(), this.klCanvas.getHeight());
                 strokeContext = BB.ctx(strokeCanvas);
             }
+            resetCanvasState(strokeContext!);
             return strokeContext!;
         };
 
@@ -1253,6 +1275,11 @@ export class KlApp {
         });
 
         drawEventChain.setChainOut(((event: TDrawEvent) => {
+            // Guard against any late/stray move events (e.g. smoothing tail after stroke end).
+            if (event.type === 'move' && !this.lineSanitizer.getIsDrawing()) {
+                return;
+            }
+
             // Get symmetry mirrored points
             const getMirroredPoints = (x: number, y: number) => {
                 if (this.symmetryGuide.isActive()) {
@@ -1272,6 +1299,12 @@ export class KlApp {
 
             if (event.type === 'down') {
                 this.toolspace.style.pointerEvents = 'none';
+                resetCanvasState(currentLayer.context);
+
+                // Safety: Clear any stale composites from other layers
+                for (let i = 0; i < this.klCanvas.getLayerCount(); i++) {
+                    this.klCanvas.setComposite(i, undefined);
+                }
 
                 // Track points for Quick Shape detection
                 this.quickShapeHandler.onStrokeStart({ x: event.x, y: event.y });
@@ -1291,6 +1324,7 @@ export class KlApp {
                         draw: (ctx) => {
                             if (strokeCanvas) {
                                 ctx.save();
+                                resetCanvasState(ctx);
                                 if (selectionPath) {
                                     ctx.clip(selectionPath);
                                 }
@@ -1320,6 +1354,7 @@ export class KlApp {
                     currentBrushUi.startLine(p.x, p.y, event.pressure, event.tiltX, event.tiltY);
                 });
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
+                this.easel.markLayerDirty(currentLayer.index);
                 this.easel.requestRender();
             }
             if (event.type === 'move') {
@@ -1332,6 +1367,7 @@ export class KlApp {
                     currentBrushUi.goLine(p.x, p.y, event.pressure, event.isCoalesced, event.tiltX, event.tiltY);
                 });
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
+                this.easel.markLayerDirty(currentLayer.index);
                 this.easel.requestRender();
             }
             if (event.type === 'up') {
@@ -1359,12 +1395,14 @@ export class KlApp {
             if (event.type === 'line') {
                 // Draw with symmetry mirroring for line segments
                 if (event.x0 !== null && event.y0 !== null && event.x1 !== null && event.y1 !== null) {
+                    resetCanvasState(currentLayer.context);
                     const points1 = getMirroredPoints(event.x0, event.y0);
                     const points2 = getMirroredPoints(event.x1, event.y1);
                     for (let i = 0; i < points1.length; i++) {
                         currentBrushUi.getBrush().drawLineSegment(points1[i].x, points1[i].y, points2[i].x, points2[i].y);
                     }
                     this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
+                    this.easel.markLayerDirty(currentLayer.index);
                 }
                 this.easel.requestRender();
             }

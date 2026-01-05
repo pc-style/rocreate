@@ -13,6 +13,8 @@ import { TDrawEvent, TDrawMoveEvent } from '../kl-types';
 export class LineSmoothing {
     private chainOut: ((drawEvent: TDrawEvent) => void) | undefined;
     private smoothing: number;
+    private isDrawing: boolean = false;
+    private strokeId: number = 0;
     private lastMixedInput:
         | {
               x: number;
@@ -36,17 +38,24 @@ export class LineSmoothing {
         clearInterval(this.interval);
 
         if (event.type === 'down') {
+            this.isDrawing = true;
+            this.strokeId++;
             this.lastMixedInput = {
                 x: event.x,
                 y: event.y,
                 pressure: event.pressure,
             };
         }
+        if (event.type === 'up') {
+            this.isDrawing = false;
+            this.strokeId++;
+        }
 
         if (event.type === 'move') {
             const inputX = event.x;
             const inputY = event.y;
             const inputPressure = event.pressure;
+            const activeStrokeId = this.strokeId;
 
             event.x = BB.mix(event.x, this.lastMixedInput!.x, this.smoothing);
             event.y = BB.mix(event.y, this.lastMixedInput!.y, this.smoothing);
@@ -60,6 +69,10 @@ export class LineSmoothing {
             if (this.smoothing > 0) {
                 this.timeout = setTimeout(() => {
                     this.interval = setInterval(() => {
+                        if (!this.isDrawing || this.strokeId !== activeStrokeId) {
+                            clearInterval(this.interval);
+                            return;
+                        }
                         event = JSON.parse(JSON.stringify(event)) as TDrawMoveEvent;
 
                         event.x = BB.mix(inputX, this.lastMixedInput!.x, this.smoothing);

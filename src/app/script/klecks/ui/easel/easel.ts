@@ -1,5 +1,6 @@
 import { c } from '../../../bb/base/c';
-import { ProjectViewport, TViewportTransform } from '../project-viewport/project-viewport';
+import { TViewportTransform } from '../project-viewport/project-viewport';
+import { GPUProjectViewport } from '../project-viewport/gpu-project-viewport';
 import { PointerListener } from '../../../bb/input/pointer-listener';
 import { BB } from '../../../bb/bb';
 import { toMetaTransform } from '../../../bb/transform/to-meta-transform';
@@ -64,7 +65,7 @@ export class Easel<GToolId extends string> {
     private readonly rootEl: HTMLElement;
     private readonly svgEl: SVGElement; // each tool gets an element in this SVG tag, for an SVG overlay
     private readonly htmlOverlayEl: HTMLElement; // each tool can get an element in this html node, for an interactive overlay
-    private readonly viewport: ProjectViewport;
+    private readonly viewport: GPUProjectViewport;
     private readonly pointerPreprocessor: EaselPointerPreprocessor;
     private readonly pointerListener: PointerListener;
     private readonly windowPointerListener: (e: PointerEvent) => void;
@@ -396,7 +397,7 @@ export class Easel<GToolId extends string> {
             }),
         ) as Record<TEaselToolTrigger, GToolId | undefined>;
 
-        this.viewport = new ProjectViewport({
+        this.viewport = new GPUProjectViewport({
             width: this.width,
             height: this.height,
             project: {
@@ -409,6 +410,7 @@ export class Easel<GToolId extends string> {
                 const tool = this.getActiveTool();
                 tool.renderAfterViewport?.(ctx, renderedTransform);
             },
+            enableGPU: true,
         });
 
         Object.values<TEaselTool>(this.toolsMap).forEach((tool) => {
@@ -776,7 +778,13 @@ export class Easel<GToolId extends string> {
     }
 
     requestRender(): void {
-        this.doRender = true;
+        this.viewport.render();
+    }
+
+    markLayerDirty(layerIndex: number): void {
+        if ('markLayerDirty' in this.viewport) {
+            this.viewport.markLayerDirty(layerIndex);
+        }
     }
 
     getTransform(): TViewportTransform {

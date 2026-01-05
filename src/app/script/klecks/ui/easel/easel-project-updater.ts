@@ -15,7 +15,8 @@ export type TEaselProjectUpdaterParams<T extends string> = {
 export class EaselProjectUpdater<T extends string> {
     private readonly klCanvas: KlCanvas;
     private readonly easel: Easel<T>;
-    private readonly compositeCanvas = BB.canvas(1, 1);
+    // Use a Map to give each layer its own composite canvas to prevent overwriting
+    private readonly compositeCanvases: Map<number, HTMLCanvasElement> = new Map();
 
     // ----------------------------------- public -----------------------------------
     constructor(p: TEaselProjectUpdaterParams<T>) {
@@ -24,31 +25,42 @@ export class EaselProjectUpdater<T extends string> {
         this.update();
     }
 
+    /**
+     * Get or create a composite canvas for a specific layer index.
+     */
+    private getCompositeCanvas(layerIndex: number, width: number, height: number): HTMLCanvasElement {
+        let canvas = this.compositeCanvases.get(layerIndex);
+        if (!canvas || canvas.width !== width || canvas.height !== height) {
+            canvas = BB.canvas(width, height);
+            this.compositeCanvases.set(layerIndex, canvas);
+        }
+        return canvas;
+    }
+
     update(): void {
         const width = this.klCanvas.getWidth();
         const height = this.klCanvas.getHeight();
+        const layers = this.klCanvas.getLayersFast();
+
+
+
         this.easel.setProject({
             width,
             height,
-            layers: this.klCanvas.getLayersFast().map((layer) => {
+            layers: layers.map((layer, index) => {
                 return {
                     image: layer.compositeObj
                         ? () => {
-                              if (
-                                  this.compositeCanvas.width != width ||
-                                  this.compositeCanvas.height != height
-                              ) {
-                                  this.compositeCanvas.width = width;
-                                  this.compositeCanvas.height = height;
-                              }
-                              const ctx = this.compositeCanvas.getContext('2d')!;
-                              ctx.clearRect(0, 0, width, height);
-                              ctx.drawImage(layer.canvas, 0, 0);
-                              layer.compositeObj?.draw(
-                                  throwIfNull(this.compositeCanvas.getContext('2d')),
-                              );
-                              return this.compositeCanvas;
-                          }
+                            // Use a dedicated composite canvas for this layer
+                            const compositeCanvas = this.getCompositeCanvas(index, width, height);
+                            const ctx = compositeCanvas.getContext('2d')!;
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.drawImage(layer.canvas, 0, 0);
+                            layer.compositeObj?.draw(
+                                throwIfNull(compositeCanvas.getContext('2d')),
+                            );
+                            return compositeCanvas;
+                        }
                         : layer.canvas,
                     isVisible: layer.isVisible,
                     opacity: layer.opacity,
@@ -62,7 +74,12 @@ export class EaselProjectUpdater<T extends string> {
 
     // if you're not rendering easel for a while
     freeCompositeCanvas(): void {
-        this.compositeCanvas.width = 1;
-        this.compositeCanvas.height = 1;
+        // Free all composite canvases
+        for (const [, canvas] of this.compositeCanvases) {
+            canvas.width = 1;
+            canvas.height = 1;
+        }
+        this.compositeCanvases.clear();
     }
 }
+

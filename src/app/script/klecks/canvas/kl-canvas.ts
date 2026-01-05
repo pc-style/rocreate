@@ -1394,6 +1394,7 @@ export class KlCanvas {
      * @param compositeObj
      */
     setComposite(layerIndex: number, compositeObj: undefined | TLayerComposite): void {
+        console.log(`[KlCanvas] setComposite layer ${layerIndex}`, compositeObj ? 'SET' : 'CLEAR');
         if (!this.layers[layerIndex]) {
             throw new Error('invalid layer');
         }

@@ -6,6 +6,7 @@ import { Matrix, inverse, compose } from 'transformation-matrix';
 import { createMatrixFromTransform } from '../../../bb/transform/create-matrix-from-transform';
 import { matrixToTuple } from '../../../bb/math/matrix-to-tuple';
 import { DEBUG_RENDERER_ENABLED, DEBUG_RENDER } from './debug-render';
+import { toGlobalCompositeOperation } from '../../canvas/translate-blending';
 
 function fixScale(scale: number, pixels: number): number {
     return Math.round(pixels * scale) / pixels;
@@ -154,19 +155,19 @@ export class ProjectViewport {
 
         const renderedTransform: TViewportTransformXY = optimizeForAnimation
             ? {
-                  x: transform.x,
-                  y: transform.y,
-                  angleDeg: transform.angleDeg,
-                  scaleX: transform.scale,
-                  scaleY: transform.scale,
-              }
+                x: transform.x,
+                y: transform.y,
+                angleDeg: transform.angleDeg,
+                scaleX: transform.scale,
+                scaleY: transform.scale,
+            }
             : {
-                  x: Math.round(transform.x),
-                  y: Math.round(transform.y),
-                  scaleX: fixScale(transform.scale, this.project.width),
-                  scaleY: fixScale(transform.scale, this.project.height),
-                  angleDeg: transform.angleDeg,
-              };
+                x: Math.round(transform.x),
+                y: Math.round(transform.y),
+                scaleX: fixScale(transform.scale, this.project.width),
+                scaleY: fixScale(transform.scale, this.project.height),
+                angleDeg: transform.angleDeg,
+            };
         const renderedMat = createMatrixFromTransform(renderedTransform);
 
         this.ctx.save();
@@ -225,7 +226,7 @@ export class ProjectViewport {
                 return;
             }
             this.ctx.save();
-            this.ctx.globalCompositeOperation = layer.mixModeStr;
+            this.ctx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
             this.ctx.globalAlpha = layer.opacity;
 
             let image: CanvasImageSource;
