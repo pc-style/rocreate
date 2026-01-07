@@ -80,9 +80,12 @@ function renderChromaticAberration(
         return;
     }
 
+    // CanvasKit's TypeScript bindings are incomplete for RuntimeEffect.makeShader()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const shader = effectFactory.makeShader([dx, dy], [imageShader] as any) as any;
 
     const paint = new ck.Paint();
+    // CanvasKit's TypeScript bindings are incomplete for Paint.setShader()
     // @ts-ignore
     paint.setShader(shader);
 
@@ -227,7 +230,7 @@ export const filterChromaticAberration = {
 
         // Sliders
         const intensitySlider = new KlSlider({
-            label: 'Intensity', // todo LANG
+            label: LANG('intensity'),
             width: 300,
             height: 30,
             min: 0,
@@ -242,22 +245,19 @@ export const filterChromaticAberration = {
         css(intensitySlider.getElement(), { marginBottom: '10px' });
         rootEl.append(intensitySlider.getElement());
 
-        let angle = (input.directionDeg * Math.PI) / 180; // Initialize angle in radians
-
         const angleSlider = new KlSlider({
-            label: 'Direction',
+            label: LANG('direction'),
             width: 300,
             height: 30,
             min: 0,
             max: 360,
-            value: (angle / Math.PI) * 180,
+            value: input.directionDeg,
             eventResMs: EVENT_RES_MS,
             formatFunc: (val: number) => {
                 return Math.round(val) + '°';
             },
-            onChange: function (val) {
-                angle = (val / 180) * Math.PI;
-                input.directionDeg = val; // Update input.directionDeg as well
+            onChange: (val) => {
+                input.directionDeg = val;
                 update();
             },
         });
@@ -285,18 +285,6 @@ export const filterChromaticAberration = {
         const { layer, input, klHistory, klCanvas } = params;
         const context = layer.context;
 
-        // This operation replaces the entire layer content
-        // We need to support history/undo
-
-        // Snapshot before
-        const historyEntry = {
-            // We use a helper to verify we capture the state correctly
-            // But since this is a full layer filter, we might just want standard pushable layer change
-            // However, renderChromaticAberration modifies the CANVAS directly if we passed the context?
-            // No, my render function takes a target context and source canvas.
-            // I should use a temp canvas for source.
-        };
-
         const w = context.canvas.width;
         const h = context.canvas.height;
 
@@ -309,7 +297,6 @@ export const filterChromaticAberration = {
         // This overwrites the context with the filtered result
         renderChromaticAberration(context, w, h, input, sourceCanvas);
 
-        // Push history
         // Push history
         const selection = klCanvas.getSelection();
         klHistory.push(

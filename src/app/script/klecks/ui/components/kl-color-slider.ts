@@ -391,7 +391,6 @@ export class KlColorSlider {
             divH.append(this.controlH);
             const svPointerListener = new BB.PointerListener({
                 target: svWrapper,
-                fixScribble: true,
                 onPointer: (event) => {
                     if (event.type === 'pointerdown') {
                         // prevent manual slider input keeping focus on iPad
@@ -451,7 +450,6 @@ export class KlColorSlider {
             });
             const hPointerListener = new BB.PointerListener({
                 target: divH,
-                fixScribble: true,
                 onPointer: (event) => {
                     if (event.type === 'pointerdown') {
                         // prevent manual slider input keeping focus on iPad

@@ -276,6 +276,10 @@ export class ProcreateLayout {
             content: this.klColorSlider.getElement(),
             position: { x: window.innerWidth - 320, y: 60 },
             width: 300,
+            height: 400,
+            resizable: true,
+            minWidth: 250,
+            minHeight: 300,
             onClose: () => {
                 this.closeColorsPanel();
             },
@@ -320,6 +324,10 @@ export class ProcreateLayout {
             content: brushLibrary.getElement(),
             position: { x: window.innerWidth - 450, y: 60 },
             width: 420,
+            height: 500,
+            resizable: true,
+            minWidth: 300,
+            minHeight: 400,
             onClose: () => {
                 this.closeBrushLibraryPanel();
             },

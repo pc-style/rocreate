@@ -15,6 +15,11 @@ import { ProcreateLayout } from '../klecks/ui/components/procreate/procreate-lay
 import { SymmetryGuide } from '../klecks/ui/components/procreate/symmetry-guide';
 
 import { KlCanvas } from '../klecks/canvas/kl-canvas';
+import { ToolspaceToolRow } from '../klecks/ui/components/toolspace-tool-row';
+import { LayersUi } from '../klecks/ui/tool-tabs/layers-ui/layers-ui';
+import { TabRow } from '../klecks/ui/components/tab-row';
+import { TKlProject, TBrushUiInstance } from '../klecks/kl-types';
+import { KeyListener } from '../bb/input/key-listener';
 
 export type TKlAppEventsParams = {
     easel: Easel<any>;
@@ -30,7 +35,7 @@ export type TKlAppEventsParams = {
     // State Getters
     isEmbed: boolean;
     getCurrentLayer: () => TKlCanvasLayer;
-    getCurrentBrushUi: () => any;
+    getCurrentBrushUi: () => TBrushUiInstance<unknown>;
     getCurrentBrushId: () => string;
     getLastPaintingBrushId: () => string;
     getNextBrushId: () => string;
@@ -42,23 +47,23 @@ export type TKlAppEventsParams = {
     discardUncommitted: () => boolean;
     save: () => void;
     updateLastSaved: () => void;
-    getProject: () => any; // TKlProject
+    getProject: () => TKlProject;
     clearLayer: (showStatus?: boolean) => void;
     copyToClipboard: (showCrop?: boolean) => void;
 
     // UI Interactions
     ui: {
-        toolspaceToolRow: any; // ToolspaceToolRow
-        layersUi: any; // LayersUi
-        mainTabRow: any; // TabRow | undefined
-        brushTabRow: any; // TabRow
+        toolspaceToolRow: ToolspaceToolRow;
+        layersUi: LayersUi;
+        mainTabRow: TabRow | undefined;
+        brushTabRow: TabRow;
         updateMainTabVisibility: () => void;
     };
 };
 
 export class KlAppEvents {
     private readonly params: TKlAppEventsParams;
-    private readonly keyListener: any; // BB.KeyListener
+    private readonly keyListener: KeyListener;
 
     constructor(params: TKlAppEventsParams) {
         this.params = params;

@@ -367,7 +367,6 @@ export class Cropper {
 
         this.edge0PointerListener = new BB.PointerListener({
             target: this.edges[0].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -389,7 +388,6 @@ export class Cropper {
         });
         this.edge1PointerListener = new BB.PointerListener({
             target: this.edges[1].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -411,7 +409,6 @@ export class Cropper {
         });
         this.edge2PointerListener = new BB.PointerListener({
             target: this.edges[2].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -433,7 +430,6 @@ export class Cropper {
         });
         this.edge3PointerListener = new BB.PointerListener({
             target: this.edges[3].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -522,7 +518,6 @@ export class Cropper {
         //top left
         this.corner0PointerListener = new BB.PointerListener({
             target: this.cornerElArr[0].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -547,7 +542,6 @@ export class Cropper {
         //top right
         this.corner1PointerListener = new BB.PointerListener({
             target: this.cornerElArr[1].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -572,7 +566,6 @@ export class Cropper {
         //bottom right
         this.corner2PointerListener = new BB.PointerListener({
             target: this.cornerElArr[2].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {
@@ -597,7 +590,6 @@ export class Cropper {
         //bottom left
         this.corner3PointerListener = new BB.PointerListener({
             target: this.cornerElArr[3].el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {

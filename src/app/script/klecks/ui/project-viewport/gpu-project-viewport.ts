@@ -211,6 +211,7 @@ export class GPUProjectViewport {
             this.resFactor = this.useNativeResolution ? devicePixelRatio : 1;
             this.canvas.width = Math.round(this.width * this.resFactor);
             this.canvas.height = Math.round(this.height * this.resFactor);
+            this.needsFullRefresh = true;
 
             // Resize GPU canvas if using GPU
             if (this.gpuCanvas && this.gpuCompositor) {
@@ -258,9 +259,12 @@ export class GPUProjectViewport {
 
         // Update layer images
         const compositorLayers: CompositorLayer[] = [];
+        const activeLayerIds = new Set<string>();
 
         this.project.layers.forEach((layer, index) => {
             const layerId = this.getLayerId(index);
+            const isClippingMask = !!layer.isClippingMask;
+            activeLayerIds.add(layerId);
 
             if (!layer.isVisible || layer.opacity === 0) {
                 compositorLayers.push({
@@ -268,6 +272,7 @@ export class GPUProjectViewport {
                     isVisible: false,
                     opacity: 0,
                     mixModeStr: 'source-over',
+                    isClippingMask,
                 });
                 return;
             }
@@ -310,6 +315,7 @@ export class GPUProjectViewport {
                 this.gpuCompositor!.updateLayerImage(liveId, layer.liveLayerImage);
                 // We track it to know it exists, preventing cleanup below
                 this.layerCanvasVersions.set(liveId, new WeakRef(layer.liveLayerImage));
+                activeLayerIds.add(liveId);
 
                 liveLayerDef = {
                     id: liveId,
@@ -329,8 +335,11 @@ export class GPUProjectViewport {
                 opacity: layer.opacity,
                 mixModeStr: layer.mixModeStr,
                 liveLayer: liveLayerDef,
+                isClippingMask,
             });
         });
+
+        this.cleanupUnusedGpuLayers(activeLayerIds);
 
         // Reset full refresh and dirty flags
         this.needsFullRefresh = false;
@@ -608,6 +617,8 @@ export class GPUProjectViewport {
 
     setProject(project: TProjectViewportProject): void {
         this.project = project;
+        this.needsFullRefresh = true;
+        this.dirtyLayers.clear();
     }
 
     getTransform(): TViewportTransform {
@@ -617,6 +628,7 @@ export class GPUProjectViewport {
     setUseNativeResolution(b: boolean): void {
         this.useNativeResolution = b;
         this.doResize = true;
+        this.needsFullRefresh = true;
     }
 
     getUseNativeResolution(): boolean {
@@ -640,6 +652,7 @@ export class GPUProjectViewport {
     setGPUEnabled(enabled: boolean): void {
         if (enabled && !this.gpuCompositor) {
             this.initGPUCompositing();
+            this.needsFullRefresh = true;
         } else if (!enabled) {
             this.useGPU = false;
         } else {
@@ -653,6 +666,18 @@ export class GPUProjectViewport {
      */
     markLayerDirty(index: number): void {
         this.dirtyLayers.add(index);
+    }
+
+    private cleanupUnusedGpuLayers(activeLayerIds: Set<string>): void {
+        if (!this.gpuCompositor) {
+            return;
+        }
+        for (const layerId of this.layerCanvasVersions.keys()) {
+            if (!activeLayerIds.has(layerId)) {
+                this.layerCanvasVersions.delete(layerId);
+                this.gpuCompositor.removeLayerImage(layerId);
+            }
+        }
     }
 
     destroy(): void {

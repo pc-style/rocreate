@@ -1,16 +1,12 @@
 import { BB } from '../../../../bb/bb';
 import { Select } from '../../components/select';
-import { PointSlider } from '../../components/point-slider';
 import { KlCanvas } from '../../../canvas/kl-canvas';
 import { TMixMode, TUiLayout } from '../../../kl-types';
 import { LANG } from '../../../../language/language';
 import { translateBlending } from '../../../canvas/translate-blending';
-import { PointerListener } from '../../../../bb/input/pointer-listener';
-import { TPointerEvent } from '../../../../bb/input/event.types';
 import { renameLayerDialog } from './rename-layer-dialog';
 import { mergeLayerDialog } from './merge-layer-dialog';
-import { css, throwIfNull } from '../../../../bb/base/base';
-import { HAS_POINTER_EVENTS } from '../../../../bb/base/browser';
+import { css } from '../../../../bb/base/base';
 import { c } from '../../../../bb/base/c';
 import { DropdownMenu } from '../../components/dropdown-menu';
 import addLayerImg from 'url:/src/app/img/ui/procreate/add-layer.svg';
@@ -21,24 +17,8 @@ import renameLayerImg from 'url:/src/app/img/ui/procreate/rename-layer.svg';
 import caretDownImg from 'url:/src/app/img/ui/caret-down.svg';
 import { KlHistory } from '../../../history/kl-history';
 import { makeUnfocusable } from '../../../../bb/base/ui';
-import { alphaLockManager } from '../../../canvas/alpha-lock-manager'; // New Import
-
-const paddingLeft = 25;
-
-type TLayerEl = HTMLElement & {
-    label: HTMLElement;
-    opacityLabel: HTMLElement;
-    thumb: HTMLCanvasElement;
-
-    spot: number;
-    posY: number;
-    layerName: string;
-    opacity: number;
-    pointerListener: PointerListener;
-    opacitySlider: PointSlider;
-    isSelected: boolean;
-    alphaLockUnsub?: () => void;
-};
+import { createLayerItem, TLayerEl } from './layer-item';
+import { LayerDragController } from './layer-drag-controller';
 
 export type TLayersUiParams = {
     klCanvas: KlCanvas;
@@ -86,79 +66,11 @@ export class LayersUi {
     private largeThumbInDocument: boolean;
     private largeThumbInTimeout: undefined | ReturnType<typeof setTimeout>;
     private largeThumbTimeout: undefined | ReturnType<typeof setTimeout>;
-    private lastpos: number = 0;
 
     private readonly layerHeight: number = 35;
     private readonly layerSpacing: number = 0;
     private isProcreate: boolean = false;
-
-    private move(oldSpotIndex: number, newSpotIndex: number): void {
-        if (isNaN(oldSpotIndex) || isNaN(newSpotIndex)) {
-            throw 'layers-ui - invalid move';
-        }
-        for (let i = 0; i < this.klCanvasLayerArr.length; i++) {
-            ((i) => {
-                let posy = this.layerElArr[i].spot; // <- here
-                if (this.layerElArr[i].spot === oldSpotIndex) {
-                    posy = newSpotIndex;
-                } else {
-                    if (this.layerElArr[i].spot > oldSpotIndex) {
-                        posy--;
-                    }
-                    if (posy >= newSpotIndex) {
-                        posy++;
-                    }
-                }
-                this.layerElArr[i].spot = posy;
-                this.layerElArr[i].posY =
-                    (this.layerHeight + this.layerSpacing) *
-                    (this.klCanvasLayerArr.length - posy - 1);
-                this.layerElArr[i].style.top = this.layerElArr[i].posY + 'px';
-            })(i);
-        }
-        if (oldSpotIndex === newSpotIndex) {
-            return;
-        }
-        this.applyUncommitted();
-        this.klCanvas.moveLayer(this.selectedSpotIndex, newSpotIndex - oldSpotIndex);
-        this.klCanvasLayerArr = this.klCanvas.getLayers();
-        this.selectedSpotIndex = newSpotIndex;
-        this.mergeBtn.disabled = this.selectedSpotIndex === 0;
-    }
-
-    private posToSpot(p: number): number {
-        let result = parseInt('' + (p / (this.layerHeight + this.layerSpacing) + 0.5));
-        result = Math.min(this.klCanvasLayerArr.length - 1, Math.max(0, result));
-        result = this.klCanvasLayerArr.length - result - 1;
-        return result;
-    }
-
-    /**
-     * update css position of all layers that are not being dragged, while dragging
-     */
-    private updateLayersVerticalPosition(id: number, newspot: number): void {
-        newspot = Math.min(this.klCanvasLayerArr.length - 1, Math.max(0, newspot));
-        if (newspot === this.lastpos) {
-            return;
-        }
-        for (let i = 0; i < this.klCanvasLayerArr.length; i++) {
-            if (this.layerElArr[i].spot === id) {
-                // <- here
-                continue;
-            }
-            let posy = this.layerElArr[i].spot;
-            if (this.layerElArr[i].spot > id) {
-                posy--;
-            }
-            if (posy >= newspot) {
-                posy++;
-            }
-            this.layerElArr[i].posY =
-                (this.layerHeight + this.layerSpacing) * (this.klCanvasLayerArr.length - posy - 1);
-            this.layerElArr[i].style.top = this.layerElArr[i].posY + 'px';
-        }
-        this.lastpos = newspot;
-    }
+    private dragController!: LayerDragController;
 
     private renameLayer(layerSpot: number): void {
         renameLayerDialog(this.parentEl, this.klCanvas.getLayerOld(layerSpot)!.name, (newName) => {
@@ -182,374 +94,20 @@ export class LayersUi {
         this.oldHistoryState = this.klHistory.getChangeCount();
         this.klCanvasLayerArr = this.klCanvas.getLayers();
 
-        const createLayerEntry = (index: number): void => {
-            const klLayerOld = throwIfNull(this.klCanvas.getLayerOld(index));
-            const realLayerId = this.klCanvas.getLayer(index).id;
-            const layerName = klLayerOld.name;
-            const opacity = this.klCanvasLayerArr[index].opacity;
-            const isVisible = klLayerOld.isVisible;
-            const isClippingMask = this.klCanvasLayerArr[index].isClippingMask;
-            const layercanvas = this.klCanvasLayerArr[index].context.canvas;
+        // create drag handler once per list rebuild
+        const dragHandler = this.dragController.createDragHandler();
 
-            const layer: TLayerEl = BB.el({
-                className: 'kl-layer',
-            }) as HTMLElement as TLayerEl;
-            this.layerElArr[index] = layer;
-            layer.posY = (this.klCanvasLayerArr.length - 1) * (this.layerHeight + this.layerSpacing) - index * (this.layerHeight + this.layerSpacing);
-            css(layer, {
-                top: layer.posY + 'px',
-            });
-            const innerLayer = BB.el();
-            css(innerLayer, {
-                position: 'relative',
-            });
-
-            const container1 = BB.el();
-            css(container1, {
-                width: '100%',
-                height: this.layerHeight + 'px',
-            });
-            const container2 = BB.el();
-            layer.append(innerLayer);
-            innerLayer.append(container1, container2);
-
-            layer.spot = index;
-
-            //checkbox - visibility
-            {
-                const checkWrapper = BB.el({
-                    tagName: 'label',
-                    parent: container1,
-                    title: LANG('layers-visibility-toggle'),
-                    css: {
-                        display: 'flex',
-                        position: 'absolute',
-                        right: '8px',
-                        top: '0',
-                        width: '30px',
-                        height: '100%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        zIndex: '2',
-                    },
-                });
-                const check = BB.el({
-                    tagName: 'input',
-                    parent: checkWrapper,
-                    custom: {
-                        type: 'checkbox',
-                        tabindex: '-1',
-                        name: 'layer-visibility',
-                    },
-                    css: {
-                        display: 'block',
-                        cursor: 'pointer',
-                        margin: '0',
-                        marginRight: '5px',
-                    },
-                });
-                check.checked = isVisible;
-                check.onchange = () => {
-                    this.klCanvas.setLayerIsVisible(layer.spot, check.checked);
-                    //this.createLayerList();
-                    if (layer.spot === this.selectedSpotIndex) {
-                        this.onSelect(this.selectedSpotIndex, false);
-                    }
-                };
-                // prevent layer getting dragged
-                const preventFunc = (e: PointerEvent | MouseEvent) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                };
-                if (HAS_POINTER_EVENTS) {
-                    checkWrapper.onpointerdown = preventFunc;
-                } else {
-                    checkWrapper.onmousedown = preventFunc;
-                }
-            }
-
-            //thumb
-            {
-                const thumbDimensions = BB.fitInto(
-                    layercanvas.width,
-                    layercanvas.height,
-                    30,
-                    30,
-                    1,
-                );
-                layer.thumb = BB.canvas(thumbDimensions.width, thumbDimensions.height);
-
-                const thc = BB.ctx(layer.thumb);
-                thc.save();
-                if (layer.thumb.width > layercanvas.width) {
-                    thc.imageSmoothingEnabled = false;
-                }
-                thc.drawImage(layercanvas, 0, 0, layer.thumb.width, layer.thumb.height);
-                thc.restore();
-                css(layer.thumb, {
-                    position: 'absolute',
-                    left: (isClippingMask ? 40 : 10) + 'px',
-                    top: (this.layerHeight - layer.thumb.height) / 2 + 'px',
-                    background: 'var(--kl-checkerboard-background)',
-                });
-
-                // Alpha Lock Indicator
-                const lockDiv = BB.el({
-                    parent: layer.thumb,
-                    className: 'layer-alpha-lock',
-                });
-
-                if (isClippingMask) {
-                    BB.el({
-                        parent: layer.thumb,
-                        css: {
-                            position: 'absolute',
-                            left: '-22px',
-                            top: '40%',
-                            width: '12px',
-                            height: '12px',
-                            borderLeft: '2px solid var(--kl-color-text)',
-                            borderBottom: '2px solid var(--kl-color-text)',
-                            pointerEvents: 'none',
-                        },
-                    });
-                }
-
-                const updateLockStatus = (locked: boolean) => {
-                    if (locked) {
-                        lockDiv.classList.add('layer-alpha-lock--active');
-                    } else {
-                        lockDiv.classList.remove('layer-alpha-lock--active');
-                    }
-                };
-
-                // Initial state
-                updateLockStatus(alphaLockManager.isLocked(realLayerId));
-
-                // Subscribe
-                const unsub = alphaLockManager.subscribe((id, isLocked) => {
-                    if (id === realLayerId) {
-                        updateLockStatus(isLocked);
-                    }
-                });
-                layer.alphaLockUnsub = unsub;
-            }
-
-            //layerlabel
-            {
-                layer.label = BB.el({
-                    className: 'kl-layer__label',
-                });
-                layer.layerName = layerName;
-                layer.label.append(layer.layerName);
-
-                css(layer.label, {
-                    position: 'absolute',
-                    left: 50 + 'px',
-                    top: (this.layerHeight - 20) / 2 + 'px',
-                    fontSize: '14px',
-                    width: '140px',
-                    height: '20px',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                });
-
-                layer.label.ondblclick = () => {
-                    this.applyUncommitted();
-                    this.renameLayer(layer.spot);
-                };
-            }
-            //layer label opacity
-            {
-                layer.opacityLabel = BB.el({
-                    className: 'kl-layer__opacity-label',
-                });
-                layer.opacity = opacity;
-                layer.opacityLabel.append(parseInt('' + layer.opacity * 100) + '%');
-
-                css(layer.opacityLabel, {
-                    position: 'absolute',
-                    right: 40 + 'px',
-                    top: (this.layerHeight - 20) / 2 + 'px',
-                    fontSize: '12px',
-                    textAlign: 'right',
-                    width: '30px',
-                    transition: 'color 0.2s ease-in-out',
-                    textDecoration: isVisible ? undefined : 'line-through',
-                });
-            }
-
-            let oldOpacity: number;
-            const opacitySlider = new PointSlider({
-                init: layer.opacity,
-                width: 200,
-                pointSize: 14,
-                callback: (sliderValue, isFirst, isLast) => {
-                    if (isFirst) {
-                        oldOpacity = this.klCanvas.getLayerOld(layer.spot)!.opacity;
-                        this.klHistory.pause(true);
-                        return;
-                    }
-                    if (isLast) {
-                        this.klHistory.pause(false);
-                        if (oldOpacity !== sliderValue) {
-                            this.klCanvas.setOpacity(layer.spot, sliderValue);
-                        }
-                        return;
-                    }
-                    layer.opacityLabel.innerHTML = Math.round(sliderValue * 100) + '%';
-                    this.klCanvas.setOpacity(layer.spot, sliderValue);
-                    this.onUpdateProject();
-                },
-            });
-            css(opacitySlider.getElement(), {
-                display: 'none', // Hide old opacity slider, we will use a better one or procreate UI
-            });
-            layer.opacitySlider = opacitySlider;
-
-            //larger layer preview - hover
-            layer.thumb.onpointerover = (e) => {
-                if (e.buttons !== 0 && (!e.pointerType || e.pointerType !== 'touch')) {
-                    //shouldn't show while dragging
-                    return;
-                }
-
-                const thumbDimensions = BB.fitInto(
-                    layercanvas.width,
-                    layercanvas.height,
-                    250,
-                    250,
-                    1,
-                );
-
-                if (
-                    this.largeThumbCanvas.width !== thumbDimensions.width ||
-                    this.largeThumbCanvas.height !== thumbDimensions.height
-                ) {
-                    this.largeThumbCanvas.width = thumbDimensions.width;
-                    this.largeThumbCanvas.height = thumbDimensions.height;
-                }
-                const ctx = BB.ctx(this.largeThumbCanvas);
-                ctx.save();
-                if (this.largeThumbCanvas.width > layercanvas.width) {
-                    ctx.imageSmoothingEnabled = false;
-                }
-                ctx.imageSmoothingQuality = 'high';
-                ctx.clearRect(0, 0, this.largeThumbCanvas.width, this.largeThumbCanvas.height);
-                ctx.drawImage(
-                    layercanvas,
-                    0,
-                    0,
-                    this.largeThumbCanvas.width,
-                    this.largeThumbCanvas.height,
-                );
-                ctx.restore();
-                css(this.largeThumbDiv, {
-                    top: e.clientY - this.largeThumbCanvas.height / 2 + 'px',
-                    opacity: '0',
-                });
-                if (!this.largeThumbInDocument) {
-                    document.body.append(this.largeThumbDiv);
-                    this.largeThumbInDocument = true;
-                }
-                clearTimeout(this.largeThumbInTimeout);
-                this.largeThumbInTimeout = setTimeout(() => {
-                    css(this.largeThumbDiv, {
-                        opacity: '1',
-                    });
-                }, 20);
-                clearTimeout(this.largeThumbTimeout);
-            };
-            layer.thumb.onpointerout = () => {
-                clearTimeout(this.largeThumbInTimeout);
-                css(this.largeThumbDiv, {
-                    opacity: '0',
-                });
-                clearTimeout(this.largeThumbTimeout);
-                this.largeThumbTimeout = setTimeout(() => {
-                    if (!this.largeThumbInDocument) {
-                        return;
-                    }
-                    this.largeThumbDiv.remove();
-                    this.largeThumbInDocument = false;
-                }, 300);
-            };
-
-            container1.append(
-                layer.thumb,
-                layer.label,
-                layer.opacityLabel,
-                opacitySlider.getElement(),
-            );
-            let dragstart = false;
-            let freshSelection = false;
-
-            //events for moving layers up and down
-            const dragEventHandler = (event: TPointerEvent) => {
-                if (event.type === 'pointerdown' && event.button === 'left') {
-                    css(layer, {
-                        transition: 'box-shadow 0.3s ease-in-out',
-                        zIndex: '1',
-                    });
-                    this.lastpos = layer.spot;
-                    freshSelection = false;
-                    if (!layer.isSelected) {
-                        freshSelection = true;
-                        this.activateLayer(layer.spot);
-                    }
-                    dragstart = true;
-                } else if (event.type === 'pointermove' && event.button === 'left') {
-                    if (dragstart) {
-                        dragstart = false;
-                        css(layer, {
-                            boxShadow: '1px 3px 5px rgba(0,0,0,0.4)',
-                        });
-                    }
-                    layer.posY += event.dY;
-                    const corrected = Math.max(
-                        0,
-                        Math.min((this.klCanvasLayerArr.length - 1) * (this.layerHeight + this.layerSpacing), layer.posY),
-                    );
-                    layer.style.top = corrected + 'px';
-                    this.updateLayersVerticalPosition(layer.spot, this.posToSpot(layer.posY));
-                }
-                if (event.type === 'pointerup') {
-                    css(layer, {
-                        transition: 'all 0.1s linear',
-                    });
-                    setTimeout(() => {
-                        css(layer, {
-                            boxShadow: '',
-                        });
-                    }, 20);
-                    layer.posY = Math.max(
-                        0,
-                        Math.min((this.klCanvasLayerArr.length - 1) * (this.layerHeight + this.layerSpacing), layer.posY),
-                    );
-                    layer.style.zIndex = '';
-                    const newSpot = this.posToSpot(layer.posY);
-                    const oldSpot = layer.spot;
-                    this.move(layer.spot, newSpot);
-                    if (oldSpot != newSpot) {
-                        this.onSelect(this.selectedSpotIndex, false);
-                    }
-                    if (oldSpot === newSpot && freshSelection) {
-                        this.applyUncommitted();
-                        this.onSelect(this.selectedSpotIndex, true);
-                    }
-                    freshSelection = false;
-                }
-            };
-
-            layer.pointerListener = new BB.PointerListener({
-                target: container1,
-                onPointer: dragEventHandler,
-            });
-
-            this.layerListEl.append(layer);
+        // large thumb preview interface for layer items
+        const largeThumbPreview = {
+            show: (layerCanvas: HTMLCanvasElement, clientY: number) => {
+                this.showLargeThumb(layerCanvas, clientY);
+            },
+            hide: () => {
+                this.hideLargeThumb();
+            },
         };
+
+        // cleanup existing layer elements
         this.layerElArr = [];
         while (this.layerListEl.firstChild) {
             const child = this.layerListEl.firstChild as TLayerEl;
@@ -560,11 +118,100 @@ export class LayersUi {
             }
             child.remove();
         }
+
+        // create new layer elements
         for (let i = 0; i < this.klCanvasLayerArr.length; i++) {
-            createLayerEntry(i);
+            const layer = createLayerItem({
+                klCanvas: this.klCanvas,
+                index: i,
+                layerHeight: this.layerHeight,
+                layerSpacing: this.layerSpacing,
+                totalLayers: this.klCanvasLayerArr.length,
+                onSelect: (layerSpot, pushHistory) => {
+                    if (layerSpot === this.selectedSpotIndex) {
+                        this.onSelect(this.selectedSpotIndex, pushHistory);
+                    }
+                },
+                onRename: (layerSpot) => {
+                    this.renameLayer(layerSpot);
+                },
+                onDrag: dragHandler,
+                onUpdateProject: this.onUpdateProject,
+                applyUncommitted: this.applyUncommitted,
+                klHistory: this.klHistory,
+                largeThumbPreview,
+            });
+            this.layerElArr[i] = layer;
+            this.layerListEl.append(layer);
         }
+
         this.activateLayer(this.selectedSpotIndex);
         this.updateHeight();
+    }
+
+    // shows the large thumbnail preview for a layer
+    private showLargeThumb(layerCanvas: HTMLCanvasElement, clientY: number): void {
+        const thumbDimensions = BB.fitInto(
+            layerCanvas.width,
+            layerCanvas.height,
+            250,
+            250,
+            1,
+        );
+
+        if (
+            this.largeThumbCanvas.width !== thumbDimensions.width ||
+            this.largeThumbCanvas.height !== thumbDimensions.height
+        ) {
+            this.largeThumbCanvas.width = thumbDimensions.width;
+            this.largeThumbCanvas.height = thumbDimensions.height;
+        }
+        const ctx = BB.ctx(this.largeThumbCanvas);
+        ctx.save();
+        if (this.largeThumbCanvas.width > layerCanvas.width) {
+            ctx.imageSmoothingEnabled = false;
+        }
+        ctx.imageSmoothingQuality = 'high';
+        ctx.clearRect(0, 0, this.largeThumbCanvas.width, this.largeThumbCanvas.height);
+        ctx.drawImage(
+            layerCanvas,
+            0,
+            0,
+            this.largeThumbCanvas.width,
+            this.largeThumbCanvas.height,
+        );
+        ctx.restore();
+        css(this.largeThumbDiv, {
+            top: clientY - this.largeThumbCanvas.height / 2 + 'px',
+            opacity: '0',
+        });
+        if (!this.largeThumbInDocument) {
+            document.body.append(this.largeThumbDiv);
+            this.largeThumbInDocument = true;
+        }
+        clearTimeout(this.largeThumbInTimeout);
+        this.largeThumbInTimeout = setTimeout(() => {
+            css(this.largeThumbDiv, {
+                opacity: '1',
+            });
+        }, 20);
+        clearTimeout(this.largeThumbTimeout);
+    }
+
+    // hides the large thumbnail preview
+    private hideLargeThumb(): void {
+        clearTimeout(this.largeThumbInTimeout);
+        css(this.largeThumbDiv, {
+            opacity: '0',
+        });
+        clearTimeout(this.largeThumbTimeout);
+        this.largeThumbTimeout = setTimeout(() => {
+            if (!this.largeThumbInDocument) {
+                return;
+            }
+            this.largeThumbDiv.remove();
+            this.largeThumbInDocument = false;
+        }, 300);
     }
 
     private updateButtons(): void {
@@ -618,6 +265,26 @@ export class LayersUi {
 
         this.klCanvasLayerArr = this.klCanvas.getLayers();
         this.selectedSpotIndex = this.klCanvasLayerArr.length - 1;
+
+        // initialize drag controller for layer reordering
+        this.dragController = new LayerDragController({
+            layerHeight: this.layerHeight,
+            layerSpacing: this.layerSpacing,
+            getLayerCount: () => this.klCanvasLayerArr.length,
+            getLayerElArr: () => this.layerElArr,
+            getSelectedSpotIndex: () => this.selectedSpotIndex,
+            setSelectedSpotIndex: (index) => { this.selectedSpotIndex = index; },
+            activateLayer: (spotIndex) => this.activateLayer(spotIndex),
+            applyUncommitted: this.applyUncommitted,
+            onSelect: this.onSelect,
+            onMove: (oldSpotIndex, newSpotIndex) => {
+                this.applyUncommitted();
+                this.klCanvas.moveLayer(this.selectedSpotIndex, newSpotIndex - oldSpotIndex);
+                this.klCanvasLayerArr = this.klCanvas.getLayers();
+            },
+            setMergeButtonDisabled: (disabled) => { this.mergeBtn.disabled = disabled; },
+        });
+
         this.rootEl = BB.el({
             css: {
                 width: '100%',

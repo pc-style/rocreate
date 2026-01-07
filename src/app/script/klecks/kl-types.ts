@@ -301,6 +301,15 @@ export type TDrawLine = {
 
 export type TDrawEvent = TDrawDownEvent | TDrawMoveEvent | TDrawUpEvent | TDrawLine;
 
+/**
+ * Chain element interface for draw event processing chains.
+ * Similar to TChainElement but for TDrawEvent instead of TPointerEvent.
+ */
+export type TDrawEventChainElement = {
+    chainIn: (event: TDrawEvent) => TDrawEvent | null;
+    setChainOut: (f: (event: TDrawEvent) => void) => void;
+};
+
 export type TToolType = 'brush' | 'paintBucket' | 'text' | 'shape' | 'gradient' | 'hand' | 'select';
 
 export type TKlPsdError =

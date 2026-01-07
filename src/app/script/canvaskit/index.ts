@@ -5,6 +5,7 @@
 
 export { loadCanvasKit, getCanvasKit, getCanvasKitStatus, isGPUCompositingAvailable } from './canvaskit-loader';
 export { CanvasKitCompositor } from './canvaskit-compositor';
+export { CanvasKitBrushRenderer, createBrushRenderer } from './canvaskit-brush-renderer';
 export type {
     CanvasKit,
     Surface,
@@ -15,4 +16,8 @@ export type {
     ViewportTransform,
     CanvasKitStatus,
     CanvasKitCompositorConfig,
+    BrushPoint,
+    BrushRendererConfig,
+    BrushSettings,
+    BrushStroke,
 } from './canvaskit-types';

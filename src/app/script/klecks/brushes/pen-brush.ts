@@ -341,6 +341,10 @@ export class PenBrush {
             : undefined;
 
         this.changedTiles = [];
+
+        // explicitly reset bezier line to ensure clean stroke start
+        this.bezierLine = null;
+
         p = BB.clamp(p, 0, 1);
         const localOpacity = this.calcOpacity(p, tiltX, tiltY);
         const localSize = this.calcSize(p, tiltX, tiltY);

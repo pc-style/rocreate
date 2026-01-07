@@ -46,6 +46,7 @@ export type TSvg = {
     offset?: string;
     'stop-color'?: string;
     'stroke-width'?: string;
+    'stroke-dasharray'?: string;
     transform?: string;
     in?: string;
     in2?: string;

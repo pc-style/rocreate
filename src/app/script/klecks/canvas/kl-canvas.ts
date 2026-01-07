@@ -1,5 +1,6 @@
 import { BB } from '../../bb/bb';
 import { floodFillBits } from '../image-operations/flood-fill';
+import { floodFillBitsAsync } from '../image-operations/flood-fill-async';
 import { drawShape } from '../image-operations/shape-tool';
 import { renderText, TRenderTextParam } from '../image-operations/render-text';
 import {
@@ -46,16 +47,6 @@ import { getSelectionBounds } from '../select-tool/get-selection-bounds';
 import { translateMultiPolygon } from '../../bb/multi-polygon/translate-multi-polygon';
 import { getBinaryMask } from '../select-tool/get-binary-mask';
 
-// TODO remove in 2026
-// workaround for chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=1281185
-// reported 2021-13 (v96), fixed 2022-02 (v99)
-// affects: source-in, source-out, destination-in, destination-atop
-function workaroundForChromium1281185(ctx: CanvasRenderingContext2D): void {
-    ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.01)';
-    ctx.fillRect(-0.9999999, -0.9999999, 1, 1);
-    ctx.restore();
-}
 
 // legacy constant for compatibility - actual limit is now dynamic
 export const MAX_LAYERS = 16;
@@ -727,7 +718,6 @@ export class KlCanvas {
 
             bottomCtx.restore();
 
-            mixModeStr && workaroundForChromium1281185(bottomCtx);
         }
         this.klHistory.pause(true);
         this.removeLayer(layerTopIndex);
@@ -941,12 +931,6 @@ export class KlCanvas {
         );
         ctx.restore();
 
-        // workaround for chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=1281185
-        // TODO remove if chrome updated
-        ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0.01)';
-        ctx.fillRect(-0.9999999, -0.9999999, 1, 1);
-        ctx.restore();
 
         /*if (!document.getElementById('testocanvas')) {
             layerCanvasArr[layerIndex].id = 'testocanvas';
@@ -1125,6 +1109,141 @@ export class KlCanvas {
         //     result.bounds.y2 - result.bounds.y1,
         // );
         // ctx.restore();
+
+        if (!this.klHistory.isPaused()) {
+            this.klHistory.push({
+                layerMap: createLayerMap(this.layers, {
+                    layerId: targetLayer.id,
+                    attributes: ['tiles'],
+                    bounds: result.bounds,
+                }),
+            });
+        }
+    }
+
+    /**
+     * Async version of floodFill that runs in a Web Worker.
+     * Provides better responsiveness on large canvases.
+     */
+    async floodFillAsync(
+        layerIndex: number,
+        x: number,
+        y: number,
+        rgb: TRgb | null,
+        opacity: number,
+        tolerance: number,
+        sampleStr: TFillSampling,
+        grow: number,
+        isContiguous: boolean,
+    ): Promise<void> {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height || opacity === 0) {
+            return;
+        }
+        tolerance = Math.round(tolerance);
+        x = Math.round(x);
+        y = Math.round(y);
+
+        if (!['above', 'current', 'all'].includes(sampleStr)) {
+            throw new Error('invalid sampleStr');
+        }
+        const selectionMask = this.selection
+            ? getBinaryMask(this.selection, this.width, this.height)
+            : undefined;
+        if (selectionMask && selectionMask[y * this.width + x] === 0) {
+            return;
+        }
+
+        const targetLayer = this.layers[layerIndex];
+        let result: { data: Uint8Array; bounds: TBounds };
+        let targetCtx: CanvasRenderingContext2D;
+        let targetImageData: ImageData;
+
+        if (sampleStr === 'all') {
+            const srcCanvas =
+                this.layers.length === 1 ? this.layers[0].canvas : this.getCompleteCanvas(1);
+            const srcCtx = BB.ctx(srcCanvas);
+            const srcImageData = srcCtx.getImageData(0, 0, this.width, this.height);
+            const srcData = srcImageData.data;
+            result = await floodFillBitsAsync(
+                srcData,
+                selectionMask,
+                this.width,
+                this.height,
+                x,
+                y,
+                tolerance,
+                Math.round(grow),
+                isContiguous,
+            );
+
+            targetCtx = targetLayer.context;
+            targetImageData = targetCtx.getImageData(0, 0, this.width, this.height);
+        } else {
+            const srcIndex = sampleStr === 'above' ? layerIndex + 1 : layerIndex;
+
+            if (srcIndex >= this.layers.length) {
+                return;
+            }
+
+            const srcCtx = this.layers[srcIndex].context;
+            const srcImageData = srcCtx.getImageData(0, 0, this.width, this.height);
+            const srcData = srcImageData.data;
+            result = await floodFillBitsAsync(
+                srcData,
+                selectionMask,
+                this.width,
+                this.height,
+                x,
+                y,
+                tolerance,
+                Math.round(grow),
+                isContiguous,
+            );
+
+            targetCtx = layerIndex === srcIndex ? srcCtx : targetLayer.context;
+            targetImageData =
+                layerIndex === srcIndex
+                    ? srcImageData
+                    : targetCtx.getImageData(0, 0, this.width, this.height);
+        }
+
+        const targetData = targetImageData.data;
+        if (rgb) {
+            if (opacity === 1) {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4] = rgb.r;
+                        targetData[i * 4 + 1] = rgb.g;
+                        targetData[i * 4 + 2] = rgb.b;
+                        targetData[i * 4 + 3] = 255;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4] = BB.mix(targetData[i * 4], rgb.r, opacity);
+                        targetData[i * 4 + 1] = BB.mix(targetData[i * 4 + 1], rgb.g, opacity);
+                        targetData[i * 4 + 2] = BB.mix(targetData[i * 4 + 2], rgb.b, opacity);
+                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 255, opacity);
+                    }
+                }
+            }
+        } else {
+            if (opacity === 1) {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4 + 3] = 0;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 0, opacity);
+                    }
+                }
+            }
+        }
+        targetCtx.putImageData(targetImageData, 0, 0);
 
         if (!this.klHistory.isPaused()) {
             this.klHistory.push({

@@ -71,7 +71,6 @@ export class PointSlider {
             let imaginaryPos: number;
             this.pointerListener = new BB.PointerListener({
                 target: this.sliderPoint,
-                fixScribble: true,
                 onPointer: (event): void => {
                     if (event.type === 'pointerdown' && event.button === 'left') {
                         isFirst = true;

@@ -155,7 +155,7 @@ export class PerspectiveGuide {
                     y2: '' + endY,
                     ...lineStyle,
                     'stroke-dasharray': '5,5',
-                } as any));
+                }));
             }
         });
 

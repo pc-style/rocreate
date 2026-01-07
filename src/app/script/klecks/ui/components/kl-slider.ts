@@ -357,7 +357,6 @@ export class KlSlider {
         this.pointerListenerTimeout = setTimeout(() => {
             this.pointerListener = new BB.PointerListener({
                 target: this.sliderWrapperEl,
-                fixScribble: true,
                 onPointer: (e) => {
                     onPointer(e);
                     eventChain.chainIn(e);

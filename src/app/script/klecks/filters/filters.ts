@@ -18,6 +18,7 @@ import noiseImg from 'url:/src/app/img/ui/procreate/noise.svg';
 import patternImg from 'url:/src/app/img/ui/procreate/pattern.svg';
 import vanishPointImg from 'url:/src/app/img/ui/procreate/vanish-point.svg';
 import distortImg from 'url:/src/app/img/ui/procreate/distort.svg';
+import chromaticAberrationImg from 'url:/src/app/img/ui/procreate/chromatic-aberration.svg';
 
 export const FILTER_LIB_STATUS = {
     isLoaded: false,
@@ -271,9 +272,9 @@ export const FILTER_LIB: {
     },
     bloom: {
         lang: {
-            name: 'Bloom' as any,
-            button: 'Bloom' as any,
-            description: 'Add glow effect to bright areas' as any,
+            name: 'filter-bloom-title',
+            button: 'filter-bloom',
+            description: 'filter-bloom-description',
         },
         icon: glBlurImg, // Reuse blur icon for now
         updatePos: false,
@@ -284,11 +285,11 @@ export const FILTER_LIB: {
     },
     chromaticAberration: {
         lang: {
-            name: 'Chromatic Aberration' as any,
-            button: 'Chromatic Aberration' as any,
-            description: 'Simulate lens distortion' as any,
+            name: 'filter-chromatic-aberration-title',
+            button: 'filter-chromatic-aberration',
+            description: 'filter-chromatic-aberration-description',
         },
-        icon: distortImg, // Reuse distort icon
+        icon: chromaticAberrationImg,
         updatePos: false,
         getDialog: null,
         apply: null,

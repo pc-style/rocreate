@@ -167,7 +167,6 @@ export class KlColorSliderSmall {
         this.svPointerId = null;
         this.svPointerListener = new BB.PointerListener({
             target: this.canvasSV,
-            fixScribble: true,
             onPointer: (event) => {
                 if (event.type === 'pointerdown') {
                     // prevent manual slider input keeping focus on iPad
@@ -216,7 +215,6 @@ export class KlColorSliderSmall {
         this.hPointerId = null;
         this.hPointerListener = new BB.PointerListener({
             target: canvasH,
-            fixScribble: true,
             onPointer: (event) => {
                 if (event.type === 'pointerdown') {
                     this.hPointerId = event.pointerId;

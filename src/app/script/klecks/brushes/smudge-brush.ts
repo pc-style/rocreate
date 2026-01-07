@@ -628,35 +628,7 @@ export class SmudgeBrush {
     }
 
     drawLineSegment(x1: number, y1: number, x2: number, y2: number): void {
-        return;
-        /*
-        // todo
-        lastInput.x = x2;
-        lastInput.y = y2;
-        lastInput.pressure = 1;
-
-        if (isDrawing || x1 === undefined) {
-            return;
-        }
-
-        let angle = BB.pointsToAngleDeg({x:x1, y:y1}, {x:x2, y:y2});
-        let mouseDist = Math.sqrt(Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0));
-        let eX = (x2 - x1) / mouseDist;
-        let eY = (y2 - y1) / mouseDist;
-        let loopDist;
-        let bdist = settingSize * settingSpacing;
-        lineToolLastDot = settingSize * settingSpacing;
-        for (loopDist = lineToolLastDot; loopDist <= mouseDist; loopDist += bdist) {
-            drawDot(x1 + eX * loopDist, y1 + eY * loopDist, settingSize, settingOpacity);
-        }
-
-
-        let historyEntry = {
-            tool: ["brush", "SmudgeBrush"],
-            actions: []
-        };
-        // todo
-        history.add(historyEntry);*/
+        // method stub - not implemented for smudge brush
     }
 
     getIsDrawing(): boolean {

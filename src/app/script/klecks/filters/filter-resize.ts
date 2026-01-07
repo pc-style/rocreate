@@ -79,21 +79,21 @@ export const filterResize = {
                 value: '' + klCanvas.getHeight(),
             },
         });
-        widthInput.onclick = function () {
-            (this as any).focus();
+        widthInput.onclick = () => {
+            widthInput.focus();
             widthChanged = true;
             update();
         };
-        heightInput.onclick = function () {
-            (this as any).focus();
+        heightInput.onclick = () => {
+            heightInput.focus();
             heightChanged = true;
             update();
         };
-        widthInput.onchange = function () {
+        widthInput.onchange = () => {
             widthChanged = true;
             update();
         };
-        heightInput.onchange = function () {
+        heightInput.onchange = () => {
             heightChanged = true;
             update();
         };

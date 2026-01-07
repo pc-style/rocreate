@@ -41,14 +41,14 @@ export class BlendBrush {
     private settingSizePressure: boolean = true;
     private settingOpacityPressure: boolean = false;
 
-    private blendCol: TRgba = { r: 0, g: 0, b: 0, a: 1 }; // todo docs
-    private blendMix: number = 0.45; // todo docs
-    private mixCol: TRgb = { r: 0, g: 0, b: 0 }; // todo docs
-    private localColOld: TRgba = {} as TRgba; // todo docs
+    private blendCol: TRgba = { r: 0, g: 0, b: 0, a: 1 }; // current blended color
+    private blendMix: number = 0.45; // mixing factor [0, 1]
+    private mixCol: TRgb = { r: 0, g: 0, b: 0 }; // temporary color for mixing
+    private localColOld: TRgba = {} as TRgba; // color state at previous interpolation point
 
     private isDrawing: boolean = false;
-    private lastInput: TPressureInput = { x: 0, y: 0, pressure: 0 }; // todo docs
-    private lastInput2: TPressureInput = { x: 0, y: 0, pressure: 0 }; // todo docs
+    private lastInput: TPressureInput = { x: 0, y: 0, pressure: 0 }; // input state at start of current line segment
+    private lastInput2: TPressureInput = { x: 0, y: 0, pressure: 0 }; // input state at end of previous line segment
     private bezierLine: undefined | BezierLine;
 
     private klHistory: KlHistory = {} as KlHistory;

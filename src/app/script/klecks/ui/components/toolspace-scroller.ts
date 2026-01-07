@@ -12,8 +12,8 @@ export class ToolspaceScroller {
     private readonly toolspace: HTMLElement;
     private readonly upBtn: HTMLElement;
     private readonly downBtn: HTMLElement;
-    private downInterval: any;
-    private upInterval: any;
+    private downInterval: ReturnType<typeof setInterval> | null = null;
+    private upInterval: ReturnType<typeof setInterval> | null = null;
 
     private update(): void {
         let newUpDisplay = this.upBtn.style.display;

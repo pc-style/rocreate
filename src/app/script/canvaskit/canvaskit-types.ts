@@ -10,9 +10,10 @@ import type {
     Canvas as SkCanvas,
     Image as SkImage,
     Paint,
+    Path as SkPath,
 } from 'canvaskit-wasm';
 
-export type { CanvasKit, Surface, SkCanvas, SkImage, Paint };
+export type { CanvasKit, Surface, SkCanvas, SkImage, Paint, SkPath };
 
 /**
  * Represents a layer to be composited by the GPU compositor.
@@ -61,3 +62,53 @@ export interface CanvasKitCompositorConfig {
     /** Whether to log debug information */
     debug?: boolean;
 }
+
+// brush renderer types
+
+/**
+ * A single point in a brush stroke with pressure and tilt data.
+ */
+export interface BrushPoint {
+    x: number;
+    y: number;
+    pressure: number;
+    tiltX?: number;
+    tiltY?: number;
+}
+
+/**
+ * Configuration for creating a CanvasKitBrushRenderer.
+ */
+export interface BrushRendererConfig {
+    /** Initialized CanvasKit instance */
+    ck: CanvasKit;
+    /** Width of the brush surface in pixels */
+    width: number;
+    /** Height of the brush surface in pixels */
+    height: number;
+    /** Enable debug logging */
+    debug?: boolean;
+}
+
+/**
+ * Brush settings that can be applied to the renderer.
+ */
+export interface BrushSettings {
+    color: { r: number; g: number; b: number };
+    size: number;
+    opacity: number;
+    sizePressure: boolean;
+    opacityPressure: boolean;
+    spacing: number;
+    tiltToSize: number;
+    tiltToOpacity: number;
+}
+
+/**
+ * Brush stroke data for serialization or replay.
+ */
+export interface BrushStroke {
+    points: BrushPoint[];
+    settings: BrushSettings;
+}
+

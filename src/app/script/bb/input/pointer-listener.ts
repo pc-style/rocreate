@@ -17,7 +17,7 @@ export type TPointerListenerParams = {
     isWheelPassive?: boolean; // default false
     onEnterLeave?: (isOver: boolean) => void; // optional
     maxPointers?: number; // int [1,n] default is 1 - how many concurrent pointers to pay attention to
-    fixScribble?: boolean; // fix ipad scribble issue - TODO remove, fixed start of 2022 -> https://bugs.webkit.org/show_bug.cgi?id=217430#c2
+
 };
 
 type TPointer = {
@@ -300,7 +300,6 @@ export class PointerListener {
         | ((event: PointerEvent, skipGlobal?: boolean) => void)
         | undefined;
     private readonly onWheel: ((e: WheelEvent) => void) | undefined;
-    private readonly onTouchMoveScribbleFix: ((e: TouchEvent) => void) | undefined;
     private readonly windowOnPointerMove: ((event: PointerEvent) => void) | undefined;
     private readonly windowOnPointerUp: ((event: PointerEvent) => void) | undefined;
     private readonly windowOnPointerLeave: ((event: PointerEvent) => void) | undefined;
@@ -740,16 +739,6 @@ export class PointerListener {
                 OPTIONS_PASSIVE,
             );
         }
-
-        if (p.fixScribble) {
-            //ipad scribble workaround https://developer.apple.com/forums/thread/662874
-            this.onTouchMoveScribbleFix = (e: TouchEvent) => e.preventDefault();
-            this.targetElement.addEventListener(
-                'touchmove',
-                this.onTouchMoveScribbleFix,
-                OPTIONS_PASSIVE,
-            );
-        }
     }
 
     destroy(): void {
@@ -767,8 +756,6 @@ export class PointerListener {
             this.targetElement.removeEventListener(pointerDownEvt, this.onPointerDown);
         this.onWheel && this.targetElement.removeEventListener('wheel', this.onWheel);
         this.destroyDocumentListeners();
-        this.onTouchMoveScribbleFix &&
-            document.removeEventListener('touchmove', this.onTouchMoveScribbleFix);
 
         this.onTouchStart &&
             this.targetElement.removeEventListener('touchstart', this.onTouchStart);

@@ -53,6 +53,10 @@ export const languages: {code: string; name: string}[] = [
         name: 'Nederlands',
     },
     {
+        code: 'pl',
+        name: 'język polski, polszczyzna',
+    },
+    {
         code: 'pt-BR',
         name: 'Português Brasil',
     },
@@ -102,6 +106,8 @@ export const loadLanguage = async (code: string): Promise<Partial<Record<TTransl
         return await import('./lv.json');
     } else if (code === 'nl') {
         return await import('./nl.json');
+    } else if (code === 'pl') {
+        return await import('./pl.json');
     } else if (code === 'pt-BR') {
         return await import('./pt-BR.json');
     } else if (code === 'ru') {
