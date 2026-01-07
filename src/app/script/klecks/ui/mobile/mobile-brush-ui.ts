@@ -53,15 +53,16 @@ export class MobileBrushUi {
                 },
             ],
             initId: 'brush',
-            onChange: (id: string): void => {
+            onChange: (id: TBrushType): void => {
                 if (id === 'brush') {
-                    if (this.brushOptions.getValue() === 'brush') {
-                        // Already selected, open library
-                        p.onBrushLibrary();
-                    }
                     p.onBrush();
                 } else {
                     p.onEraser();
+                }
+            },
+            onAlreadySelected: (id: TBrushType): void => {
+                if (id === 'brush') {
+                    p.onBrushLibrary();
                 }
             },
             isColumn: true,

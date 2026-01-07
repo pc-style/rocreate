@@ -112,31 +112,20 @@ export class CanvasKitCompositor {
 
         const existing = this.layerImages.get(layerId);
         if (existing) {
-            try {
-                // Efficiently update existing texture
-                this.surface.updateTextureFromSource(existing, canvas as any);
-                if (this.debug) {
-                    console.log(`[CanvasKitCompositor] Updated texture ${layerId}, size: ${canvas.width}x${canvas.height}`);
-                }
-            } catch (e) {
-                console.warn('[CanvasKitCompositor] updateTextureFromSource failed, recreating...', layerId, e);
-                existing.delete();
-                const skImage = this.surface.makeImageFromTextureSource(canvas as any);
-                if (skImage) {
-                    this.layerImages.set(layerId, skImage);
-                }
+            existing.delete();
+            this.layerImages.delete(layerId);
+        }
+
+        // Create initial or updated texture
+        // Note: updateTextureFromSource/makeImageFromTextureSource are not available in all CanvasKit versions/builds
+        const skImage = this.ck.MakeImageFromCanvasImageSource(canvas);
+        if (skImage) {
+            this.layerImages.set(layerId, skImage);
+            if (this.debug) {
+                console.log(`[CanvasKitCompositor] ${existing ? 'Updated' : 'Created'} texture ${layerId}, size: ${canvas.width}x${canvas.height}`);
             }
         } else {
-            // First time for this layer
-            const skImage = this.surface.makeImageFromTextureSource(canvas as any);
-            if (skImage) {
-                this.layerImages.set(layerId, skImage);
-                if (this.debug) {
-                    console.log(`[CanvasKitCompositor] Created initial texture ${layerId}, size: ${canvas.width}x${canvas.height}`);
-                }
-            } else {
-                console.warn('[CanvasKitCompositor] Failed to create SkImage for layer', layerId);
-            }
+            console.warn('[CanvasKitCompositor] Failed to create SkImage for layer', layerId);
         }
     }
 

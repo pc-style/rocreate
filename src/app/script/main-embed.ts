@@ -100,6 +100,8 @@ export class Embed {
                     },
                 },
             ]);
+        } else {
+            this.initError('No project or PSD blob provided');
         }
     }
 

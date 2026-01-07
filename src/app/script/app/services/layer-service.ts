@@ -47,7 +47,11 @@ export class LayerService implements ILayerService {
         const layer = this.klCanvas.getLayer(this.activeLayerIndex);
         if (!layer) {
             // fallback to first layer if current index is invalid
-            return this.klCanvas.getLayer(0);
+            const fallback = this.klCanvas.getLayer(0);
+            if (!fallback) {
+                throw new Error('Canvas has no layers');
+            }
+            return fallback;
         }
         return layer;
     }
