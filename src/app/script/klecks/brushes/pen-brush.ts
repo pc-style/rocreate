@@ -20,6 +20,8 @@ const ALPHA_SQUARE = 3;
 
 const TWO_PI = 2 * Math.PI;
 
+type TDrawDotBefore = [number, number, number, number, number, number | undefined];
+
 export class PenBrush {
     private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
     private klHistory: KlHistory = {} as KlHistory;
@@ -93,7 +95,7 @@ export class PenBrush {
         let ctx;
 
         for (let i = 0; i < instructionArr.length; i++) {
-            ctx = BB.ctx(instructionArr[i][0] as any);
+            ctx = BB.ctx(instructionArr[i][0]);
 
             ctx.save();
             ctx.clearRect(0, 0, instructionArr[i][1], instructionArr[i][1]);
@@ -185,7 +187,7 @@ export class PenBrush {
         opacity: number,
         scatter: number,
         angle?: number,
-        before?: [number, number, number, number, number, number | undefined],
+        before?: TDrawDotBefore,
     ): void {
         const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
         points.forEach((p, index) => {
@@ -201,7 +203,7 @@ export class PenBrush {
         opacity: number,
         scatter: number,
         angle?: number,
-        before?: [number, number, number, number, number, number | undefined],
+        before?: TDrawDotBefore,
     ): void {
         if (size <= 0) {
             return;
@@ -299,7 +301,7 @@ export class PenBrush {
         const currTiltX = tiltX ?? 0;
         const currTiltY = tiltY ?? 0;
 
-        const drawArr: [number, number, number, number, number, number | undefined][] = []; //draw instructions. will be all drawn at once
+        const drawArr: TDrawDotBefore[] = []; //draw instructions. will be all drawn at once
 
         const dotCallback = (val: {
             x: number;

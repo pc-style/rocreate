@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrushService, TBrushServiceParams } from '../brush-service';
 import type { TBrushId } from '../../../klecks/brushes-ui/brush-ui.types';
-import type { TBrushUiInstance, TRgb } from '../../../klecks/kl-types';
+import type { TBrushUiInstance, TRgb, TBrushUi } from '../../../klecks/kl-types';
 import type { TKlCanvasLayer } from '../../../klecks/canvas/kl-canvas';
 import type { TBrushServiceEvent } from '../types';
 
@@ -28,48 +28,64 @@ function createMockBrushUi(overrides?: Partial<TBrushUiInstance<any>>): TBrushUi
     };
 }
 
-// mock the KL.BRUSHES_UI for slider config
-vi.mock('../../../klecks/kl', () => ({
-    KL: {
-        BRUSHES_UI: {
-            penBrush: {
-                sizeSlider: { min: 1, max: 100 },
-                opacitySlider: { min: 0, max: 1 },
-                scatterSlider: { min: 0, max: 100 },
-            },
-            blendBrush: {
-                sizeSlider: { min: 1, max: 50 },
-                opacitySlider: { min: 0, max: 1 },
-                scatterSlider: null,
-            },
-            sketchyBrush: {
-                sizeSlider: { min: 1, max: 80 },
-                opacitySlider: { min: 0, max: 1 },
-                scatterSlider: null,
-            },
-            pixelBrush: {
-                sizeSlider: { min: 1, max: 10 },
-                opacitySlider: { min: 0, max: 1 },
-                scatterSlider: null,
-            },
-            chemyBrush: {
-                sizeSlider: { min: 1, max: 100 },
-                opacitySlider: null,
-                scatterSlider: null,
-            },
-            smudgeBrush: {
-                sizeSlider: { min: 1, max: 100 },
-                opacitySlider: { min: 0, max: 1 },
-                scatterSlider: null,
-            },
-            eraserBrush: {
-                sizeSlider: { min: 1, max: 100 },
-                opacitySlider: { min: 0, max: 1 },
-                scatterSlider: null,
-            },
-        },
+const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
+    penBrush: {
+        sizeSlider: { min: 1, max: 100 },
+        opacitySlider: { min: 0, max: 1 },
+        scatterSlider: { min: 0, max: 100 },
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
     },
-}));
+    blendBrush: {
+        sizeSlider: { min: 1, max: 50 },
+        opacitySlider: { min: 0, max: 1 },
+        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
+    },
+    sketchyBrush: {
+        sizeSlider: { min: 1, max: 80 },
+        opacitySlider: { min: 0, max: 1 },
+        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
+    },
+    pixelBrush: {
+        sizeSlider: { min: 1, max: 10 },
+        opacitySlider: { min: 0, max: 1 },
+        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
+    },
+    chemyBrush: {
+        sizeSlider: { min: 1, max: 100 },
+        opacitySlider: { min: 0, max: 1 }, // Added missing required property
+        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
+    },
+    smudgeBrush: {
+        sizeSlider: { min: 1, max: 100 },
+        opacitySlider: { min: 0, max: 1 },
+        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
+    },
+    eraserBrush: {
+        sizeSlider: { min: 1, max: 100 },
+        opacitySlider: { min: 0, max: 1 },
+        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        image: '',
+        tooltip: '',
+        Ui: {} as any,
+    },
+};
 
 describe('BrushService', () => {
     let penBrushUi: TBrushUiInstance<any>;
@@ -94,6 +110,7 @@ describe('BrushService', () => {
                 eraserBrush: eraserBrushUi,
                 smudgeBrush: smudgeBrushUi,
             },
+            brushDefinitions: mockBrushDefinitions,
         };
     });
 

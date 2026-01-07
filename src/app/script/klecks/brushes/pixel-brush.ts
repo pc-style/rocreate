@@ -25,6 +25,8 @@ export class PixelBrush {
     private settingColorStr: string = '';
     private settingLockLayerAlpha: boolean = false;
     private settingIsEraser: boolean = false;
+    private started: boolean = false;
+    private symmetryGuide: any = null;
     private settingUseDither: boolean = true;
     private inputIsDrawing: boolean = false;
     private lineToolLastDot: number = 0;
@@ -166,9 +168,6 @@ export class PixelBrush {
             x: p4.x - p3.x,
             y: p4.y - p3.y,
         });
-        // const a2 = Math.abs(BB.Vec2.angle(d, d2) % Math.PI) / Math.PI * 180;
-        // const a3 = Math.abs(BB.Vec2.angle(d, d3) % Math.PI) / Math.PI * 180;
-
         return Math.max(BB.Vec2.dist(d, d2), BB.Vec2.dist(d, d3)) > maxAngleRad;
     }
 
@@ -224,6 +223,13 @@ export class PixelBrush {
     }
 
     private drawDot(x: number, y: number, size: number, opacity: number): void {
+        const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
+        points.forEach((p: any) => {
+            this.drawDotInternal(p.x, p.y, size, opacity);
+        });
+    }
+
+    private drawDotInternal(x: number, y: number, size: number, opacity: number): void {
         const rect: TRect = {
             x: Math.round(x + -size),
             y: Math.round(y + -size),
@@ -262,7 +268,7 @@ export class PixelBrush {
     private continueLine(x: number | null, y: number | null, size: number, pressure: number): void {
         if (this.bezierLine === null) {
             this.bezierLine = new BB.BezierLine();
-            this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, () => {});
+            this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, () => { });
         }
 
         this.ctxClone.save();
@@ -333,9 +339,6 @@ export class PixelBrush {
         this.ctxClone.restore();
     }
 
-    /**
-     * bresenheim line drawing
-     */
     private plotLine(x0: number, y0: number, x1: number, y1: number, skipFirst: boolean): void {
         x0 = Math.floor(x0);
         y0 = Math.floor(y0);
@@ -348,12 +351,15 @@ export class PixelBrush {
         const sY = y0 < y1 ? 1 : -1;
         let err = dX + dY;
 
-         
         while (true) {
             if (skipFirst) {
                 skipFirst = false;
             } else {
-                this.bresenheimPath?.rect(x0, y0, 1, 1);
+                // bresenheim mirroring
+                const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x: x0, y: y0 }) : [{ x: x0, y: y0 }];
+                points.forEach((p: any) => {
+                    this.bresenheimPath?.rect(Math.floor(p.x), Math.floor(p.y), 1, 1);
+                });
             }
             if (x0 === x1 && y0 === y1) {
                 break;
@@ -370,13 +376,10 @@ export class PixelBrush {
         }
     }
 
-    // ----------------------------------- public -----------------------------------
     constructor() {
         this.ditherCanvas = BB.canvas(4, 4);
         this.ditherCtx = BB.ctx(this.ditherCanvas);
     }
-
-    // ---- interface ----
 
     startLine(x: number, y: number, p: number): void {
         this.selection = this.klHistory.getComposed().selection.value;
@@ -416,10 +419,6 @@ export class PixelBrush {
         if (!this.inputIsDrawing) {
             return;
         }
-
-        //debug
-        //drawDot(x, y, 1, 0.5);
-
         const pressure = BB.clamp(p, 0, 1);
         const localSize = this.settingHasSizePressure
             ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
@@ -435,19 +434,12 @@ export class PixelBrush {
     }
 
     endLine(): void {
-        this.selection = this.klHistory.getComposed().selection.value;
-        this.selectionPath = this.selection ? getSelectionPath2d(this.selection) : undefined;
         const localSize = this.settingHasSizePressure
             ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
             : Math.max(0.1, this.settingSize);
         this.continueLine(null, null, localSize, this.lastInput.pressure);
 
-        //debug
-        //drawDot(lastInput.x, lastInput.y, 3, 1);
-        //drawDot(x, y, 10, 0.1);
-
         this.inputIsDrawing = false;
-
         this.bezierLine = null;
 
         this.redrawToCanvas();
@@ -468,12 +460,10 @@ export class PixelBrush {
         this.endLine();
     }
 
-    //IS
     isDrawing(): boolean {
         return this.inputIsDrawing;
     }
 
-    //SET
     setColor(c: TRgb): void {
         if (this.settingColor === c) {
             return;
@@ -491,6 +481,10 @@ export class PixelBrush {
 
     setContext(c: CanvasRenderingContext2D): void {
         this.context = c;
+    }
+
+    setSymmetryGuide(guide: any): void {
+        this.symmetryGuide = guide;
     }
 
     setHistory(klHistory: KlHistory): void {
@@ -529,7 +523,6 @@ export class PixelBrush {
         this.settingUseDither = b;
     }
 
-    //GET
     getSpacing(): number {
         return this.settingSpacing;
     }

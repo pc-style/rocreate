@@ -71,7 +71,15 @@ export class CrossTabChannel {
             } catch (error) {
                 // probably invalid value -> reset
             }
-            let entries: TLsEntry[] = raw === null ? [] : JSON.parse(raw);
+            let entries: TLsEntry[] = [];
+            if (raw !== null) {
+                try {
+                    entries = JSON.parse(raw) as TLsEntry[];
+                } catch (error) {
+                    // invalid storage -> reset to avoid breaking postMessage
+                    LocalStorage.removeItem(this.getLsKey());
+                }
+            }
             entries = entries.filter((entry) => {
                 // delete old entries
                 return entry.timestamp > now - this.maxAgeMs;

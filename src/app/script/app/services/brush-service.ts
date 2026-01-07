@@ -1,11 +1,11 @@
-import { TRgb, TSliderConfig, TBrushUiInstance } from '../../klecks/kl-types';
+import { TRgb, TSliderConfig, TBrushUiInstance, TBrushUi } from '../../klecks/kl-types';
 import { TBrushId, TBrushType, TBrushUiInstanceMap } from '../../klecks/brushes-ui/brush-ui.types';
 import { TKlCanvasLayer } from '../../klecks/canvas/kl-canvas';
-import { KL } from '../../klecks/kl';
 import { IBrushService, TBrushServiceEvent, TBrushServiceSubscriber } from './types';
 
 export type TBrushServiceParams = {
     brushUiMap: Partial<TBrushUiInstanceMap>;
+    brushDefinitions: Record<string, TBrushUi<any>>;
     initialBrushId?: TBrushId;
     initialColor?: TRgb;
 };
@@ -20,10 +20,12 @@ export class BrushService implements IBrushService {
     private currentColor: TRgb;
     private currentLayer: TKlCanvasLayer | undefined;
     private readonly brushUiMap: Partial<TBrushUiInstanceMap>;
+    private readonly brushDefinitions: Record<string, TBrushUi<any>>;
     private readonly subscribers = new Set<TBrushServiceSubscriber>();
 
     constructor(params: TBrushServiceParams) {
         this.brushUiMap = params.brushUiMap;
+        this.brushDefinitions = params.brushDefinitions;
         this.currentBrushId = params.initialBrushId ?? 'penBrush';
         this.lastPaintingBrushId = this.currentBrushId !== 'eraserBrush' && this.currentBrushId !== 'smudgeBrush'
             ? this.currentBrushId
@@ -157,7 +159,7 @@ export class BrushService implements IBrushService {
     // slider config
 
     getSliderConfig(): TSliderConfig {
-        const brushDef = KL.BRUSHES_UI[this.currentBrushId];
+        const brushDef = this.brushDefinitions[this.currentBrushId];
         return {
             sizeSlider: brushDef.sizeSlider,
             opacitySlider: brushDef.opacitySlider,

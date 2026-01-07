@@ -12,7 +12,7 @@ export type TEmbedParams = {
     psdBlob?: Blob;
     onSubmit: (onSuccess: () => void, onError: () => void) => void;
     embedUrl: string;
-    logoImg?: any;
+    logoImg?: string | HTMLImageElement;
     bottomBar?: HTMLElement;
     aboutEl?: HTMLElement;
     disableAutoFit?: boolean; // disable automatic Fit to View for small canvases
@@ -87,6 +87,19 @@ export class Embed {
         }
         if (p.project) {
             this.onProjectReady(p.project);
+        } else if (p.psdBlob) {
+            this.readPSDs([
+                {
+                    blob: p.psdBlob,
+                    callback: (project) => {
+                        if (project) {
+                            this.onProjectReady(project);
+                        } else {
+                            this.initError(LANG('import-broken-file'));
+                        }
+                    },
+                },
+            ]);
         }
     }
 

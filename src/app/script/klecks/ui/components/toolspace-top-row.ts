@@ -17,7 +17,7 @@ export class ToolspaceTopRow {
 
     // ----------------------------------- public -----------------------------------
     constructor(p: {
-        logoImg: string;
+        logoImg?: string;
         onLogo: () => void;
         onNew: () => void;
         onImport: () => void;
@@ -82,7 +82,7 @@ export class ToolspaceTopRow {
         const logoButton = createButton({
             onClick: p.onLogo,
             title: LANG('home'),
-            image: p.logoImg ? p.logoImg : klecksLogoImg,
+            image: p.logoImg ?? klecksLogoImg,
             contain: true,
             darkInvert: true,
         });

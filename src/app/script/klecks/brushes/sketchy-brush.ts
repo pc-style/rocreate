@@ -22,6 +22,8 @@ export class SketchyBrush {
     private lastX: number = 0;
     private lastY: number = 0;
     private inputIsDrawing: boolean = false;
+    private symmetryGuide: any = null;
+    private mirroredLastPoints: [number, number][] = [];
     private lastInput: TPressureInput = { x: 0, y: 0, pressure: 0 };
     private klHistory: KlHistory = {} as KlHistory;
     private sketchySeed: number = 0;
@@ -53,7 +55,7 @@ export class SketchyBrush {
     }
 
     // ----------------------------------- public -----------------------------------
-    constructor() {}
+    constructor() { }
 
     // ---- interface ----
 
@@ -109,6 +111,10 @@ export class SketchyBrush {
         this.context = c;
     }
 
+    setSymmetryGuide(guide: any): void {
+        this.symmetryGuide = guide;
+    }
+
     startLine(x: number, y: number, pressure: number, shift?: boolean): void {
         this.selection = this.klHistory.getComposed().selection.value;
         this.selectionPath = this.selection ? getSelectionPath2d(this.selection) : undefined;
@@ -125,6 +131,9 @@ export class SketchyBrush {
             this.lastY = y;
             this.lastInput.x = x;
             this.lastInput.y = y;
+
+            const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
+            this.mirroredLastPoints = points.map((p: any) => [p.x, p.y]);
         }
     }
 
@@ -198,27 +207,52 @@ export class SketchyBrush {
             'rgba(' + mixr + ', ' + mixg + ', ' + mixb + ', ' + this.settingOpacity + ')';
         this.context.lineWidth = this.settingSize;
 
-        this.context.beginPath();
-        this.context.moveTo(this.lastX, this.lastY);
-        this.context.lineTo(x, y);
+        const currentMirroredPoints = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
 
-        for (e = 0; e < this.points.length; e++) {
-            b = this.points[e][0] - this.points[this.count][0];
-            a = this.points[e][1] - this.points[this.count][1];
-            g = b * b + a * a;
-            if (
-                g < 4000 * this.settingScale * this.settingScale &&
-                this.rand() > g / 2000 / this.settingScale / this.settingScale
-            ) {
-                this.context.moveTo(
-                    this.points[this.count][0] + b * 0.3,
-                    this.points[this.count][1] + a * 0.3,
-                );
-                this.context.lineTo(this.points[e][0] - b * 0.3, this.points[e][1] - a * 0.3);
+        currentMirroredPoints.forEach((p: any, branchIndex: number) => {
+            const mx = p.x;
+            const my = p.y;
+            const pmx = this.mirroredLastPoints[branchIndex] ? this.mirroredLastPoints[branchIndex][0] : mx;
+            const pmy = this.mirroredLastPoints[branchIndex] ? this.mirroredLastPoints[branchIndex][1] : my;
+
+            this.context.beginPath();
+            this.context.moveTo(pmx, pmy);
+            this.context.lineTo(mx, my);
+
+            for (e = 0; e < this.points.length; e++) {
+                const histX = this.points[e][0];
+                const histY = this.points[e][1];
+                const currHistX = this.points[this.count][0];
+                const currHistY = this.points[this.count][1];
+
+                // For sketchy connections, we need to mirror the historical points too
+                // We use the same branch transformation that produced our current 'mx, my'
+                const mirroredHistPoints = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x: histX, y: histY }) : [{ x: histX, y: histY }];
+                const mirroredCurrHistPoints = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x: currHistX, y: currHistY }) : [{ x: currHistX, y: currHistY }];
+
+                const mhx = mirroredHistPoints[branchIndex].x;
+                const mhy = mirroredHistPoints[branchIndex].y;
+                const mchx = mirroredCurrHistPoints[branchIndex].x;
+                const mchy = mirroredCurrHistPoints[branchIndex].y;
+
+                b = mhx - mchx;
+                a = mhy - mchy;
+                g = b * b + a * a;
+                if (
+                    g < 4000 * this.settingScale * this.settingScale &&
+                    this.rand() > g / 2000 / this.settingScale / this.settingScale
+                ) {
+                    this.context.moveTo(
+                        mchx + b * 0.3,
+                        mchy + a * 0.3,
+                    );
+                    this.context.lineTo(mhx - b * 0.3, mhy - a * 0.3);
+                }
             }
-        }
+            this.context.stroke();
+            this.mirroredLastPoints[branchIndex] = [mx, my];
+        });
 
-        this.context.stroke();
         this.context.restore();
 
         this.count++;
@@ -314,15 +348,15 @@ export class SketchyBrush {
         const mixed = this.mixMode[0](new BB.RGB(mixCol.r, mixCol.g, mixCol.b), this.settingColor);
         mixCol.r = parseInt(
             '' +
-                (this.settingBlending * mixed.r + this.settingColor.r * (1 - this.settingBlending)),
+            (this.settingBlending * mixed.r + this.settingColor.r * (1 - this.settingBlending)),
         );
         mixCol.g = parseInt(
             '' +
-                (this.settingBlending * mixed.g + this.settingColor.g * (1 - this.settingBlending)),
+            (this.settingBlending * mixed.g + this.settingColor.g * (1 - this.settingBlending)),
         );
         mixCol.b = parseInt(
             '' +
-                (this.settingBlending * mixed.b + this.settingColor.b * (1 - this.settingBlending)),
+            (this.settingBlending * mixed.b + this.settingColor.b * (1 - this.settingBlending)),
         );
         this.context.strokeStyle =
             'rgba(' +

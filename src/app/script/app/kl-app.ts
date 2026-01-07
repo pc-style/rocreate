@@ -103,7 +103,7 @@ import { AssistModeSanitizer } from '../klecks/events/assist-mode-sanitizer';
 import { TChainElement, TChainOutFunc } from '../bb/input/event-chain/event-chain.types';
 import { TPointerEvent } from '../bb/input/event.types';
 import { TBrushUiInstanceMap, TBrushId, TBrushUiConstructor, TBrushType } from '../klecks/brushes-ui/brush-ui.types';
-import { hasBrushStrokeContext } from '../klecks/brushes/brush.interface';
+import { hasBrushStrokeContext, hasBrushSymmetry } from '../klecks/brushes/brush.interface';
 import { OverlayToolspace } from '../klecks/ui/components/overlay-toolspace';
 
 importFilters();
@@ -1288,11 +1288,11 @@ export class KlApp {
                     this.easelProjectUpdater.requestUpdate();
                 }
 
-                // Draw with symmetry mirroring
-                const points = getMirroredPoints(event.x, event.y);
-                points.forEach((p) => {
-                    currentBrushUi.startLine(p.x, p.y, event.pressure, event.tiltX, event.tiltY);
-                });
+                if (hasBrushSymmetry(brush)) {
+                    brush.setSymmetryGuide(this.symmetryGuide);
+                }
+
+                currentBrushUi.startLine(event.x, event.y, event.pressure, event.tiltX, event.tiltY);
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
                 this.easel.markLayerDirty(currentLayer.index);
                 this.easel.requestRender();
@@ -1305,11 +1305,7 @@ export class KlApp {
                     return;
                 }
 
-                // Draw with symmetry mirroring
-                const points = getMirroredPoints(event.x, event.y);
-                points.forEach((p) => {
-                    currentBrushUi.goLine(p.x, p.y, event.pressure, event.isCoalesced, event.tiltX, event.tiltY);
-                });
+                currentBrushUi.goLine(event.x, event.y, event.pressure, event.isCoalesced, event.tiltX, event.tiltY);
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
                 if (hasBrushStrokeContext(currentBrushUi.getBrush())) {
                     this.easelProjectUpdater.requestUpdate();
@@ -1344,14 +1340,10 @@ export class KlApp {
                 // Draw with symmetry mirroring for line segments
                 if (event.x0 !== null && event.y0 !== null && event.x1 !== null && event.y1 !== null) {
                     resetCanvasState(currentLayer.context);
-                    const points1 = getMirroredPoints(event.x0, event.y0);
-                    const points2 = getMirroredPoints(event.x1, event.y1);
-                    for (let i = 0; i < points1.length; i++) {
-                        currentBrushUi.getBrush().drawLineSegment(points1[i].x, points1[i].y, points2[i].x, points2[i].y);
-                    }
-                    this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
-                    this.easel.markLayerDirty(currentLayer.index);
+                    currentBrushUi.getBrush().drawLineSegment(event.x0, event.y0, event.x1, event.y1);
                 }
+                this.easelBrush.setLastDrawEvent({ x: event.x1, y: event.y1 });
+                this.easel.markLayerDirty(currentLayer.index);
                 this.easel.requestRender();
             }
         }) as unknown as TChainOutFunc);
@@ -1558,7 +1550,7 @@ export class KlApp {
             });
         } else {
             toolspaceTopRow = new KL.ToolspaceTopRow({
-                logoImg: p.logoImg!,
+                logoImg: p.logoImg,
                 onLogo: () => {
                     showIframeModal('./home/', !!this.embed);
                 },

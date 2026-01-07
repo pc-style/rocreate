@@ -115,6 +115,13 @@ export interface IBrushSeed {
 }
 
 /**
+ * Symmetry support. Allows brushes to handle mirrored drawing internally.
+ */
+export interface IBrushSymmetry {
+    setSymmetryGuide(guide: any): void; // Using any to avoid circular dependency
+}
+
+/**
  * Full brush interface combining all optional capabilities.
  * Individual brushes implement only the parts they need.
  * This is useful for type checking when you need the full interface.
@@ -131,7 +138,8 @@ export interface IBrush extends
     Partial<IBrushTilt>,
     Partial<IBrushBlending>,
     Partial<IBrushEraser>,
-    Partial<IBrushSeed> {}
+    Partial<IBrushSeed>,
+    Partial<IBrushSymmetry> { }
 
 // type guards for optional interfaces
 
@@ -212,5 +220,13 @@ export function hasBrushStrokeContext(brush: unknown): brush is IBrushStrokeCont
         typeof brush === 'object' &&
         brush !== null &&
         'setStrokeContext' in brush
+    );
+}
+
+export function hasBrushSymmetry(brush: unknown): brush is IBrushSymmetry {
+    return (
+        typeof brush === 'object' &&
+        brush !== null &&
+        'setSymmetryGuide' in brush
     );
 }
