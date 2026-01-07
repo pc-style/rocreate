@@ -71,6 +71,8 @@ export class LayersUi {
     private readonly layerSpacing: number = 0;
     private isProcreate: boolean = false;
     private dragController!: LayerDragController;
+    private multiSelectedIndices: Set<number> = new Set();
+    private lastClickedIndex: number = -1;
 
     private renameLayer(layerSpot: number): void {
         renameLayerDialog(this.parentEl, this.klCanvas.getLayerOld(layerSpot)!.name, (newName) => {
@@ -119,6 +121,14 @@ export class LayersUi {
             child.remove();
         }
 
+        // Use a flex column for the list
+        css(this.layerListEl, {
+            display: 'flex',
+            flexDirection: 'column-reverse', // Most common for layers (top index at top)
+            gap: '0',
+            width: '100%',
+        });
+
         // create new layer elements
         for (let i = 0; i < this.klCanvasLayerArr.length; i++) {
             const layer = createLayerItem({
@@ -142,6 +152,11 @@ export class LayersUi {
                 largeThumbPreview,
             });
             this.layerElArr[i] = layer;
+            // No more top: posY calculation needed
+            css(layer, {
+                position: 'relative',
+                top: '0',
+            });
             this.layerListEl.append(layer);
         }
 
@@ -565,15 +580,129 @@ export class LayersUi {
         for (let i = 0; i < this.layerElArr.length; i++) {
             const layer = this.layerElArr[i];
             const isSelected = this.selectedSpotIndex === layer.spot;
+            const isMultiSelected = this.multiSelectedIndices.has(layer.spot);
 
             css(layer, {
                 boxShadow: '',
             });
             layer.classList.toggle('kl-layer--selected', isSelected);
+            layer.classList.toggle('kl-layer--multi-selected', isMultiSelected && !isSelected);
             layer.opacitySlider.setActive(isSelected);
             layer.isSelected = isSelected;
+            layer.isMultiSelected = isMultiSelected;
         }
-        this.mergeBtn.disabled = this.selectedSpotIndex === 0;
+        this.mergeBtn.disabled = this.selectedSpotIndex === 0 && this.multiSelectedIndices.size === 0;
+    }
+
+    /** Handle shift/ctrl+click for multi-selection */
+    handleMultiSelect(spotIndex: number, shiftKey: boolean, ctrlKey: boolean): void {
+        if (shiftKey && this.lastClickedIndex >= 0) {
+            // Range select: select all layers between lastClickedIndex and spotIndex
+            const start = Math.min(this.lastClickedIndex, spotIndex);
+            const end = Math.max(this.lastClickedIndex, spotIndex);
+            for (let i = start; i <= end; i++) {
+                this.multiSelectedIndices.add(i);
+            }
+        } else if (ctrlKey) {
+            // Toggle individual layer selection
+            if (this.multiSelectedIndices.has(spotIndex)) {
+                this.multiSelectedIndices.delete(spotIndex);
+            } else {
+                this.multiSelectedIndices.add(spotIndex);
+            }
+        } else {
+            // Normal click: clear multi-select and select single
+            this.multiSelectedIndices.clear();
+        }
+        this.lastClickedIndex = spotIndex;
+        this.activateLayer(spotIndex);
+    }
+
+    /** Get all multi-selected layer indices (including primary selection) */
+    getMultiSelectedIndices(): number[] {
+        const result = new Set(this.multiSelectedIndices);
+        result.add(this.selectedSpotIndex);
+        return Array.from(result).sort((a, b) => a - b);
+    }
+
+    /** Clear multi-selection */
+    clearMultiSelect(): void {
+        this.multiSelectedIndices.clear();
+        this.lastClickedIndex = -1;
+        for (const layer of this.layerElArr) {
+            layer.classList.remove('kl-layer--multi-selected');
+            layer.isMultiSelected = false;
+        }
+    }
+
+    /** Merge all multi-selected layers */
+    mergeMultiSelected(): void {
+        const indices = this.getMultiSelectedIndices();
+        if (indices.length < 2) return;
+
+        this.applyUncommitted();
+        // Merge from top to bottom (highest index first)
+        const sorted = indices.sort((a, b) => b - a);
+        let targetIndex = sorted[sorted.length - 1]; // bottom-most layer
+
+        for (let i = 0; i < sorted.length - 1; i++) {
+            const fromIndex = sorted[i];
+            if (fromIndex > targetIndex) {
+                this.klCanvas.mergeLayers(fromIndex, fromIndex - 1);
+            }
+        }
+
+        this.klCanvasLayerArr = this.klCanvas.getLayers();
+        this.clearMultiSelect();
+        this.selectedSpotIndex = Math.min(targetIndex, this.klCanvasLayerArr.length - 1);
+        this.onSelect(this.selectedSpotIndex, false);
+        this.updateButtons();
+    }
+
+    /** Delete all multi-selected layers */
+    deleteMultiSelected(): void {
+        const indices = this.getMultiSelectedIndices();
+        if (indices.length === 0) return;
+        if (indices.length >= this.klCanvasLayerArr.length) {
+            // Can't delete all layers
+            return;
+        }
+
+        this.applyUncommitted();
+        // Delete from top to bottom (highest index first)
+        const sorted = indices.sort((a, b) => b - a);
+
+        for (const idx of sorted) {
+            this.klCanvas.removeLayer(idx);
+        }
+
+        this.klCanvasLayerArr = this.klCanvas.getLayers();
+        this.clearMultiSelect();
+        this.selectedSpotIndex = Math.min(this.selectedSpotIndex, this.klCanvasLayerArr.length - 1);
+        this.onSelect(this.selectedSpotIndex, false);
+        this.updateButtons();
+    }
+
+    /** Move selected layer up (higher index) */
+    moveLayerUp(): void {
+        if (this.selectedSpotIndex >= this.klCanvasLayerArr.length - 1) return;
+        this.applyUncommitted();
+        this.klCanvas.moveLayer(this.selectedSpotIndex, 1);
+        this.selectedSpotIndex++;
+        this.klCanvasLayerArr = this.klCanvas.getLayers();
+        this.onSelect(this.selectedSpotIndex, false);
+        this.updateButtons();
+    }
+
+    /** Move selected layer down (lower index) */
+    moveLayerDown(): void {
+        if (this.selectedSpotIndex <= 0) return;
+        this.applyUncommitted();
+        this.klCanvas.moveLayer(this.selectedSpotIndex, -1);
+        this.selectedSpotIndex--;
+        this.klCanvasLayerArr = this.klCanvas.getLayers();
+        this.onSelect(this.selectedSpotIndex, false);
+        this.updateButtons();
     }
 
     setUiState(stateStr: TUiLayout): void {

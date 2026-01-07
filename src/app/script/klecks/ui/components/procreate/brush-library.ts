@@ -85,7 +85,7 @@ export interface TBrushLibraryParams {
     /** Currently selected brush ID */
     currentBrushId: string;
     /** Current tool type to filter relevant brushes */
-    currentToolType: 'brush' | 'smudge' | 'eraser';
+    currentToolType: any; // Using any for tool flexibility across library
 }
 
 // Comprehensive Procreate-style brush categories

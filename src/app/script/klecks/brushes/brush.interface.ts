@@ -115,6 +115,28 @@ export interface IBrushSeed {
 }
 
 /**
+ * Grain/texture support for brushes.
+ */
+export interface IBrushGrain {
+    setGrainTexture(texture: ImageData | null): void;
+    setGrainScale(scale: number): void;
+    setGrainBlend(blend: number): void;
+    getGrainScale(): number;
+    getGrainBlend(): number;
+}
+
+/**
+ * Velocity and pressure curve dynamics.
+ */
+export interface IBrushDynamics {
+    setPressureCurve(curve: number[]): void; // 256-point lookup table
+    setVelocityToSize(value: number): void;
+    setVelocityToOpacity(value: number): void;
+    getVelocityToSize(): number;
+    getVelocityToOpacity(): number;
+}
+
+/**
  * Symmetry support. Allows brushes to handle mirrored drawing internally.
  */
 export interface IBrushSymmetry {

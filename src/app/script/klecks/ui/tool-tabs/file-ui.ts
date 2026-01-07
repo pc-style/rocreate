@@ -16,6 +16,9 @@ import { showRecoveryManagerPanel } from '../modals/recovery-manager-panel/show-
 import * as classes from './file-ui.module.scss';
 import { BrowserStorageHeaderUi } from '../components/browser-storage-header-ui';
 import { css } from '../../../bb/base/base';
+import { Select } from '../components/select';
+import { KlSlider } from '../components/kl-slider';
+import { TStabilizerMode, TStabilizerSettings } from '../../events/line-smoothing';
 
 const LS_SHOW_SAVE_DIALOG = 'kl-save-dialog';
 
@@ -52,6 +55,8 @@ export type TFileUiParams = {
     klRecoveryManager?: KlRecoveryManager;
     onOpenBrowserStorage: () => void;
     onStoredToBrowserStorage: () => void;
+    stabilizerSettings?: TStabilizerSettings;
+    onStabilizerChange?: (settings: Partial<TStabilizerSettings>) => void;
 };
 
 export class FileUi {
@@ -63,6 +68,8 @@ export class FileUi {
     private importInput: undefined | HTMLInputElement;
     private browserStorageUi: undefined | BrowserStorageUi;
     private klRecoveryManager: KlRecoveryManager | undefined;
+    private stabilizerSettings: TStabilizerSettings | undefined;
+    private onStabilizerChange: TFileUiParams['onStabilizerChange'];
     private recoveryCountBubble: HTMLElement | undefined;
     private recoveryListener: TKlRecoveryListener = (metas) => {
         if (!this.recoveryCountBubble) {
@@ -82,6 +89,8 @@ export class FileUi {
     constructor(p: TFileUiParams) {
         this.exportType = p.exportType;
         this.applyUncommitted = p.applyUncommitted;
+        this.stabilizerSettings = p.stabilizerSettings;
+        this.onStabilizerChange = p.onStabilizerChange;
 
         this.rootEl = document.createElement('div');
 
@@ -326,6 +335,7 @@ export class FileUi {
                 uploadImgurButton,
                 BB.canShareFiles() ? shareButton : undefined,
                 BB.el({ css: { clear: 'both' } }),
+                this.createStabilizerSection(),
             ]);
         };
 
@@ -355,5 +365,71 @@ export class FileUi {
 
     triggerImport(): void {
         this.importInput && this.importInput.click();
+    }
+
+    private createStabilizerSection(): HTMLElement | undefined {
+        if (!this.stabilizerSettings || !this.onStabilizerChange) {
+            return undefined;
+        }
+
+        const section = BB.el({
+            css: {
+                margin: '10px',
+                padding: '10px',
+                background: 'var(--kl-popup-bg)',
+                borderRadius: '8px',
+            },
+        });
+
+        // Header
+        BB.el({
+            parent: section,
+            content: LANG('stabilizer') + ' Settings',
+            css: {
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '12px',
+                color: 'var(--kl-text-color)',
+            },
+        });
+
+        // Mode selector row
+        const modeRow = BB.el({
+            parent: section,
+            css: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' },
+        });
+        BB.el({ parent: modeRow, content: 'Mode:', css: { minWidth: '70px' } });
+
+        const modeSelect = new Select<TStabilizerMode>({
+            optionArr: [
+                ['basic', 'Basic'],
+                ['streamline', 'StreamLine'],
+                ['pulled-string', 'Pulled String'],
+            ],
+            initValue: this.stabilizerSettings.mode,
+            onChange: (val) => {
+                this.onStabilizerChange?.({ mode: val });
+            },
+            name: 'stabilizer-mode',
+        });
+        modeRow.append(modeSelect.getElement());
+
+        // Smoothing slider
+        const smoothingSlider = new KlSlider({
+            label: 'Smoothing',
+            width: 200,
+            height: 30,
+            min: 0,
+            max: 1,
+            value: this.stabilizerSettings.smoothing,
+            resolution: 100,
+            onChange: (val) => {
+                this.onStabilizerChange?.({ smoothing: val });
+            },
+        });
+        css(smoothingSlider.getElement(), { marginBottom: '8px' });
+        section.append(smoothingSlider.getElement());
+
+        return section;
     }
 }

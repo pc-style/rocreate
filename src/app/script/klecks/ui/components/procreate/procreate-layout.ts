@@ -39,6 +39,8 @@ export type TProcreateLayoutParams = {
     onOpenLayers: () => void;
     onOpenColors: () => void;
     onModifyBrush: () => void;
+    recolorUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
+    liquifyUi: { el: HTMLElement; onOpen: () => void; onClose: () => void };
     initialSize: number;
     initialOpacity: number;
     currentBrushId: string;
@@ -63,6 +65,8 @@ export class ProcreateLayout {
     private adjustmentsPanel: FloatingPanel | null = null;
     private selectionsPanel: FloatingPanel | null = null;
     private transformPanel: FloatingPanel | null = null;
+    private recolorPanel: FloatingPanel | null = null;
+    private liquifyPanel: FloatingPanel | null = null;
     private isActive: boolean = false;
     private readonly klColorSlider: KlColorSlider;
     private readonly layersUi: TProcreateLayoutParams['layersUi'];
@@ -80,6 +84,8 @@ export class ProcreateLayout {
     private readonly utilitySideBar: UtilitySideBar;
     private readonly toolspaceEl: HTMLElement;
     private readonly classicUiEls: HTMLElement[];
+    private readonly recolorUi: TProcreateLayoutParams['recolorUi'];
+    private readonly liquifyUi: TProcreateLayoutParams['liquifyUi'];
 
 
     constructor(p: TProcreateLayoutParams) {
@@ -98,6 +104,8 @@ export class ProcreateLayout {
         this.currentBrushId = p.currentBrushId;
         this.toolspaceEl = p.toolspaceEl;
         this.classicUiEls = p.classicUiEls;
+        this.recolorUi = p.recolorUi;
+        this.liquifyUi = p.liquifyUi;
 
         // Create container for Procreate UI
         this.containerEl = BB.el({
@@ -208,6 +216,8 @@ export class ProcreateLayout {
         this.closeAdjustmentsPanel();
         this.closeSelectionsPanel();
         this.closeTransformPanel();
+        this.closeRecolorPanel();
+        this.closeLiquifyPanel();
     }
 
     public toggleLayersPanel(): void {
@@ -316,7 +326,7 @@ export class ProcreateLayout {
                 this.closeBrushLibraryPanel();
             },
             currentBrushId: this.currentBrushId,
-            currentToolType: this.currentTool,
+            currentToolType: this.currentTool as any,
         });
 
         this.brushLibraryPanel = new FloatingPanel({
@@ -543,6 +553,90 @@ export class ProcreateLayout {
         this.transformPanel.destroy();
         this.transformPanel.getElement().remove();
         this.transformPanel = null;
+    }
+
+    public toggleRecolorPanel(): void {
+        if (this.recolorPanel) {
+            this.closeRecolorPanel();
+        } else {
+            this.closeAllPanels();
+            this.openRecolorPanel();
+        }
+    }
+
+    private openRecolorPanel(): void {
+        if (this.recolorPanel) return;
+
+        css(this.recolorUi.el, {
+            width: '260px',
+            maxHeight: '400px',
+            overflow: 'auto',
+        });
+
+        this.recolorUi.onOpen();
+
+        this.recolorPanel = new FloatingPanel({
+            title: 'Recolor',
+            content: this.recolorUi.el,
+            position: { x: (window.innerWidth - 300) / 2, y: 100 },
+            width: 280,
+            onClose: () => {
+                this.closeRecolorPanel();
+            },
+        });
+
+        this.recolorPanel.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.recolorPanel.getElement());
+    }
+
+    private closeRecolorPanel(): void {
+        if (!this.recolorPanel) return;
+        this.recolorUi.onClose();
+        this.recolorPanel.destroy();
+        this.recolorPanel.getElement().remove();
+        this.recolorPanel = null;
+    }
+
+    public toggleLiquifyPanel(): void {
+        if (this.liquifyPanel) {
+            this.closeLiquifyPanel();
+        } else {
+            this.closeAllPanels();
+            this.openLiquifyPanel();
+        }
+    }
+
+    private openLiquifyPanel(): void {
+        if (this.liquifyPanel) return;
+
+        css(this.liquifyUi.el, {
+            width: '260px',
+            maxHeight: '500px',
+            overflow: 'auto',
+        });
+
+        this.liquifyUi.onOpen();
+
+        this.liquifyPanel = new FloatingPanel({
+            title: 'Liquify',
+            content: this.liquifyUi.el,
+            position: { x: (window.innerWidth - 300) / 2, y: 100 },
+            width: 280,
+            onClose: () => {
+                this.closeLiquifyPanel();
+            },
+        });
+
+        this.liquifyPanel.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.liquifyPanel.getElement());
+    }
+
+    private closeLiquifyPanel(): void {
+        if (!this.liquifyPanel) return;
+        this.liquifyUi.onClose();
+        this.liquifyPanel.destroy();
+        this.liquifyPanel.getElement().remove();
+        this.liquifyPanel = null;
     }
 
     // --- Reference Panel ---

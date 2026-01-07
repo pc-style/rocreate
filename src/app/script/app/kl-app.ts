@@ -105,6 +105,10 @@ import { TPointerEvent } from '../bb/input/event.types';
 import { TBrushUiInstanceMap, TBrushId, TBrushUiConstructor, TBrushType } from '../klecks/brushes-ui/brush-ui.types';
 import { hasBrushStrokeContext, hasBrushSymmetry } from '../klecks/brushes/brush.interface';
 import { OverlayToolspace } from '../klecks/ui/components/overlay-toolspace';
+import { RecolorUi } from '../klecks/ui/tool-tabs/recolor-ui';
+import { LiquifyUi } from '../klecks/ui/tool-tabs/liquify-ui';
+import { BrushStudio } from '../klecks/ui/components/procreate/brush-studio';
+import { StabilizerSettings } from '../klecks/ui/components/stabilizer-settings';
 
 importFilters();
 
@@ -1734,7 +1738,10 @@ export class KlApp {
         const toolspaceStabilizerRow = new KL.ToolspaceStabilizerRow({
             smoothing: 1,
             onSelect: (v) => {
-                lineSmoothing.setSmoothing(translateSmoothing(v));
+                lineSmoothing.applyPreset(v);
+            },
+            onSettingsChange: (settings) => {
+                lineSmoothing.setSettings(settings);
             },
         });
 
@@ -1822,6 +1829,22 @@ export class KlApp {
         const shapeUi = new KL.ShapeUi({
             colorSlider: this.klColorSlider,
             onChangePanning: (doPan) => easelShape.setPanning(doPan),
+        });
+
+        const recolorUi = new RecolorUi({
+            klCanvas: this.klCanvas,
+            onApply: () => {
+                this.easelProjectUpdater.requestUpdate();
+                this.statusOverlay.out('Recolor Applied', true);
+            },
+        });
+
+        const liquifyUi = new LiquifyUi({
+            klCanvas: this.klCanvas,
+            onApply: () => {
+                this.easelProjectUpdater.requestUpdate();
+                this.statusOverlay.out('Liquify Applied', true);
+            },
         });
 
         const gradientTool = new KL.GradientTool({
@@ -2218,6 +2241,10 @@ export class KlApp {
                 onOpenBrowserStorage,
                 onStoredToBrowserStorage: () => {
                     this.updateLastSaved();
+                },
+                stabilizerSettings: lineSmoothing.getSettings(),
+                onStabilizerChange: (settings) => {
+                    lineSmoothing.setSettings(settings);
                 },
             });
 
@@ -2674,6 +2701,18 @@ export class KlApp {
                 this.layersUi.update();
                 this.procreateLayout?.updateLayers();
             },
+            recolorUi: {
+                el: recolorUi.getElement(),
+                onOpen: () => { },
+                onClose: () => { },
+            },
+            liquifyUi: {
+                el: liquifyUi.getElement(),
+                onOpen: () => { },
+                onClose: () => {
+                    liquifyUi.reset();
+                },
+            },
 
             layersUi: {
                 el: this.layersUi.getElement(),
@@ -2742,10 +2781,14 @@ export class KlApp {
                     this.toolspaceToolRow.setActive('brush');
                     this.easel.setTool('brush');
                     mainTabRow?.open('brush');
-                } else if (tool === 'select') {
+                } else if (tool as string === 'select') {
                     this.toolspaceToolRow.setActive('select');
                     this.easel.setTool('select');
                     mainTabRow?.open('select');
+                } else if (tool as string === 'recolor') {
+                    this.procreateLayout.toggleRecolorPanel();
+                } else if (tool as string === 'liquify') {
+                    this.procreateLayout.toggleLiquifyPanel();
                 }
                 updateMainTabVisibility();
             },
@@ -2794,7 +2837,22 @@ export class KlApp {
                 brushTabRow.open(brushId);
             },
             onModifyBrush: () => {
-                mainTabRow?.open('brush');
+                const brushId = currentBrushId;
+                const brushUi = brushUiMap[brushId];
+                if (!brushUi) return;
+
+                const brushStudio = new BrushStudio({
+                    settings: (brushUi as any).getSettings?.() || {},
+                    brushName: brushId,
+                    onChange: (newSettings) => {
+                        (brushUi as any).setSettings?.(newSettings);
+                        this.easelProjectUpdater.requestUpdate();
+                    },
+                    onClose: () => {
+                        brushStudio.hide();
+                    }
+                });
+                brushStudio.show();
             },
             initialSize: brushSettingService.getSize(),
             initialOpacity: brushSettingService.getOpacity(),

@@ -20,6 +20,7 @@ export type TLayerEl = HTMLElement & {
     pointerListener: PointerListener;
     opacitySlider: PointSlider;
     isSelected: boolean;
+    isMultiSelected: boolean;
     alphaLockUnsub?: () => void;
 };
 
@@ -69,22 +70,36 @@ export function createLayerItem(p: TLayerItemParams): TLayerEl {
 
     const layer: TLayerEl = BB.el({
         className: 'kl-layer',
+        css: {
+            borderRadius: '12px',
+            marginBottom: '8px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            transition: 'background 0.2s, box-shadow 0.2s, transform 0.2s',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            overflow: 'hidden',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+        }
     }) as HTMLElement as TLayerEl;
 
-    layer.posY = (totalLayers - 1) * (layerHeight + layerSpacing) - index * (layerHeight + layerSpacing);
-    css(layer, {
-        top: layer.posY + 'px',
+    const innerLayer = BB.el({
+        css: {
+            display: 'flex',
+            alignItems: 'center',
+            padding: '8px 12px',
+            position: 'relative',
+            height: layerHeight + 'px',
+        }
     });
 
-    const innerLayer = BB.el();
-    css(innerLayer, {
-        position: 'relative',
-    });
-
-    const container1 = BB.el();
-    css(container1, {
-        width: '100%',
-        height: layerHeight + 'px',
+    const container1 = BB.el({
+        css: {
+            display: 'flex',
+            alignItems: 'center',
+            flex: '1',
+            gap: '12px',
+            position: 'relative',
+        }
     });
     const container2 = BB.el();
     layer.append(innerLayer);
@@ -209,10 +224,12 @@ function createThumbnail(
     thc.restore();
 
     css(layer.thumb, {
-        position: 'absolute',
-        left: (isClippingMask ? 40 : 10) + 'px',
-        top: (layerHeight - layer.thumb.height) / 2 + 'px',
+        width: thumbDimensions.width + 'px',
+        height: thumbDimensions.height + 'px',
+        borderRadius: '6px',
         background: 'var(--kl-checkerboard-background)',
+        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+        flexShrink: '0',
     });
 
     // alpha lock indicator
@@ -282,12 +299,10 @@ function createLabel(
     layer.label.append(layer.layerName);
 
     css(layer.label, {
-        position: 'absolute',
-        left: 50 + 'px',
-        top: (layerHeight - 20) / 2 + 'px',
         fontSize: '14px',
-        width: '140px',
-        height: '20px',
+        fontWeight: '500',
+        color: 'rgba(255, 255, 255, 0.9)',
+        flex: '1',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         textOverflow: 'ellipsis',
@@ -312,12 +327,11 @@ function createOpacityLabel(
     layer.opacityLabel.append(parseInt('' + layer.opacity * 100) + '%');
 
     css(layer.opacityLabel, {
-        position: 'absolute',
-        right: 40 + 'px',
-        top: (layerHeight - 20) / 2 + 'px',
-        fontSize: '12px',
+        fontSize: '11px',
+        color: 'rgba(255, 255, 255, 0.4)',
+        width: '35px',
         textAlign: 'right',
-        width: '30px',
+        marginRight: '35px',
         transition: 'color 0.2s ease-in-out',
         textDecoration: isVisible ? undefined : 'line-through',
     });

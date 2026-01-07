@@ -10,11 +10,15 @@ import tabEditImg from 'url:/src/app/img/ui/procreate/wrench.svg';
 import tabSettingsImg from 'url:/src/app/img/ui/procreate/wand.svg';
 import toolSelectImg from 'url:/src/app/img/ui/procreate/selection.svg';
 import editTransformImg from 'url:/src/app/img/ui/procreate/transform.svg';
+import toolRecolorImg from 'url:/src/app/img/ui/procreate/hue-saturation.svg';
+import toolLiquifyImg from 'url:/src/app/img/ui/procreate/distort.svg';
 
 export type TTopBarTool =
     | 'brush'
     | 'smudge'
-    | 'eraser';
+    | 'eraser'
+    | 'recolor'
+    | 'liquify';
 
 export type TTopBarParams = {
     onToolChange: (tool: TTopBarTool) => void;
@@ -263,6 +267,32 @@ export class TopBar {
         });
         this.eraserBtnEl = eraserBtn.el;
         rightSide.append(eraserBtn.el);
+
+        // Recolor
+        const recolorBtn = this.createButton({
+            icon: toolRecolorImg,
+            title: 'Recolor Tool',
+            onClick: () => {
+                this.setActiveTool('recolor');
+                this.onToolChange('recolor');
+            },
+            isToolButton: true,
+            toolId: 'recolor',
+        });
+        rightSide.append(recolorBtn.el);
+
+        // Liquify
+        const liquifyBtn = this.createButton({
+            icon: toolLiquifyImg,
+            title: 'Liquify Brush',
+            onClick: () => {
+                this.setActiveTool('liquify');
+                this.onToolChange('liquify');
+            },
+            isToolButton: true,
+            toolId: 'liquify',
+        });
+        rightSide.append(liquifyBtn.el);
 
         // Layers
         const layersBtn = this.createButton({
