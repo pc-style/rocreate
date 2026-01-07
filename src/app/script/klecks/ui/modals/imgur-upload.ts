@@ -30,7 +30,7 @@ async function upload(
 ): Promise<TImgurUploadResponse> {
     const imageBlob = await canvasToBlob(canvas, 'image/' + type);
 
-    const newTab = window.open();
+    const newTab = window.open('', '_blank', 'noopener,noreferrer');
 
     if (!newTab) {
         throw new Error('could not create new tab');
@@ -184,10 +184,11 @@ export function imgurUpload(
                         imgurKey,
                     );
 
+                    const escapedDeletehash = BB.escapeHtml(result.deletehash);
                     KL.popup({
                         target: klRootEl,
                         type: 'ok',
-                        message: `<h3>${LANG('upload-success')}</h3><br>${LANG('upload-delete')}<br><a target='_blank' rel="noopener noreferrer" href='https://imgur.com/delete/${result.deletehash}'>imgur.com/delete/${result.deletehash}</a><br><br>`,
+                        message: `<h3>${LANG('upload-success')}</h3><br>${LANG('upload-delete')}<br><a target='_blank' rel="noopener noreferrer" href='https://imgur.com/delete/${escapedDeletehash}'>imgur.com/delete/${escapedDeletehash}</a><br><br>`,
                         buttons: ['Ok'],
                     });
                     onUploaded();

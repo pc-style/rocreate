@@ -9,20 +9,23 @@ export function getEmbedUrl(): string {
         return embedUrl;
     }
 
-    let match: string[];
+    let match: string[] | null = null;
     try {
         throw new Error();
     } catch (e) {
         if (e instanceof Error) {
-            match = ('' + e.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g)!;
+            match = ('' + e.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
         }
     }
+    if (!match) {
+        return '';
+    }
     let index = 0;
-    match!.forEach((item, i) => {
+    match.forEach((item, i) => {
         if (item.indexOf('embed.js') !== -1) {
             index = i;
         }
     });
-    embedUrl = getBaseUrl(match![index]);
+    embedUrl = getBaseUrl(match[index]);
     return embedUrl;
 }
