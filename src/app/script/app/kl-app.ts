@@ -13,6 +13,7 @@ import {
     TRgb,
     TShapeToolObject,
     TUiLayout,
+    TKlAppToolId,
 } from '../klecks/kl-types';
 import { importFilters } from '../klecks/filters/filters-lazy';
 import { klCanvasToPsdBlob } from '../klecks/storage/kl-canvas-to-psd-blob';
@@ -135,17 +136,7 @@ export type TKlAppParams = {
     klRecoveryManager?: KlRecoveryManager; // undefined if IndexedDB fails connecting
 };
 
-type TKlAppToolId =
-    | 'hand'
-    | 'brush'
-    | 'select'
-    | 'eyedropper'
-    | 'paintBucket'
-    | 'gradient'
-    | 'text'
-    | 'shape'
-    | 'rotate'
-    | 'zoom';
+
 
 export class KlApp {
     private readonly rootEl: HTMLElement;

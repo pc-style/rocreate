@@ -18,11 +18,15 @@ import { KlCanvas } from '../klecks/canvas/kl-canvas';
 import { ToolspaceToolRow } from '../klecks/ui/components/toolspace-tool-row';
 import { LayersUi } from '../klecks/ui/tool-tabs/layers-ui/layers-ui';
 import { TabRow } from '../klecks/ui/components/tab-row';
-import { TKlProject, TBrushUiInstance } from '../klecks/kl-types';
+import {
+    TKlProject,
+    TBrushUiInstance,
+    TKlAppToolId,
+} from '../klecks/kl-types';
 import { KeyListener } from '../bb/input/key-listener';
 
 export type TKlAppEventsParams = {
-    easel: Easel<any>;
+    easel: Easel<TKlAppToolId>;
     klCanvas: KlCanvas;
     lineSanitizer: LineSanitizer;
     saveToComputer: SaveToComputer;

@@ -3,6 +3,7 @@ import { BB } from '../../bb/bb';
 import { THistoryEntryDataComposed } from '../history/history.types';
 import { HISTORY_TILE_SIZE } from '../history/kl-history';
 import { sortLayerMap } from '../history/sort-layer-map';
+import { toGlobalCompositeOperation } from './translate-blending';
 
 export class Eyedropper {
     // ----------------------------------- public -----------------------------------
@@ -57,7 +58,7 @@ export class Eyedropper {
 
                 ctx.fillStyle = fillStyle;
                 ctx.globalAlpha = layer.opacity;
-                ctx.globalCompositeOperation = layer.mixModeStr;
+                ctx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
                 ctx.fillRect(0, 0, 1, 1);
             });
 

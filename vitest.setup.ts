@@ -7,10 +7,10 @@ Object.defineProperty(window, 'matchMedia', {
         matches: false,
         media: query,
         onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
+        addListener: () => { },
+        removeListener: () => { },
+        addEventListener: () => { },
+        removeEventListener: () => { },
         dispatchEvent: () => false,
     }),
 });
@@ -34,3 +34,35 @@ if (window.performance && !window.performance.timing) {
         navigationStart: Date.now(),
     };
 }
+
+// Global mock for canvas getContext to handle environments without 'canvas' package
+(HTMLCanvasElement.prototype as any).getContext = function (type: string) {
+    if (type === '2d') {
+        return {
+            save: () => { },
+            restore: () => { },
+            drawImage: () => { },
+            clearRect: () => { },
+            fill: () => { },
+            stroke: () => { },
+            beginPath: () => { },
+            moveTo: () => { },
+            lineTo: () => { },
+            rect: () => { },
+            arc: () => { },
+            setTransform: () => { },
+            translate: () => { },
+            scale: () => { },
+            rotate: () => { },
+            measureText: () => ({ width: 0 }),
+            fillText: () => { },
+            strokeText: () => { },
+            createLinearGradient: () => ({ addColorStop: () => { } }),
+            createRadialGradient: () => ({ addColorStop: () => { } }),
+            createPattern: () => { },
+            getImageData: () => ({ data: new Uint8ClampedArray(4) }),
+            putImageData: () => { },
+        };
+    }
+    return null;
+};

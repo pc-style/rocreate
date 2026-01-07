@@ -18,12 +18,11 @@ export type TImageDataReference = {
 };
 
 export function isTImageDataReference(input: unknown): input is TImageDataReference {
-    return (
-        typeof input === 'object' &&
-        input !== null &&
-        'id' in input &&
-        typeof (input as any).id === 'string'
-    );
+    if (!input || typeof input !== 'object') {
+        return false;
+    }
+    const maybe = input as { id?: unknown };
+    return typeof maybe.id === 'string';
 }
 
 async function createFallbackThumbnail(): Promise<Blob> {

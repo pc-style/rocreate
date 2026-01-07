@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { TKlProject, TKlProjectMeta } from '../../../kl-types';
+import type { TKlProject, TKlProjectMeta } from '../../kl-types';
 
 // mock storage dependencies before importing ProjectStore
 

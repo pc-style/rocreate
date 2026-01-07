@@ -25,7 +25,7 @@ export class SaveToComputer {
         private getExportType: () => TExportType,
         private klCanvas: KlCanvas,
         private onSaved: () => void,
-    ) {}
+    ) { }
 
     async save(format?: 'psd' | 'layers' | 'png'): Promise<void> {
         if (!format) {
@@ -87,7 +87,7 @@ export class SaveToComputer {
             KL.loadAgPsd()
                 .then((agPsdLazy) => {
                     const buffer = agPsdLazy.writePsdBuffer(psdConfig);
-                    const blob = new Blob([buffer], {
+                    const blob = new Blob([new Uint8Array(buffer)], {
                         type: 'image/vnd.adobe.photoshop',
                     });
                     saveAs(

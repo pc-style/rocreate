@@ -58,13 +58,13 @@ describe('LayerDragController', () => {
             const { controller, mocks } = createController();
             // position 0 is at the top visually, which is the highest spot index
             const spot = controller.posToSpot(0);
-            const layerCount = (mocks.getLayerCount as ReturnType<typeof vi.fn>)();
+            const layerCount = (mocks.getLayerCount as any)();
             expect(spot).toBe(layerCount - 1); // spot 3 for 4 layers
         });
 
         it('should convert max position to bottom layer spot (0)', () => {
             const { controller, mocks } = createController();
-            const layerCount = (mocks.getLayerCount as ReturnType<typeof vi.fn>)();
+            const layerCount = (mocks.getLayerCount as any)();
             const layerHeight = 50;
             const layerSpacing = 5;
             const maxY = (layerCount - 1) * (layerHeight + layerSpacing);
@@ -82,7 +82,7 @@ describe('LayerDragController', () => {
         it('should clamp negative positions to valid range', () => {
             const { controller, mocks } = createController();
             const spot = controller.posToSpot(-100);
-            const layerCount = (mocks.getLayerCount as ReturnType<typeof vi.fn>)();
+            const layerCount = (mocks.getLayerCount as any)();
             // should clamp to max spot
             expect(spot).toBe(layerCount - 1);
         });
@@ -107,7 +107,7 @@ describe('LayerDragController', () => {
     describe('move', () => {
         it('should update layer spots after moving', () => {
             const { controller, mocks } = createController();
-            const layers = (mocks.getLayerElArr as ReturnType<typeof vi.fn>)();
+            const layers = (mocks.getLayerElArr as any)();
 
             // move layer at spot 0 to spot 2
             controller.move(0, 2);
@@ -169,7 +169,7 @@ describe('LayerDragController', () => {
 
         it('should update posY for all layers', () => {
             const { controller, mocks } = createController();
-            const layers = (mocks.getLayerElArr as ReturnType<typeof vi.fn>)();
+            const layers = (mocks.getLayerElArr as any)();
 
             controller.move(0, 2);
 
@@ -184,7 +184,7 @@ describe('LayerDragController', () => {
     describe('updateLayersVerticalPosition', () => {
         it('should update CSS positions of non-dragged layers', () => {
             const { controller, mocks } = createController();
-            const layers = (mocks.getLayerElArr as ReturnType<typeof vi.fn>)();
+            const layers = (mocks.getLayerElArr as any)();
 
             const draggedSpot = 1;
             const newSpot = 3;
@@ -201,7 +201,7 @@ describe('LayerDragController', () => {
 
         it('should not update if new spot equals last position', () => {
             const { controller, mocks } = createController();
-            const layers = (mocks.getLayerElArr as ReturnType<typeof vi.fn>)();
+            const layers = (mocks.getLayerElArr as any)();
 
             // first call sets lastPos
             controller.updateLayersVerticalPosition(0, 2);
@@ -234,7 +234,7 @@ describe('LayerDragController', () => {
             controller = setup.controller;
             mocks = setup.mocks;
             dragHandler = controller.createDragHandler();
-            testLayer = (mocks.getLayerElArr as ReturnType<typeof vi.fn>)()[1];
+            testLayer = (mocks.getLayerElArr as any)()[1];
         });
 
         it('should activate layer on pointerdown if not selected', () => {

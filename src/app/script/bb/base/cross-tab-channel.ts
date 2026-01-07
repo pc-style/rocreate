@@ -103,9 +103,13 @@ export class CrossTabChannel {
 
     unsubscribe(listener: TCrossTabChannelListener): void {
         if (this.broadcastChannel) {
-            const match = this.broadcastChannelListeners.find((item) => item.listener === listener);
-            if (match) {
+            const index = this.broadcastChannelListeners.findIndex(
+                (item) => item.listener === listener,
+            );
+            if (index !== -1) {
+                const match = this.broadcastChannelListeners[index];
                 this.broadcastChannel.removeEventListener('message', match.preListener);
+                this.broadcastChannelListeners.splice(index, 1);
             }
         } else {
             this.localStorageListeners.delete(listener);

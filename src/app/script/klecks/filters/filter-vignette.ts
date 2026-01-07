@@ -14,38 +14,40 @@ import { canvasToLayerTiles } from '../history/push-helpers/canvas-to-layer-tile
 import { integerBounds } from '../../bb/math/math';
 import { getMultiPolyBounds } from '../../bb/multi-polygon/get-multi-polygon-bounds';
 
-export type TFilterChromaticAberrationInput = {
-    intensity: number;
-    directionDeg: number;
+export type TFilterVignetteInput = {
+    intensity: number; // 0 to 1
+    smoothness: number; // 0 to 1
 };
 
 /**
- * CanvasKit Shader for Chromatic Aberration.
- * Shifts Red channel by +displacement and Blue channel by -displacement.
+ * CanvasKit Shader for Vignette.
  */
 const SKSL_SHADER = `
 uniform shader image;
-uniform float2 displacement;
+uniform float2 size;
+uniform float intensity;
+uniform float smoothness;
 
 half4 main(float2 coord) {
     half4 color = image.eval(coord);
-    half4 red = image.eval(coord + displacement);
-    half4 blue = image.eval(coord - displacement);
-    return half4(red.r, color.g, blue.b, color.a);
+    float2 uv = (coord / size) * 2.0 - 1.0;
+    float dist = length(uv);
+    // Create vignette mask
+    float vignette = smoothstep(1.0 + smoothness, 1.0 - smoothness, dist);
+    // Apply intensity
+    return half4(mix(color.rgb, color.rgb * vignette, intensity), color.a);
 }
 `;
 
-function renderChromaticAberration(
+function renderVignette(
     ctx: CanvasRenderingContext2D,
     width: number,
     height: number,
-    input: TFilterChromaticAberrationInput,
+    input: TFilterVignetteInput,
     originalCanvas: HTMLCanvasElement,
 ): void {
     const ck = getCanvasKit();
     if (!ck) {
-        // Fallback or error if CanvasKit not loaded
-        // Just draw original without effect
         ctx.globalCompositeOperation = 'source-over';
         ctx.drawImage(originalCanvas, 0, 0);
         return;
@@ -57,37 +59,35 @@ function renderChromaticAberration(
     }
 
     const canvas = surface.getCanvas();
-    // Clear
     canvas.clear(ck.TRANSPARENT);
 
-    // Create shader
     const img = ck.MakeImageFromCanvasImageSource(originalCanvas);
     if (!img) {
-        return;
-    }
-
-    const imageShader = img.makeShaderCubic(ck.TileMode.Clamp, ck.TileMode.Clamp, 1 / 3, 1 / 3);
-
-    // Calculate displacement vector
-    const angleRad = (input.directionDeg * Math.PI) / 180;
-    const dx = Math.cos(angleRad) * input.intensity;
-    const dy = Math.sin(angleRad) * input.intensity;
-
-    const effectFactory = ck.RuntimeEffect.Make(SKSL_SHADER);
-    if (!effectFactory) {
-        img.delete();
         surface.delete();
         return;
     }
 
-    const shader = effectFactory.makeShader([dx, dy], [imageShader] as any);
+    const imageShader = img.makeShaderCubic(ck.TileMode.Clamp, ck.TileMode.Clamp, 1 / 3, 1 / 3);
+    const effectFactory = ck.RuntimeEffect.Make(SKSL_SHADER);
+
+    if (!effectFactory) {
+        img.delete();
+        surface.delete();
+        imageShader.delete();
+        return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const shader = effectFactory.makeShader(
+        [width, height, input.intensity, input.smoothness],
+        [imageShader] as any,
+    ) as any;
 
     const paint = new ck.Paint();
-    // Use type assertion to handle incomplete CanvasKit types gracefully
-    (paint as any).setShader(shader);
+    // @ts-ignore
+    paint.setShader(shader);
 
     canvas.drawRect(ck.XYWHRect(0, 0, width, height), paint);
-
     surface.flush();
 
     // Cleanup
@@ -99,7 +99,7 @@ function renderChromaticAberration(
     surface.delete();
 }
 
-export const filterChromaticAberration = {
+export const filterVignette = {
     getDialog(params: TFilterGetDialogParam) {
         const context = params.context;
         const klCanvas = params.klCanvas;
@@ -108,7 +108,7 @@ export const filterChromaticAberration = {
         }
 
         const rootEl = BB.el();
-        const result: TFilterGetDialogResult<TFilterChromaticAberrationInput> = {
+        const result: TFilterGetDialogResult<TFilterVignetteInput> = {
             element: rootEl,
         };
 
@@ -117,22 +117,18 @@ export const filterChromaticAberration = {
             result.width = getPreviewWidth(isSmall);
         }
 
-        const input: TFilterChromaticAberrationInput = {
-            intensity: 10,
-            directionDeg: 0,
+        const input: TFilterVignetteInput = {
+            intensity: 0.5,
+            smoothness: 0.5,
         };
 
-        // Preview setup
         let previewCanvas: HTMLCanvasElement;
-
         const previewLayerArr: TProjectViewportProject['layers'] = [];
         const layers = klCanvas.getLayers();
         const selectedLayerIndex = throwIfNull(klCanvas.getLayerIndex(context.canvas));
 
         for (let i = 0; i < layers.length; i++) {
             if (i === selectedLayerIndex) {
-                // This is the functional layer for the preview
-                // We'll create a dynamic updater for it
                 previewLayerArr.push({
                     image: (trans, w, h) => {
                         if (!previewCanvas) {
@@ -142,46 +138,18 @@ export const filterChromaticAberration = {
                             previewCanvas.height = h;
                         }
 
-                        // We need the source content for this view
-                        // For simplicity in this preview, we might just draw the full layer scaled down
-                        // Or properly implement a viewport sensitive render.
-
-                        // Let's grab the visible part of the layer for the preview
                         const ctx = previewCanvas.getContext('2d')!;
                         ctx.clearRect(0, 0, w, h);
 
-                        // Draw original content transformed
-                        ctx.save();
-                        // Reset transform because we want to draw in screen space
-                        // But wait, the input 'trans' tells us where the layer is on screen.
-                        // We can just draw the original layer with the transform, then apply filter?
-                        // No, filter applies to layer pixels.
-
-                        // Better approach for Preview:
-                        // 1. Render layer content to a temp canvas (or just use layer canvas)
-                        // 2. Apply filter to that temp canvas using CK
-                        // 3. Draw that temp canvas to previewCanvas with transform?
-
-                        // No, simplest: Treat the preview canvas as the destination.
-                        // We render the component *with* the filter applied.
-
-                        // 1. Get raw pixel data of layer (or part of it)
-                        // Optimization: For preview, maybe just simple generic rendering if CK is fast enough
-                        // Let's just render the layer to an offscreen canvas, then run filter on it.
-
-                        // Create a temp canvas for the source content at preview resolution
                         const offCanvas = BB.canvas(w, h);
                         const offCtx = offCanvas.getContext('2d')!;
-
-                        // Draw the layer content into offCanvas applying the view transform
-                        // This simulates "what the user sees" of the layer
                         offCtx.translate(trans.x, trans.y);
                         offCtx.scale(trans.scaleX, trans.scaleY);
                         offCtx.rotate(trans.angleDeg * Math.PI / 180);
                         offCtx.drawImage(context.canvas, 0, 0);
 
-                        // Now apply filter from offCanvas -> previewCanvas
-                        renderChromaticAberration(ctx, w, h, input, offCanvas);
+                        renderVignette(ctx, w, h, input, offCanvas);
+                        BB.freeCanvas(offCanvas);
 
                         return previewCanvas;
                     },
@@ -219,80 +187,67 @@ export const filterChromaticAberration = {
         });
         rootEl.append(preview.getElement());
 
-        function update() {
-            preview.render();
-        }
-
-        // Sliders
         const intensitySlider = new KlSlider({
             label: LANG('intensity'),
             width: 300,
             height: 30,
             min: 0,
-            max: 100,
+            max: 1,
             value: input.intensity,
             eventResMs: EVENT_RES_MS,
             onChange: (val) => {
                 input.intensity = val;
-                update();
+                preview.render();
             },
         });
         css(intensitySlider.getElement(), { marginBottom: '10px' });
         rootEl.append(intensitySlider.getElement());
 
-        const angleSlider = new KlSlider({
-            label: LANG('direction'),
+        const smoothnessSlider = new KlSlider({
+            label: LANG('smoothness'),
             width: 300,
             height: 30,
             min: 0,
-            max: 360,
-            value: input.directionDeg,
+            max: 1,
+            value: input.smoothness,
             eventResMs: EVENT_RES_MS,
-            formatFunc: (val: number) => {
-                return Math.round(val) + '°';
-            },
             onChange: (val) => {
-                input.directionDeg = val;
-                update();
+                input.smoothness = val;
+                preview.render();
             },
         });
-        css(angleSlider.getElement(), { marginBottom: '10px' });
-        rootEl.append(angleSlider.getElement());
+        css(smoothnessSlider.getElement(), { marginBottom: '10px' });
+        rootEl.append(smoothnessSlider.getElement());
 
         result.getInput = () => {
             result.destroy!();
             return {
                 intensity: input.intensity,
-                directionDeg: input.directionDeg,
+                smoothness: input.smoothness,
             };
         };
 
         result.destroy = () => {
             intensitySlider.destroy();
-            angleSlider.destroy();
+            smoothnessSlider.destroy();
             preview.destroy();
         };
 
         return result;
     },
 
-    apply(params: TFilterApply<TFilterChromaticAberrationInput>): boolean {
+    apply(params: TFilterApply<TFilterVignetteInput>): boolean {
         const { layer, input, klHistory, klCanvas } = params;
         const context = layer.context;
-
         const w = context.canvas.width;
         const h = context.canvas.height;
 
-        // Copy current state to temp canvas
         const sourceCanvas = BB.canvas(w, h);
         const sourceCtx = sourceCanvas.getContext('2d')!;
         sourceCtx.drawImage(context.canvas, 0, 0);
 
-        // Render filter to layer context
-        // This overwrites the context with the filtered result
-        renderChromaticAberration(context, w, h, input, sourceCanvas);
+        renderVignette(context, w, h, input, sourceCanvas);
 
-        // Push history
         const selection = klCanvas.getSelection();
         klHistory.push(
             getPushableLayerChange(
@@ -304,9 +259,7 @@ export const filterChromaticAberration = {
             ),
         );
 
-        // Cleanup
         BB.freeCanvas(sourceCanvas);
-
         return true;
     },
 };

@@ -24,7 +24,6 @@ function createMockBrushUi(overrides?: Partial<TBrushUiInstance<any>>): TBrushUi
         isDrawing: vi.fn().mockReturnValue(false),
         getElement: vi.fn().mockReturnValue(document.createElement('div')),
         getBrush: vi.fn(),
-        getSettings: vi.fn(),
         ...overrides,
     };
 }
@@ -323,7 +322,7 @@ describe('BrushService', () => {
     describe('size management', () => {
         it('getSize delegates to current brush UI', () => {
             const service = new BrushService(defaultParams);
-            (penBrushUi.getSize as ReturnType<typeof vi.fn>).mockReturnValue(25);
+            (penBrushUi.getSize as any).mockReturnValue(25);
 
             expect(service.getSize()).toBe(25);
         });
@@ -342,7 +341,7 @@ describe('BrushService', () => {
 
         it('increaseSize delegates to current brush UI and emits event', () => {
             const service = new BrushService(defaultParams);
-            (penBrushUi.getSize as ReturnType<typeof vi.fn>).mockReturnValue(20);
+            (penBrushUi.getSize as any).mockReturnValue(20);
             const events: TBrushServiceEvent[] = [];
             service.subscribe((e) => events.push(e));
 
@@ -355,7 +354,7 @@ describe('BrushService', () => {
 
         it('decreaseSize delegates to current brush UI and emits event', () => {
             const service = new BrushService(defaultParams);
-            (penBrushUi.getSize as ReturnType<typeof vi.fn>).mockReturnValue(15);
+            (penBrushUi.getSize as any).mockReturnValue(15);
             const events: TBrushServiceEvent[] = [];
             service.subscribe((e) => events.push(e));
 
@@ -370,7 +369,7 @@ describe('BrushService', () => {
     describe('opacity management', () => {
         it('getOpacity delegates to current brush UI', () => {
             const service = new BrushService(defaultParams);
-            (penBrushUi.getOpacity as ReturnType<typeof vi.fn>).mockReturnValue(0.75);
+            (penBrushUi.getOpacity as any).mockReturnValue(0.75);
 
             expect(service.getOpacity()).toBe(0.75);
         });
@@ -391,7 +390,7 @@ describe('BrushService', () => {
     describe('scatter management', () => {
         it('getScatter delegates to current brush UI', () => {
             const service = new BrushService(defaultParams);
-            (penBrushUi.getScatter as ReturnType<typeof vi.fn>).mockReturnValue(25);
+            (penBrushUi.getScatter as any).mockReturnValue(25);
 
             expect(service.getScatter()).toBe(25);
         });

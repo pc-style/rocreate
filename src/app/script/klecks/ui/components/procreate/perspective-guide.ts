@@ -162,7 +162,7 @@ export class PerspectiveGuide {
         // 3-point: draw lines between VPs? usually a triangle grid.
     }
 
-    private drawExtendedLine(p1: TVector2D, p2: TVector2D, style: any) {
+    private drawExtendedLine(p1: TVector2D, p2: TVector2D, style: Record<string, string>) {
         // Draw a line passing through p1 and p2 that covers the view
         const dx = p2.x - p1.x;
         const dy = p2.y - p1.y;
@@ -172,7 +172,7 @@ export class PerspectiveGuide {
             this.linesGroup.append(BB.createSvg({
                 elementType: 'line',
                 x1: '' + p1.x,
-                y1: '-1000' as any,
+                y1: '-1000',
                 x2: '' + p1.x,
                 y2: '' + (this.height + 1000),
                 ...style
@@ -184,7 +184,6 @@ export class PerspectiveGuide {
         const yIntercept = p1.y - slope * p1.x;
 
         // y = mx + b
-        // x = -1000 -> y?
         const xStart = -1000;
         const yStart = slope * xStart + yIntercept;
         const xEnd = this.width + 1000;

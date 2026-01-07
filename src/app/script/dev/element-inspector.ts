@@ -247,12 +247,12 @@ class ElementInspector {
             selector += '.' + element.className.split(' ').filter(c => c).join('.');
         }
 
-        const relevantStyles: Partial<CSSStyleDeclaration> = {};
+        const relevantStyles: Record<string, string> = {};
         const styleProps = ['display', 'position', 'width', 'height', 'padding', 'margin', 'background', 'backgroundColor', 'border', 'borderRadius', 'fontSize', 'color', 'flexDirection', 'gap', 'zIndex'];
         styleProps.forEach(prop => {
             const value = computedStyle.getPropertyValue(prop.replace(/[A-Z]/g, m => '-' + m.toLowerCase()));
             if (value && value !== 'none' && value !== 'normal' && value !== 'auto') {
-                (relevantStyles as any)[prop] = value;
+                relevantStyles[prop] = value;
             }
         });
 

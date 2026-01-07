@@ -296,4 +296,17 @@ export const FILTER_LIB: {
         inEmbed: true,
         webGL: false, // Uses CanvasKit directly
     },
+    vignette: {
+        lang: {
+            name: 'filter-vignette-title',
+            button: 'filter-vignette',
+            description: 'filter-vignette-description',
+        },
+        icon: glTiltShiftImg, // Using tilt-shift icon for now
+        updatePos: false,
+        getDialog: null,
+        apply: null,
+        inEmbed: true,
+        webGL: false, // Uses CanvasKit directly
+    },
 };

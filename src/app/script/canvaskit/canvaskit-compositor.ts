@@ -309,6 +309,12 @@ export class CanvasKitCompositor {
     resize(htmlCanvas: HTMLCanvasElement): void {
         if (this.isDestroyed) return;
 
+        // Recreating the surface invalidates existing GPU textures.
+        for (const image of this.layerImages.values()) {
+            image.delete();
+        }
+        this.layerImages.clear();
+
         // Recreate surface with new size
         this.surface?.delete();
         this.surface = this.ck.MakeWebGLCanvasSurface(htmlCanvas);

@@ -94,6 +94,7 @@ export class EaselProjectUpdater<T extends string> {
                     opacity: layer.opacity,
                     mixModeStr: layer.mixModeStr,
                     hasClipping: false,
+                    isClippingMask: layer.isClippingMask,
                 };
             }),
             selection: this.klCanvas.getSelection(),

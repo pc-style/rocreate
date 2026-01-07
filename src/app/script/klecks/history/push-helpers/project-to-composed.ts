@@ -38,6 +38,7 @@ export function projectToComposed(project: TKlProject): THistoryEntryDataCompose
                     opacity: layer.opacity,
                     isVisible: layer.isVisible,
                     mixModeStr: layer.mixModeStr ?? 'source-over',
+                    isClippingMask: false,
                     index,
                     tiles,
                 },

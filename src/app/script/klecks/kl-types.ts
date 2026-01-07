@@ -301,6 +301,18 @@ export type TDrawLine = {
 
 export type TDrawEvent = TDrawDownEvent | TDrawMoveEvent | TDrawUpEvent | TDrawLine;
 
+export type TKlAppToolId =
+    | 'hand'
+    | 'brush'
+    | 'select'
+    | 'eyedropper'
+    | 'paintBucket'
+    | 'gradient'
+    | 'text'
+    | 'shape'
+    | 'rotate'
+    | 'zoom';
+
 /**
  * Chain element interface for draw event processing chains.
  * Similar to TChainElement but for TDrawEvent instead of TPointerEvent.

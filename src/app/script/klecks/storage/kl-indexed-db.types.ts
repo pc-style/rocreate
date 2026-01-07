@@ -1,3 +1,5 @@
+import { TMixMode } from '../kl-types';
+
 /**
  * Versioned types for Kl_INDEXED_DB. Differentiates between reading and writing.
  * Reading needs to support old data. Writing can be cleaner.
@@ -15,23 +17,7 @@ export type TIdb = {
     V1: {
         Common: {
             PngBlob: Blob;
-            MixMode:
-                | 'source-over' // default aka normal
-                | 'darken'
-                | 'multiply'
-                | 'color-burn'
-                | 'lighten'
-                | 'screen'
-                | 'color-dodge'
-                | 'overlay'
-                | 'soft-light'
-                | 'hard-light'
-                | 'difference'
-                | 'exclusion'
-                | 'hue'
-                | 'saturation'
-                | 'color'
-                | 'luminosity';
+            MixMode: TMixMode;
         };
         ProjectStore: {
             Read: {
@@ -55,23 +41,7 @@ export type TIdb = {
         Common: {
             Uuid: string;
             PngBlob: Blob;
-            MixMode:
-                | 'source-over' // default aka normal
-                | 'darken'
-                | 'multiply'
-                | 'color-burn'
-                | 'lighten'
-                | 'screen'
-                | 'color-dodge'
-                | 'overlay'
-                | 'soft-light'
-                | 'hard-light'
-                | 'difference'
-                | 'exclusion'
-                | 'hue'
-                | 'saturation'
-                | 'color'
-                | 'luminosity';
+            MixMode: TMixMode;
         };
         ProjectStore: {
             ImageDataRef: {

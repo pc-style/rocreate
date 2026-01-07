@@ -1,5 +1,6 @@
 import { BB } from '../../bb/bb';
 import { ALPHA_IM_ARR } from './brushes-common';
+import { SymmetryGuide } from '../ui/components/procreate/symmetry-guide';
 import { TPressureInput, TRgb } from '../kl-types';
 import { BezierLine } from '../../bb/math/line';
 import { KlHistory } from '../history/kl-history';
@@ -34,6 +35,7 @@ export class PenBrush {
     private settingColorStr: string = '';
     private settingAlphaId: number = ALPHA_CIRCLE;
     private settingLockLayerAlpha: boolean = false;
+    private symmetryGuide: SymmetryGuide | null = null;
     private strokeContext: CanvasRenderingContext2D | null = null;
     private strokeAlpha: number = 1;
 
@@ -177,6 +179,22 @@ export class PenBrush {
      * @param before - [x, y, size, opacity, angle] the drawDot call before
      */
     private drawDot(
+        x: number,
+        y: number,
+        size: number,
+        opacity: number,
+        scatter: number,
+        angle?: number,
+        before?: [number, number, number, number, number, number | undefined],
+    ): void {
+        const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
+        points.forEach((p, index) => {
+            // For now, angle mirroring is simplified
+            this.drawDotInternal(p.x, p.y, size, opacity, scatter, angle, before && index === 0 ? before : undefined);
+        });
+    }
+
+    private drawDotInternal(
         x: number,
         y: number,
         size: number,
@@ -384,7 +402,7 @@ export class PenBrush {
         ];
     }
 
-    goLine(x: number, y: number, p: number, tiltX?: number, tiltY?: number): void {
+    goLine(x: number, y: number, p: number, isCoalesced?: boolean, tiltX?: number, tiltY?: number): void {
         if (!this.inputIsDrawing) {
             return;
         }
@@ -595,6 +613,10 @@ export class PenBrush {
     setStrokeContext(c: CanvasRenderingContext2D | null, alpha: number): void {
         this.strokeContext = c;
         this.strokeAlpha = alpha;
+    }
+
+    setSymmetryGuide(guide: SymmetryGuide | null): void {
+        this.symmetryGuide = guide;
     }
 
     //GET

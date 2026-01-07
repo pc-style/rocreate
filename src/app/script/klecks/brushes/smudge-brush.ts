@@ -167,51 +167,54 @@ function smudge(imageData: ImageData, mask: Uint8Array | undefined, p: TSmudgePa
         const fac =
             1 - p.brush.opacity * (1 - clamp((dist - (cSize - softnessPx)) / softnessPx, 0, 1));
 
-        if (fac === 1) {
+        const brushDensity = 1 - fac;
+        if (brushDensity <= 0) {
             return;
         }
         if (mask && (mask[ai / 4] === 0 || mask[bi / 4] === 0)) {
             return;
         }
 
-        if (!imageData.data[ai + 3]) {
-            /* empty */
-        } else if (!imageData.data[bi + 3]) {
-            // don't mix if target fully transparent. pixel might have a strange color.
-            imageData.data[bi] = imageData.data[ai];
-            imageData.data[bi + 1] = imageData.data[ai + 1];
-            imageData.data[bi + 2] = imageData.data[ai + 2];
-        } else {
-            // consider alpha ratio. If a has lower alpha than b, then b should be stronger, and vice versa
-            // not totally accurate. TODO same compositing as blend brush
-            let fac2;
-            if (imageData.data[ai + 3] < imageData.data[bi + 3]) {
-                fac2 = 1 - (imageData.data[ai + 3] / imageData.data[bi + 3]) * (1 - fac);
-            } else {
-                fac2 = (imageData.data[bi + 3] / imageData.data[ai + 3]) * fac;
-            }
+        const alphaS = imageData.data[ai + 3] / 255;
+        const alphaO = brushDensity * alphaS;
+        const alphaU = imageData.data[bi + 3] / 255;
 
-            // ImageData's Uint8ClampedArray rounds -> 0.5 becomes 1. But not in Safari, so needs to be done manually
-            // Offset mixed color by random number noise (-0.5, 0.5), so it doesn't get stuck while mixing.
-            // No +0.5, because it cancels out with rand.
+        if (p.brush.alphaLock) {
+            if (alphaU <= 0) {
+                return;
+            }
+            // mix colors based on alphaO
             imageData.data[bi] = Math.floor(
-                BB.mix(imageData.data[ai], imageData.data[bi + 0], fac2) + randArr[randI],
+                BB.mix(imageData.data[bi], imageData.data[ai], alphaO) + randArr[randI],
             );
             imageData.data[bi + 1] = Math.floor(
-                BB.mix(imageData.data[ai + 1], imageData.data[bi + 1], fac2) + randArr[randI],
+                BB.mix(imageData.data[bi + 1], imageData.data[ai + 1], alphaO) + randArr[randI],
             );
             imageData.data[bi + 2] = Math.floor(
-                BB.mix(imageData.data[ai + 2], imageData.data[bi + 2], fac2) + randArr[randI],
+                BB.mix(imageData.data[bi + 2], imageData.data[ai + 2], alphaO) + randArr[randI],
             );
+        } else {
+            const outA = alphaO + alphaU * (1 - alphaO);
+            if (outA > 0) {
+                const outR =
+                    (imageData.data[ai] * alphaO + imageData.data[bi] * alphaU * (1 - alphaO)) /
+                    outA;
+                const outG =
+                    (imageData.data[ai + 1] * alphaO +
+                        imageData.data[bi + 1] * alphaU * (1 - alphaO)) /
+                    outA;
+                const outB =
+                    (imageData.data[ai + 2] * alphaO +
+                        imageData.data[bi + 2] * alphaU * (1 - alphaO)) /
+                    outA;
 
-            randI = (randI + 1) % randLen;
+                imageData.data[bi] = Math.floor(outR + randArr[randI]);
+                imageData.data[bi + 1] = Math.floor(outG + randArr[randI]);
+                imageData.data[bi + 2] = Math.floor(outB + randArr[randI]);
+            }
+            imageData.data[bi + 3] = Math.floor(Math.min(255, outA * 255) + 0.5);
         }
-        // Always mix alpha. unless alpha lock
-        if (!p.brush.alphaLock) {
-            imageData.data[bi + 3] = Math.floor(
-                BB.mix(imageData.data[ai + 3], imageData.data[bi + 3], fac) + 0.5,
-            );
-        }
+        randI = (randI + 1) % randLen;
     };
 
     const bx1 = p.bP.x * 4;
@@ -271,8 +274,8 @@ function smudge(imageData: ImageData, mask: Uint8Array | undefined, p: TSmudgePa
 }
 
 export class SmudgeBrush {
-    private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
-    private klHistory: KlHistory = {} as KlHistory;
+    private context: CanvasRenderingContext2D | null = null;
+    private klHistory: KlHistory | null = null;
 
     private settingColor: TRgb = { r: 0, g: 0, b: 0 };
     private settingSize: number = 35;
@@ -294,7 +297,7 @@ export class SmudgeBrush {
     private redrawBounds: TBounds | undefined;
     private completeRedrawBounds: TBounds | undefined;
 
-    private copyImageData: ImageData = {} as ImageData;
+    private copyImageData: ImageData | null = null;
 
     private drawBuffer: TSmudgeParams[] = [];
 
@@ -329,6 +332,9 @@ export class SmudgeBrush {
      * update copyImageData. copy over new regions if needed
      */
     copyFromCanvas(): void {
+        if (!this.copyImageData) {
+            return;
+        }
         const touchedCells = this.copiedCells.map(() => false);
 
         const bounds: TBounds[] = [];
@@ -344,6 +350,9 @@ export class SmudgeBrush {
             y2: Math.floor(this.redrawBounds.y2 / CELL_SIZE),
         });
         bounds.forEach((item) => {
+            if (!this.copyImageData) {
+                return;
+            }
             for (let i = item.x1; i <= item.x2; i++) {
                 for (let e = item.y1; e <= item.y2; e++) {
                     touchedCells[e * cellsW + i] = true;
@@ -352,7 +361,7 @@ export class SmudgeBrush {
         });
 
         touchedCells.forEach((item, i) => {
-            if (!item || this.copiedCells[i]) {
+            if (!item || this.copiedCells[i] || !this.context || !this.copyImageData) {
                 // not touched, or already copied
                 return;
             }
@@ -376,8 +385,8 @@ export class SmudgeBrush {
             for (let i = 0; i < h; i++) {
                 for (
                     let e = 0,
-                        e2 = i * w * 4,
-                        e3 = ((y * CELL_SIZE + i) * this.copyImageData.width + x * CELL_SIZE) * 4;
+                    e2 = i * w * 4,
+                    e3 = ((y * CELL_SIZE + i) * this.copyImageData.width + x * CELL_SIZE) * 4;
                     e < w;
                     e++, e2 += 4, e3 += 4
                 ) {
@@ -412,8 +421,8 @@ export class SmudgeBrush {
         const h = Math.round(size * 2);
 
         const bounds = prepSmudge(
-            this.copyImageData.width,
-            this.copyImageData.height,
+            this.copyImageData?.width || 0,
+            this.copyImageData?.height || 0,
             {
                 x: Math.round(this.lastDot.x - size),
                 y: Math.round(this.lastDot.y - size),
@@ -465,7 +474,7 @@ export class SmudgeBrush {
 
         if (!this.bezierLine) {
             this.bezierLine = new BB.BezierLine();
-            this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, function () {});
+            this.bezierLine.add(this.lastInput.x, this.lastInput.y, 0, function () { });
         }
 
         const drawArr: Parameters<typeof this.prepDot>[] = []; //draw instructions. will be all drawn at once
@@ -497,16 +506,21 @@ export class SmudgeBrush {
 
         this.copyFromCanvas();
 
-        for (let i = 0; i < this.drawBuffer.length; i++) {
-            smudge(this.copyImageData, this.mask, this.drawBuffer[i]);
+        if (this.copyImageData) {
+            for (let i = 0; i < this.drawBuffer.length; i++) {
+                smudge(this.copyImageData, this.mask, this.drawBuffer[i]);
+            }
         }
     }
 
     // ----------------------------------- public -----------------------------------
 
-    constructor() {}
+    constructor() { }
 
     startLine(x: number, y: number, p: number): void {
+        if (!this.klHistory || !this.context) {
+            return;
+        }
         const selection = this.klHistory.getComposed().selection.value;
         this.selectionBounds = selection ? integerBounds(getMultiPolyBounds(selection)) : undefined;
         this.mask = selection
@@ -553,7 +567,7 @@ export class SmudgeBrush {
 
         this.continueLine(x, y, localSize, this.lastInput.pressure);
 
-        if (this.redrawBounds) {
+        if (this.redrawBounds && this.context && this.copyImageData) {
             this.context.putImageData(
                 this.copyImageData,
                 0,
@@ -582,14 +596,16 @@ export class SmudgeBrush {
         const localSize = this.settingHasSizePressure
             ? Math.max(0.1, this.lastInput.pressure * this.settingSize)
             : Math.max(0.1, this.settingSize);
-        this.context.save();
-        this.continueLine(undefined, undefined, localSize, this.lastInput.pressure);
-        this.context.restore();
+        if (this.context) {
+            this.context.save();
+            this.continueLine(undefined, undefined, localSize, this.lastInput.pressure);
+            this.context.restore();
+        }
 
         this.isDrawing = false;
         this.bezierLine = undefined;
 
-        if (this.redrawBounds) {
+        if (this.redrawBounds && this.context && this.copyImageData) {
             this.context.putImageData(
                 this.copyImageData,
                 0,
@@ -607,7 +623,7 @@ export class SmudgeBrush {
             );
         }
 
-        if (this.completeRedrawBounds) {
+        if (this.completeRedrawBounds && this.klHistory && this.context) {
             this.klHistory.push(
                 getPushableLayerChange(
                     this.klHistory.getComposed(),
@@ -615,10 +631,13 @@ export class SmudgeBrush {
                 ),
             );
         }
-        this.copyImageData = {} as ImageData;
+        this.copyImageData = null;
     }
 
     drawImage(im: ImageData | HTMLCanvasElement, x: number, y: number): void {
+        if (!this.context) {
+            return;
+        }
         if (im instanceof ImageData) {
             this.context.putImageData(im, x, y);
         } else {

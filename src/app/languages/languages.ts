@@ -3,7 +3,7 @@
 import dataEn from './en.json';
 
 export const english = dataEn;
-export const languages: {code: string; name: string}[] = [
+export const languages: { code: string; name: string }[] = [
     {
         code: 'en',
         name: 'English',
@@ -389,6 +389,19 @@ export type TTranslationCode = 'switch-ui-left-right' | // Switch left/right UI
     'filter-vanish-point-title' | // Vanishing Point
     'filter-vanish-point-description' | // Adds vanishing point to selected layer. Drag preview to move.
     'filter-vanish-point-lines' | // Lines
+    'filter-chromatic-aberration' | // Chromatic Aberration
+    'filter-chromatic-aberration-title' | // Chromatic Aberration
+    'filter-chromatic-aberration-description' | // Simulate lens distortion
+    'filter-bloom' | // Bloom
+    'filter-bloom-title' | // Bloom
+    'filter-bloom-description' | // Add glow effect to bright areas
+    'filter-vignette' | // Vignette
+    'filter-vignette-title' | // Vignette
+    'filter-vignette-description' | // Darkens the edges of the image.
+    'intensity' | // Intensity
+    'direction' | // Direction
+    'threshold' | // Threshold
+    'smoothness' | // Smoothness
     'dropper-drop' | // Drop to import
     'dropper-as-image' | // As New Image
     'dropper-as-layer' | // As Layer

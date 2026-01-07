@@ -14,10 +14,10 @@
  *
  */
 
-const noiseModule: {
-    seed: (seed: number) => void;
-    simplex2: (xin: number, yin: number) => number;
-} = {} as typeof noiseModule;
+const noiseModule = {
+    seed: (seed: number) => { },
+    simplex2: (xin: number, yin: number) => 0
+};
 
 class Grad {
     constructor(

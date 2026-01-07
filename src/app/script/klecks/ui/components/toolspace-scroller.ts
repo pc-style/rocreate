@@ -75,7 +75,9 @@ export class ToolspaceScroller {
                     }, 20);
                 }
                 if (e.type === 'pointerup') {
-                    clearInterval(this.upInterval);
+                    if (this.upInterval !== null) {
+                        clearInterval(this.upInterval);
+                    }
                     setTimeout(() => {
                         // prevent ff pressing anything underneath
                         this.upInterval = null;
@@ -94,7 +96,9 @@ export class ToolspaceScroller {
                     }, 20);
                 }
                 if (e.type === 'pointerup') {
-                    clearInterval(this.downInterval);
+                    if (this.downInterval !== null) {
+                        clearInterval(this.downInterval);
+                    }
                     setTimeout(() => {
                         // prevent ff pressing anything underneath
                         this.downInterval = null;

@@ -45,16 +45,15 @@ const ALPHA_CIRCLE = 0;
  */
 export class HybridPenBrush
     implements
-        IBrushCore,
-        IBrushSettings,
-        IBrushState,
-        IBrushSpacing,
-        IBrushPressure,
-        IBrushScatter,
-        IBrushLockAlpha,
-        IBrushStrokeContext,
-        IBrushTilt
-{
+    IBrushCore,
+    IBrushSettings,
+    IBrushState,
+    IBrushSpacing,
+    IBrushPressure,
+    IBrushScatter,
+    IBrushLockAlpha,
+    IBrushStrokeContext,
+    IBrushTilt {
     private readonly canvas2dBrush: PenBrush;
     private canvasKitRenderer: CanvasKitBrushRenderer | null = null;
     private useCanvasKit = false;
@@ -159,7 +158,9 @@ export class HybridPenBrush
      * more optimization work. Falling back to Canvas 2D for now.
      */
     private shouldUseCanvasKit(): boolean {
-        // TODO: Re-enable CanvasKit after implementing efficient real-time compositing
+        // TODO: Re-enable CanvasKit after optimizing the real-time drawing pipeline.
+        // Currently, syncing tiles from Skia to the main canvas during a stroke 
+        // introduces too much overhead for high-frequency pointer events.
         return false;
 
         /*
@@ -291,8 +292,7 @@ export class HybridPenBrush
             }
             this.canvasKitRenderer.continueStroke(x, y, pressure, tiltX, tiltY);
         } else {
-            // note: original PenBrush doesn't use isCoalesced parameter
-            this.canvas2dBrush.goLine(x, y, pressure, tiltX, tiltY);
+            this.canvas2dBrush.goLine(x, y, pressure, isCoalesced, tiltX, tiltY);
         }
     }
 

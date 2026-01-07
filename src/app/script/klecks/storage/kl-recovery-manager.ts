@@ -25,9 +25,22 @@ const SUBSEQUENT_RECOVERY_AFTER_CHANGES = 4;
 export const DEBUG_RETURN_ALL_RECOVERIES: boolean = false;
 export const DEBUG_INSTANT_RECOVERY: boolean = false;
 
+type TRecoveryChannelMessage =
+    | { type: 'new-tab' }
+    | { type: 'request-ids' }
+    | { type: 'response-ids'; id: number | string };
+
+function isRecoveryChannelMessage(message: unknown): message is TRecoveryChannelMessage {
+    return !!message && typeof message === 'object' && 'type' in message;
+}
+
 export function setHash(value?: string) {
     if (value === undefined) {
-        history.replaceState(null, '', ' ');
+        history.replaceState(
+            null,
+            '',
+            window.location.origin + window.location.pathname + window.location.search,
+        );
         return;
     }
     // avoid creating a new history state
@@ -101,7 +114,7 @@ export class KlRecoveryManager {
     private isDestroyed: boolean = false;
     private visibilityHandler: (() => void) | undefined;
     private focusHandler: (() => void) | undefined;
-    private crossTabHandler: ((message: { type: string; id?: number }) => void) | undefined;
+    private crossTabHandler: ((message: unknown) => void) | undefined;
 
     private announceTabId(): void {
         this.crossTabChannel.postMessage({ type: 'new-tab' });
@@ -130,6 +143,9 @@ export class KlRecoveryManager {
         window.addEventListener('focus', this.focusHandler);
 
         this.crossTabHandler = (message) => {
+            if (!isRecoveryChannelMessage(message)) {
+                return;
+            }
             if (this.isDestroyed) return;
             if (message.type === 'new-tab') {
                 if (document.hidden) {
@@ -192,9 +208,16 @@ export class KlRecoveryManager {
     private async getIdsFromTabs(): Promise<number[]> {
         this.crossTabChannel.postMessage({ type: 'request-ids' });
         const result: number[] = [];
-        const onMessage = (message: any) => {
+        const onMessage = (message: unknown) => {
+            if (!isRecoveryChannelMessage(message)) {
+                return;
+            }
             if (message.type === 'response-ids') {
-                result.push(+message.id);
+                const id =
+                    typeof message.id === 'number' ? message.id : Number(message.id);
+                if (!Number.isNaN(id)) {
+                    result.push(id);
+                }
             }
         };
         this.crossTabChannel.subscribe(onMessage);

@@ -5,6 +5,7 @@ import { LANG } from '../../language/language';
 import { calculateMaxLayers } from '../canvas/kl-canvas';
 import { BB } from '../../bb/bb';
 import { randomUuid, throwIfUndefined } from '../../bb/base/base';
+import { toGlobalCompositeOperation } from '../canvas/translate-blending';
 
 let kl2PsdMap: Record<TMixMode, BlendMode>;
 let psd2KlMap: Record<BlendMode, TMixMode>;
@@ -35,6 +36,14 @@ function init(): void {
         saturation: 'saturation',
         color: 'color',
         luminosity: 'luminosity',
+
+        // extended blend modes - map to closest PSD equivalents
+        'vivid-light': 'vivid light',
+        'linear-light': 'linear light',
+        'pin-light': 'pin light',
+        'hard-mix': 'hard mix',
+        'plus-darker': 'linear burn',
+        'plus-lighter': 'linear dodge',
     };
     psd2KlMap = Object.fromEntries(Object.entries(kl2PsdMap).map((a) => a.reverse()));
 }
@@ -217,8 +226,8 @@ export function readPsd(psdObj: Psd): TKlPsd {
                                 if (clippingItem.top === undefined) {
                                     throw new Error('clippingItem.top undefined');
                                 }
-                                clippingCtx.globalCompositeOperation = getMixModeStr(
-                                    clippingItem.blendMode,
+                                clippingCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                                    getMixModeStr(clippingItem.blendMode),
                                 );
                                 clippingCtx.globalAlpha = clippingItem.opacity;
                                 clippingCtx.drawImage(
@@ -258,7 +267,9 @@ export function readPsd(psdObj: Psd): TKlPsd {
                             if (groupCtx === undefined) {
                                 throw new Error('groupCtx undefined');
                             }
-                            groupCtx.globalCompositeOperation = innerItem.mixModeStr;
+                            groupCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                                innerItem.mixModeStr,
+                            );
                             groupCtx.globalAlpha = innerItem.opacity;
                             groupCtx.drawImage(innerItem.image, 0, 0);
                         } else {
@@ -358,8 +369,8 @@ export function readPsd(psdObj: Psd): TKlPsd {
                         if (clippingItem.top === undefined) {
                             throw new Error('clippingItem.top undefined');
                         }
-                        clippingCtx.globalCompositeOperation = getMixModeStr(
-                            clippingItem.blendMode,
+                        clippingCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                            getMixModeStr(clippingItem.blendMode),
                         );
                         clippingCtx.globalAlpha = clippingItem.opacity;
                         clippingCtx.drawImage(
@@ -405,7 +416,9 @@ export function readPsd(psdObj: Psd): TKlPsd {
 
                 if (groupCanvas && groupCtx) {
                     if (groupOpacity > 0) {
-                        groupCtx.globalCompositeOperation = getMixModeStr(item.blendMode);
+                        groupCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                            getMixModeStr(item.blendMode),
+                        );
                         groupCtx.globalAlpha = item.hidden ? 0 : item.opacity;
                         groupCtx.drawImage(canvas, 0, 0);
                     }

@@ -12,6 +12,7 @@ import { c } from '../../../../bb/base/c';
 import { TVector2D } from '../../../../bb/bb-types';
 import { KeyListener } from '../../../../bb/input/key-listener';
 import { getSelectionPath2d } from '../../../../bb/multi-polygon/get-selection-path-2d';
+import { toGlobalCompositeOperation } from '../../../canvas/translate-blending';
 
 type TViewportParams = Pick<TRenderTextParam, 'x' | 'y' | 'angleRad'>;
 
@@ -443,7 +444,9 @@ export class TextToolViewportUI {
             for (let i = 0; i < this.layerIndex; i++) {
                 if (this.layerArr[i].isVisible && this.layerArr[i].opacity > 0) {
                     this.layersCtx.globalAlpha = this.layerArr[i].opacity;
-                    this.layersCtx.globalCompositeOperation = this.layerArr[i].mixModeStr;
+                    this.layersCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                        this.layerArr[i].mixModeStr,
+                    );
                     this.layersCtx.drawImage(this.layerArr[i].canvas, -centerX, -centerY);
                 }
             }
@@ -453,7 +456,9 @@ export class TextToolViewportUI {
             this.layersCtx.globalAlpha =
                 this.layerArr[this.layerIndex].opacity *
                 (this.layerArr[this.layerIndex].isVisible ? 1 : 0);
-            this.layersCtx.globalCompositeOperation = this.layerArr[this.layerIndex].mixModeStr;
+            this.layersCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                this.layerArr[this.layerIndex].mixModeStr,
+            );
             this.layersCtx.drawImage(this.targetCanvas, 0, 0);
 
             // layers above
@@ -464,7 +469,9 @@ export class TextToolViewportUI {
             for (let i = this.layerIndex + 1; i < this.layerArr.length; i++) {
                 if (this.layerArr[i].isVisible && this.layerArr[i].opacity > 0) {
                     this.layersCtx.globalAlpha = this.layerArr[i].opacity;
-                    this.layersCtx.globalCompositeOperation = this.layerArr[i].mixModeStr;
+                    this.layersCtx.globalCompositeOperation = toGlobalCompositeOperation(
+                        this.layerArr[i].mixModeStr,
+                    );
                     this.layersCtx.drawImage(this.layerArr[i].canvas, -centerX, -centerY);
                 }
             }

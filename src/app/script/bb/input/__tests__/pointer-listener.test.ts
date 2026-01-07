@@ -11,7 +11,7 @@ describe('PointerListener', () => {
         onPointerSpy = vi.fn();
         listener = new PointerListener({
             target,
-            onPointer: onPointerSpy,
+            onPointer: onPointerSpy as any,
         });
     });
 
@@ -44,7 +44,7 @@ describe('PointerListener', () => {
 
         // 2. Corrupt the state: Remove object but keep ID
         // This simulates the case where getDragObj(id) returns null despite ID being in dragPointerIdArr
-        privateListener.dragObjArr = []; 
+        privateListener.dragObjArr = [];
 
         // 3. Trigger pointermove
         // PointerListener attaches window listeners for drag events
@@ -73,7 +73,7 @@ describe('PointerListener', () => {
             pointerType: 'mouse'
         });
         target.dispatchEvent(downEvent);
-        
+
         const privateListener = listener as any;
         expect(privateListener.dragPointerIdArr).toContain(2);
 

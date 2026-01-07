@@ -133,7 +133,7 @@ export class KlCanvas {
         this.klHistory = history;
         this.layers = [];
         if (KL_CANVAS_DEBUGGING) {
-            (window as any).getCanvasLayers = () => this.layers;
+            window.getCanvasLayers = () => this.layers;
         }
         this.eyedropper = new Eyedropper();
         this.width = 0;
@@ -1402,6 +1402,7 @@ export class KlCanvas {
         opacity: number;
         name: string;
         mixModeStr: TMixMode;
+        isClippingMask?: boolean;
     }[] {
         return this.layers.map((layer) => {
             return {
@@ -1412,6 +1413,7 @@ export class KlCanvas {
                 opacity: layer.opacity,
                 name: layer.name,
                 mixModeStr: layer.mixModeStr,
+                isClippingMask: layer.isClippingMask,
             };
         });
     }
@@ -1422,6 +1424,7 @@ export class KlCanvas {
         opacity: number;
         name: string;
         mixModeStr: TMixMode;
+        isClippingMask?: boolean;
         compositeObj?: TLayerComposite;
     }[] {
         return this.layers.map((item) => {
@@ -1431,6 +1434,7 @@ export class KlCanvas {
                 opacity: item.opacity,
                 name: item.name,
                 mixModeStr: item.mixModeStr,
+                isClippingMask: item.isClippingMask,
                 ...(item.compositeObj ? { compositeObj: item.compositeObj } : {}),
             };
         });
