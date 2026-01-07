@@ -40,7 +40,7 @@ const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
     blendBrush: {
         sizeSlider: { min: 1, max: 50 },
         opacitySlider: { min: 0, max: 1 },
-        scatterSlider: null as any,
+        scatterSlider: { min: 0, max: 100 },
         image: '',
         tooltip: '',
         Ui: {} as any,
@@ -457,7 +457,7 @@ describe('BrushService', () => {
             expect(config).toEqual({
                 sizeSlider: { min: 1, max: 50 },
                 opacitySlider: { min: 0, max: 1 },
-                scatterSlider: null,
+                scatterSlider: { min: 0, max: 100 },
             });
         });
     });
