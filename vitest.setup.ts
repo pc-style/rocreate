@@ -27,3 +27,10 @@ if (typeof window.cancelAnimationFrame === 'undefined') {
         clearTimeout(id);
     };
 }
+
+// mock performance.timing (deprecated but used)
+if (window.performance && !window.performance.timing) {
+    (window.performance as any).timing = {
+        navigationStart: Date.now(),
+    };
+}

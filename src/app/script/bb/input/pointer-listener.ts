@@ -309,6 +309,16 @@ export class PointerListener {
     private readonly onTouchEnd: ((e: TouchEvent) => void) | undefined;
     private readonly onTouchCancel: ((e: TouchEvent) => void) | undefined;
 
+    private cleanupCorruptedPointer(pointerId: number): void {
+        const index = this.dragPointerIdArr.indexOf(pointerId);
+        if (index !== -1) {
+            this.dragPointerIdArr.splice(index, 1);
+            if (this.dragPointerIdArr.length === 0) {
+                this.destroyDocumentListeners();
+            }
+        }
+    }
+
     private getDragObj(pointerId: number): TDragObj | null {
         for (let i = 0; i < this.dragObjArr.length; i++) {
             if (pointerId === this.dragObjArr[i].pointerId) {
@@ -521,7 +531,7 @@ export class PointerListener {
                 const dragObj = this.getDragObj(correctedEvent.pointerId);
 
                 if (!dragObj) {
-                    // todo need to handle this!
+                    this.cleanupCorruptedPointer(correctedEvent.pointerId);
                     return;
                 }
 
@@ -582,7 +592,7 @@ export class PointerListener {
                 }
                 const dragObj = this.removeDragObj(correctedEvent.pointerId);
                 if (!dragObj) {
-                    // todo need to handle this!
+                    this.cleanupCorruptedPointer(correctedEvent.pointerId);
                     return;
                 }
 
@@ -609,7 +619,7 @@ export class PointerListener {
                 }
                 const dragObj = this.removeDragObj(correctedEvent.pointerId);
                 if (!dragObj) {
-                    // todo need to handle this!
+                    this.cleanupCorruptedPointer(correctedEvent.pointerId);
                     return;
                 }
 
