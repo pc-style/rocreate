@@ -1,31 +1,66 @@
-# Procreate Clone: Crucial Features
+# Top 5 (features users most often look for when they want “Procreate-like”)
+1.	Automatic, built-in time-lapse recording + export
+2.	Gesture-first workflow (2-finger undo/redo, customizable gestures) + QuickMenu radial shortcut menu
+3.	Deep brush engine (Brush Studio: build/tune brushes heavily)
+4.	QuickShape + Drawing Assist (instant clean shapes + assisted guides)
+5.	Stroke stabilization (StreamLine / global stabilization for smooth lines)
 
-Inspired by the Procreate philosophy of "disappearing UI" and "physical learning," these features are the non-negotiable core of the clone.
+# 20 more (6–25)
+6.	ColorDrop fill with threshold control (paint-bucket workflow)
+7.	Reference Layer for cleaner lineart-based fills
+8.	Reference Companion (floating canvas/image reference; includes FacePaint mode)
+9.	Page Assist (multi-page “sketchbook” + PDF page flip/markup workflow)
+10.	Animation Assist (timeline + onion-skin + playback)
+11.	3D model painting (paint directly on imported 3D models)
+12.	Layer Select (tap content to surface the correct layer(s))
+13.	Multi-layer select + bulk transform/grouping (primary/secondary selection)
+14.	Layer masks + Alpha Lock-style “paint within pixels” control
+15.	Color Harmony picker (auto complementary/triadic/etc schemes)
+16.	Gradient Map adjustment (quick stylized recoloring via gradients)  ￼
+17.	Recolor with live preview (QuickMenu-driven recoloring)  ￼
+18.	Automatic selection (tap-to-select regions by color)  ￼
+19.	Warp mesh transform  ￼
+20.	Distort transform (fast perspective/tilt effects)  ￼
+21.	Liquify as a brush (multi-mode pixel warping)  ￼
+22.	Symmetry guides (mirrored/radial drawing)  ￼
+23.	Accessibility-first smoothing controls (global stabilization options)  ￼
+24.	Pay-once model (no subscription)  ￼
+25.	Explicit “no generative AI” stance (a “feature” many artists actively prefer)  
 
-## 1. The Interaction Layer (Gestures)
-*   **Two-Finger Tap**: Global Undo with haptic/visual feedback.
-*   **Three-Finger Tap**: Global Redo.
-*   **Three-Finger Scrub**: Quick-clear active layer.
-*   **Pinch and Twist**: Zero-latency canvas zoom and rotation.
-*   **QuickShape (Hold & Snap)**: Draw any line or basic shape (circle, triangle, quad) and hold at the end to snap it into perfect geometric forms.
 
-## 2. The Painting Engine
-*   **Low-Latency Brush Flow**: Continuous 120Hz-240Hz input sampling to ensure strokes follow the stylus without "lag-behind."
-*   **Dual-Texture Brush Model**: Brushes composed of a **Shape** (the stamp) and a **Grain** (the texture).
-*   **Stabilization (StreamLine)**: Real-time path smoothing that averages jittery input into professional curves.
-*   **Alpha Lock**: Restrict drawing to existing pixel boundaries on a layer.
 
-## 3. Advanced Selection & Fill
-*   **ColourDrop & Threshold**: Drag the color circle into an area. Slide left/right while holding to adjust the fill threshold (leak handling).
-*   **Reference Layers**: Designate a line-art layer as "Reference" so ColourDrop on a different layer respects those boundaries.
-*   **Lasso Selection**: Freehand selection with instant transformation (Move, Scale, Rotate).
 
-## 4. Minimalist UI (Style-Compliant)
-*   **Floating Sliders**: Two vertical sliders on the screen edge (Brush Size and Opacity).
-*   **Hidden Chrome**: Top bar containing only 5-9 high-contrast monochrome icons.
-*   **Panel Pop-overs**: Brushes, Layers, and Colors open in small non-intrusive pop-overs, not sidebars that resize the canvas.
 
-## 5. System Utilities
-*   **Action-Oriented Undo**: Record high-level actions (strokes) rather than pixel diffs for infinite-style history.
-*   **Time-lapse Recording**: Silently capture every stroke to export a video of the creative process.
-*   **3D Painting**: Support for importing `.obj` or `.usdz` models to paint directly on textures.
+---
+# OLD
+# Procreate Clone: Crucial Features (outdated)
+(outdated)
+Inspired by the Procreate philosophy of "disappearing UI" and "physical learning," these features are the non-negotiable core of the clone. (outdated)
+
+## 1. The Interaction Layer (Gestures)(outdated)
+*   **Two-Finger Tap**: Global Undo with haptic/visual feedback.(outdated)
+*   **Three-Finger Tap**: Global Redo.(outdated)
+*   **Three-Finger Scrub**: Quick-clear active layer.(outdated)
+*   **Pinch and Twist**: Zero-latency canvas zoom and rotation.(outdated)
+*   **QuickShape (Hold & Snap)**: Draw any line or basic shape (circle, triangle, quad) and hold at the end to snap it into perfect geometric forms.(outdated)
+
+## 2. The Painting Engine(outdated)
+*   **Low-Latency Brush Flow**: Continuous 120Hz-240Hz input sampling to ensure strokes follow the stylus without "lag-behind.(outdated)
+*   **Dual-Texture Brush Model**: Brushes composed of a **Shape** (the stamp) and a **Grain** (the texture).(outdated)
+*   **Stabilization (StreamLine)**: Real-time path smoothing that averages jittery input into professional curves.(outdated)
+*   **Alpha Lock**: Restrict drawing to existing pixel boundaries on a layer.(outdated)
+
+## 3. Advanced Selection & Fill(outdated)
+*   **ColourDrop & Threshold**: Drag the color circle into an area. Slide left/right while holding to adjust the fill threshold (leak handling).(outdated)
+*   **Reference Layers**: Designate a line-art layer as "Reference" so ColourDrop on a different layer respects those boundaries.(outdated)
+*   **Lasso Selection**: Freehand selection with instant transformation (Move, Scale, Rotate).      (outdated)
+
+## 4. Minimalist UI (Style-Compliant)(outdated)
+*   **Floating Sliders**: Two vertical sliders on the screen edge (Brush Size and Opacity).(outdated)
+*   **Hidden Chrome**: Top bar containing only 5-9 high-contrast monochrome icons.(outdated)
+*   **Panel Pop-overs**: Brushes, Layers, and Colors open in small non-intrusive pop-overs, not sidebars that resize the canvas.(outdated)
+
+## 5. System Utilities(outdated)
+*   **Action-Oriented Undo**: Record high-level actions (strokes) rather than pixel diffs for infinite-style history.(outdated)
+*   **Time-lapse Recording**: Silently capture every stroke to export a video of the creative process.(outdated)
+*   **3D Painting**: Support for importing `.obj` or `.usdz` models to paint directly on textures.(outdated)
