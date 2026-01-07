@@ -24,10 +24,13 @@ export type TProjectViewportProject = {
     height: number;
     layers: {
         image: CanvasImageSource | TProjectViewportLayerFunc;
+        // Image to composite on top of the layer (e.g. active brush stroke)
+        liveLayerImage?: CanvasImageSource;
         isVisible: boolean;
         opacity: number;
         mixModeStr: TMixMode;
         hasClipping: boolean;
+        isClippingMask?: boolean;
     }[];
 };
 

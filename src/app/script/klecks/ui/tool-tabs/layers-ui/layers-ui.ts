@@ -21,6 +21,7 @@ import renameLayerImg from 'url:/src/app/img/ui/procreate/rename-layer.svg';
 import caretDownImg from 'url:/src/app/img/ui/caret-down.svg';
 import { KlHistory } from '../../../history/kl-history';
 import { makeUnfocusable } from '../../../../bb/base/ui';
+import { alphaLockManager } from '../../../canvas/alpha-lock-manager'; // New Import
 
 const paddingLeft = 25;
 
@@ -36,6 +37,7 @@ type TLayerEl = HTMLElement & {
     pointerListener: PointerListener;
     opacitySlider: PointSlider;
     isSelected: boolean;
+    alphaLockUnsub?: () => void;
 };
 
 export type TLayersUiParams = {
@@ -66,6 +68,7 @@ export class LayersUi {
         opacity: number;
         name: string;
         mixModeStr: TMixMode;
+        isClippingMask?: boolean;
     }[];
     private readonly layerListEl: HTMLElement;
     private layerElArr: TLayerEl[];
@@ -180,10 +183,12 @@ export class LayersUi {
         this.klCanvasLayerArr = this.klCanvas.getLayers();
 
         const createLayerEntry = (index: number): void => {
-            const klLayer = throwIfNull(this.klCanvas.getLayerOld(index));
-            const layerName = klLayer.name;
+            const klLayerOld = throwIfNull(this.klCanvas.getLayerOld(index));
+            const realLayerId = this.klCanvas.getLayer(index).id;
+            const layerName = klLayerOld.name;
             const opacity = this.klCanvasLayerArr[index].opacity;
-            const isVisible = klLayer.isVisible;
+            const isVisible = klLayerOld.isVisible;
+            const isClippingMask = this.klCanvasLayerArr[index].isClippingMask;
             const layercanvas = this.klCanvasLayerArr[index].context.canvas;
 
             const layer: TLayerEl = BB.el({
@@ -284,10 +289,51 @@ export class LayersUi {
                 thc.restore();
                 css(layer.thumb, {
                     position: 'absolute',
-                    left: 10 + 'px',
+                    left: (isClippingMask ? 40 : 10) + 'px',
                     top: (this.layerHeight - layer.thumb.height) / 2 + 'px',
                     background: 'var(--kl-checkerboard-background)',
                 });
+
+                // Alpha Lock Indicator
+                const lockDiv = BB.el({
+                    parent: layer.thumb,
+                    className: 'layer-alpha-lock',
+                });
+
+                if (isClippingMask) {
+                    BB.el({
+                        parent: layer.thumb,
+                        css: {
+                            position: 'absolute',
+                            left: '-22px',
+                            top: '40%',
+                            width: '12px',
+                            height: '12px',
+                            borderLeft: '2px solid var(--kl-color-text)',
+                            borderBottom: '2px solid var(--kl-color-text)',
+                            pointerEvents: 'none',
+                        },
+                    });
+                }
+
+                const updateLockStatus = (locked: boolean) => {
+                    if (locked) {
+                        lockDiv.classList.add('layer-alpha-lock--active');
+                    } else {
+                        lockDiv.classList.remove('layer-alpha-lock--active');
+                    }
+                };
+
+                // Initial state
+                updateLockStatus(alphaLockManager.isLocked(realLayerId));
+
+                // Subscribe
+                const unsub = alphaLockManager.subscribe((id, isLocked) => {
+                    if (id === realLayerId) {
+                        updateLockStatus(isLocked);
+                    }
+                });
+                layer.alphaLockUnsub = unsub;
             }
 
             //layerlabel
@@ -509,6 +555,9 @@ export class LayersUi {
             const child = this.layerListEl.firstChild as TLayerEl;
             child.pointerListener.destroy();
             child.opacitySlider.destroy();
+            if (child.alphaLockUnsub) {
+                child.alphaLockUnsub();
+            }
             child.remove();
         }
         for (let i = 0; i < this.klCanvasLayerArr.length; i++) {
@@ -609,8 +658,22 @@ export class LayersUi {
                 ['clear-layer', LANG('layers-clear'), '⌫'],
                 ['advanced-merge', LANG('layers-merge-advanced'), 'Ctrl + Shift + E'],
                 ['merge-all', LANG('layers-merge-all')],
+                ['clipping-mask', 'Clipping Mask'],
             ],
             onItemClick: (id) => {
+                if (id === 'clipping-mask') {
+                    this.applyUncommitted();
+                    if (this.selectedSpotIndex <= 0) return; // Cannot be clipping mask if bottom layer? (Procreate allows it but it does nothing)
+
+                    const layer = this.klCanvas.getLayer(this.selectedSpotIndex);
+                    this.klCanvas.setClippingMask(this.selectedSpotIndex, !layer.isClippingMask);
+
+                    this.klCanvasLayerArr = this.klCanvas.getLayers();
+                    // this.createLayerList(); // automatic?
+                    this.onSelect(this.selectedSpotIndex, false); // triggers update
+                    this.onUpdateProject();
+                    this.updateButtons();
+                }
                 if (id === 'clear-layer') {
                     this.applyUncommitted();
                     this.onClearLayer();

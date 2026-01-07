@@ -301,11 +301,34 @@ export class GPUProjectViewport {
                 }
             }
 
+            // Handle live layer image (active stroke)
+            const liveId = layerId + '_live';
+            let liveLayerDef: { id: string; opacity?: number } | undefined;
+
+            if (layer.liveLayerImage && layer.liveLayerImage instanceof HTMLCanvasElement) {
+                // Live layer is always dynamic/dirty as it changes every frame while drawing
+                this.gpuCompositor!.updateLayerImage(liveId, layer.liveLayerImage);
+                // We track it to know it exists, preventing cleanup below
+                this.layerCanvasVersions.set(liveId, new WeakRef(layer.liveLayerImage));
+
+                liveLayerDef = {
+                    id: liveId,
+                    opacity: 1,
+                };
+            } else {
+                // Cleanup live layer texture if it exists but is no longer used
+                if (this.layerCanvasVersions.has(liveId)) {
+                    this.gpuCompositor!.removeLayerImage(liveId);
+                    this.layerCanvasVersions.delete(liveId);
+                }
+            }
+
             compositorLayers.push({
                 id: layerId,
                 isVisible: layer.isVisible,
                 opacity: layer.opacity,
                 mixModeStr: layer.mixModeStr,
+                liveLayer: liveLayerDef,
             });
         });
 
@@ -441,29 +464,119 @@ export class GPUProjectViewport {
             this.ctx.restore();
         }
 
-        this.project.layers.forEach((layer) => {
+        for (let i = 0; i < this.project.layers.length; i++) {
+            const layer = this.project.layers[i];
             if (!layer.isVisible || !layer.opacity) {
-                return;
-            }
-            this.ctx.save();
-            this.ctx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
-            this.ctx.globalAlpha = layer.opacity;
-
-            let image: CanvasImageSource;
-            if (typeof layer.image === 'function') {
-                const res = layer.image(renderedTransform, this.canvas.width, this.canvas.height);
-                if ('image' in res && 'transform' in res) {
-                    image = res.image;
-                    this.ctx.setTransform(...matrixToTuple(compose(renderedMat, res.transform)));
-                } else {
-                    image = res;
+                // If this is a base of a clipping mask stack, the whole stack is hidden if base is hidden?
+                // Procreate: Yes, if base is hidden, clippers are not visible (clipped to nothing).
+                // So we can skip.
+                // But we must also skip the clippers!
+                let j = i + 1;
+                while (j < this.project.layers.length && this.project.layers[j].isClippingMask) {
+                    i = j; // Advance main loop
+                    j++;
                 }
-            } else {
-                image = layer.image;
+                continue;
             }
-            this.ctx.drawImage(image, 0, 0);
-            this.ctx.restore();
-        });
+
+            // Check if this is a Base Layer for a Clipping Stack
+            const nextLayer = this.project.layers[i + 1];
+            const isClippingStackBase = nextLayer && nextLayer.isClippingMask && !layer.isClippingMask;
+
+            if (isClippingStackBase) {
+                // Render Clipping Stack
+                // 1. Create temp buffer
+                const tempCanvas = BB.canvas(this.canvas.width, this.canvas.height);
+                const tempCtx = BB.ctx(tempCanvas);
+
+                // 2. Draw Base Layer
+                tempCtx.save();
+                tempCtx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
+                tempCtx.globalAlpha = layer.opacity; // Base opacity applies to base
+
+                let image: CanvasImageSource;
+                if (typeof layer.image === 'function') {
+                    const res = layer.image(renderedTransform, this.canvas.width, this.canvas.height);
+                    if ('image' in res && 'transform' in res) {
+                        image = res.image;
+                        tempCtx.setTransform(...matrixToTuple(compose(renderedMat, res.transform)));
+                    } else {
+                        image = res;
+                    }
+                } else {
+                    image = layer.image;
+                }
+                tempCtx.drawImage(image, 0, 0);
+                if (layer.liveLayerImage) {
+                    tempCtx.drawImage(layer.liveLayerImage, 0, 0);
+                }
+                tempCtx.restore();
+
+                // 3. Draw Clipping Layers
+                let j = i + 1;
+                while (j < this.project.layers.length && this.project.layers[j].isClippingMask) {
+                    const clipLayer = this.project.layers[j];
+                    if (clipLayer.isVisible && clipLayer.opacity > 0) {
+                        tempCtx.save();
+                        tempCtx.globalCompositeOperation = 'source-atop'; // THE MAGIC
+                        tempCtx.globalAlpha = clipLayer.opacity;
+
+                        let clipImage: CanvasImageSource;
+                        if (typeof clipLayer.image === 'function') {
+                            const res = clipLayer.image(renderedTransform, this.canvas.width, this.canvas.height);
+                            if ('image' in res && 'transform' in res) {
+                                clipImage = res.image;
+                                tempCtx.setTransform(...matrixToTuple(compose(renderedMat, res.transform)));
+                            } else {
+                                clipImage = res;
+                            }
+                        } else {
+                            clipImage = clipLayer.image;
+                        }
+                        tempCtx.drawImage(clipImage, 0, 0);
+                        if (clipLayer.liveLayerImage) {
+                            tempCtx.drawImage(clipLayer.liveLayerImage, 0, 0);
+                        }
+                        tempCtx.restore();
+                    }
+                    i = j; // Advance main loop
+                    j++;
+                }
+
+                // 4. Draw result to main canvas
+                this.ctx.drawImage(tempCanvas, 0, 0);
+
+                // Cleanup?
+                // BB.freeCanvas(tempCanvas)? BB.canvas doesn't automatically track?
+                // Usually it creates a new canvas. JS GC handles it.
+                // Or use a shared buffer if performance matters. 
+                // For fallback renderer, allocations are okay.
+
+            } else {
+                // Normal Layer (or orphaned clipper acting as normal)
+                this.ctx.save();
+                this.ctx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
+                this.ctx.globalAlpha = layer.opacity;
+
+                let image: CanvasImageSource;
+                if (typeof layer.image === 'function') {
+                    const res = layer.image(renderedTransform, this.canvas.width, this.canvas.height);
+                    if ('image' in res && 'transform' in res) {
+                        image = res.image;
+                        this.ctx.setTransform(...matrixToTuple(compose(renderedMat, res.transform)));
+                    } else {
+                        image = res;
+                    }
+                } else {
+                    image = layer.image;
+                }
+                this.ctx.drawImage(image, 0, 0);
+                if (layer.liveLayerImage) {
+                    this.ctx.drawImage(layer.liveLayerImage, 0, 0);
+                }
+                this.ctx.restore();
+            }
+        }
 
         this.renderAfter?.(this.ctx, renderedTransform);
 

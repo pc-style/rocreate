@@ -14,6 +14,7 @@ export type TFloatingPanelParams = {
     onClose: () => void;
     anchorEl?: HTMLElement; // Element to anchor the panel to
     anchorSide?: 'left' | 'right' | 'top' | 'bottom';
+    autoClose?: boolean; // If true, closes when clicking outside. Default true.
 };
 
 /**
@@ -135,7 +136,7 @@ export class FloatingPanel {
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointerdown') {
-                    if (event.button === 0) { // left button only
+                    if (event.button === 'left') { // left button only
                         downPosition = { ...this.position };
                         this.rootEl.classList.add('procreate-floating--dragging');
                     }
@@ -160,11 +161,13 @@ export class FloatingPanel {
         };
 
         // Delay adding click listener to prevent immediate close
-        setTimeout(() => {
-            if (!this.isDestroyed) {
-                document.addEventListener('pointerdown', this.outsideClickListener);
-            }
-        }, 100);
+        if (p.autoClose !== false) {
+            setTimeout(() => {
+                if (!this.isDestroyed) {
+                    document.addEventListener('pointerdown', this.outsideClickListener);
+                }
+            }, 100);
+        }
 
         // Apply initial position with bounds checking
         setTimeout(() => {

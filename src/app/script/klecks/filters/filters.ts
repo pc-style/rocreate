@@ -282,4 +282,17 @@ export const FILTER_LIB: {
         inEmbed: true,
         webGL: true,
     },
+    chromaticAberration: {
+        lang: {
+            name: 'Chromatic Aberration' as any,
+            button: 'Chromatic Aberration' as any,
+            description: 'Simulate lens distortion' as any,
+        },
+        icon: distortImg, // Reuse distort icon
+        updatePos: false,
+        getDialog: null,
+        apply: null,
+        inEmbed: true,
+        webGL: false, // Uses CanvasKit directly
+    },
 };

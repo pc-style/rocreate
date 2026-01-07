@@ -17,6 +17,7 @@ export class EaselProjectUpdater<T extends string> {
     private readonly easel: Easel<T>;
     // Use a Map to give each layer its own composite canvas to prevent overwriting
     private readonly compositeCanvases: Map<number, HTMLCanvasElement> = new Map();
+    private updateRequested = false;
 
     // ----------------------------------- public -----------------------------------
     constructor(p: TEaselProjectUpdaterParams<T>) {
@@ -30,11 +31,37 @@ export class EaselProjectUpdater<T extends string> {
      */
     private getCompositeCanvas(layerIndex: number, width: number, height: number): HTMLCanvasElement {
         let canvas = this.compositeCanvases.get(layerIndex);
-        if (!canvas || canvas.width !== width || canvas.height !== height) {
+        if (!canvas) {
             canvas = BB.canvas(width, height);
             this.compositeCanvases.set(layerIndex, canvas);
+        } else if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
         }
         return canvas;
+    }
+
+    private pruneCompositeCanvases(layerCount: number): void {
+        for (const [index, canvas] of this.compositeCanvases) {
+            if (index >= layerCount) {
+                canvas.width = 1;
+                canvas.height = 1;
+                this.compositeCanvases.delete(index);
+            }
+        }
+    }
+
+    private resetCompositeContext(
+        ctx: CanvasRenderingContext2D,
+        width: number,
+        height: number,
+    ): void {
+        // Ensure prior draw state (transform, alpha, composite op) does not leak between renders.
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.filter = 'none';
+        ctx.clearRect(0, 0, width, height);
     }
 
     update(): void {
@@ -42,26 +69,27 @@ export class EaselProjectUpdater<T extends string> {
         const height = this.klCanvas.getHeight();
         const layers = this.klCanvas.getLayersFast();
 
-
+        this.pruneCompositeCanvases(layers.length);
 
         this.easel.setProject({
             width,
             height,
             layers: layers.map((layer, index) => {
+                let liveLayerImage: HTMLCanvasElement | undefined;
+                if (layer.compositeObj) {
+                    // Render stroke to dedicated composite canvas
+                    const compositeCanvas = this.getCompositeCanvas(index, width, height);
+                    const ctx = throwIfNull(compositeCanvas.getContext('2d'));
+                    this.resetCompositeContext(ctx, width, height);
+                    ctx.save();
+                    layer.compositeObj.draw(ctx);
+                    ctx.restore();
+                    liveLayerImage = compositeCanvas;
+                }
+
                 return {
-                    image: layer.compositeObj
-                        ? () => {
-                            // Use a dedicated composite canvas for this layer
-                            const compositeCanvas = this.getCompositeCanvas(index, width, height);
-                            const ctx = compositeCanvas.getContext('2d')!;
-                            ctx.clearRect(0, 0, width, height);
-                            ctx.drawImage(layer.canvas, 0, 0);
-                            layer.compositeObj?.draw(
-                                throwIfNull(compositeCanvas.getContext('2d')),
-                            );
-                            return compositeCanvas;
-                        }
-                        : layer.canvas,
+                    image: layer.canvas,
+                    liveLayerImage,
                     isVisible: layer.isVisible,
                     opacity: layer.opacity,
                     mixModeStr: layer.mixModeStr,
@@ -69,6 +97,17 @@ export class EaselProjectUpdater<T extends string> {
                 };
             }),
             selection: this.klCanvas.getSelection(),
+        });
+    }
+
+    requestUpdate(): void {
+        if (this.updateRequested) {
+            return;
+        }
+        this.updateRequested = true;
+        requestAnimationFrame(() => {
+            this.updateRequested = false;
+            this.update();
         });
     }
 
@@ -82,4 +121,3 @@ export class EaselProjectUpdater<T extends string> {
         this.compositeCanvases.clear();
     }
 }
-

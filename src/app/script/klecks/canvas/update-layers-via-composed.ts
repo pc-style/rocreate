@@ -93,6 +93,7 @@ export function updateLayersViaComposed(
                 mixModeStr: composedAfterLayer.mixModeStr,
                 isVisible: composedAfterLayer.isVisible,
                 opacity: composedAfterLayer.opacity,
+                isClippingMask: composedAfterLayer.isClippingMask,
                 canvas,
                 context,
             };

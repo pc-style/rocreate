@@ -19,6 +19,7 @@ import { filterPattern } from './filter-pattern';
 import { filterDistort } from './filter-distort';
 import { filterVanishPoint } from './filter-vanish-point';
 import { filterBloom } from './filter-bloom';
+import { filterChromaticAberration } from './filter-chromatic-aberration';
 import { TFilter } from '../kl-types';
 
 type TModuleFilter = Pick<TFilter, 'getDialog' | 'apply'>;
@@ -54,6 +55,7 @@ export function importFilters(): void {
     importFilter(FILTER_LIB.distort, filterDistort as TModuleFilter);
     importFilter(FILTER_LIB.vanishPoint, filterVanishPoint as TModuleFilter);
     importFilter(FILTER_LIB.bloom, filterBloom as TModuleFilter);
+    importFilter(FILTER_LIB.chromaticAberration, filterChromaticAberration as TModuleFilter);
 
     FILTER_LIB_STATUS.isLoaded = true;
 }

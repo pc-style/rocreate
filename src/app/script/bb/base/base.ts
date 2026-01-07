@@ -162,6 +162,9 @@ export function dateDayDifference(dateA: string | Date, dateB: string | Date): n
 }
 
 export function copyObj<T>(obj: T): T {
+    if (obj === undefined) {
+        return undefined as any;
+    }
     return JSON.parse(JSON.stringify(obj));
 }
 
@@ -199,7 +202,7 @@ export function shareCanvas(p: {
                     title: p.title,
                     files: filesArray,
                 } as any)
-                .then(() => {})
+                .then(() => { })
                 .catch(() => {
                     err();
                 });

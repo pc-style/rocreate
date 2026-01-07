@@ -4,6 +4,8 @@ import { QuickShapeDetector, TQuickShapeResult, TQuickShapeType } from './quick-
 export type TQuickShapeHandlerParams = {
     /** Called when a shape is detected after hold */
     onShapeDetected: (result: TQuickShapeResult, originalPoints: TVector2D[]) => void;
+    /** Called when the user moves the pointer while holding a shape */
+    onShapeEdit?: (params: { scale: number; angle: number }) => void;
     /** How long to wait (ms) before triggering shape detection */
     holdDurationMs?: number;
     /** Maximum movement allowed while holding (px) */
@@ -26,6 +28,7 @@ export type TQuickShapeHandlerParams = {
 export class QuickShapeHandler {
     private readonly detector: QuickShapeDetector;
     private readonly onShapeDetected: TQuickShapeHandlerParams['onShapeDetected'];
+    private readonly onShapeEdit: TQuickShapeHandlerParams['onShapeEdit'];
     private readonly holdDurationMs: number;
     private readonly holdMaxMovePx: number;
 
@@ -38,6 +41,7 @@ export class QuickShapeHandler {
     constructor(p: TQuickShapeHandlerParams) {
         this.detector = new QuickShapeDetector();
         this.onShapeDetected = p.onShapeDetected;
+        this.onShapeEdit = p.onShapeEdit;
         this.holdDurationMs = p.holdDurationMs ?? 500;
         this.holdMaxMovePx = p.holdMaxMovePx ?? 8;
     }
@@ -61,7 +65,26 @@ export class QuickShapeHandler {
         this.detector.addPoint(point);
         this.lastPoint = { ...point };
 
-        // Reset hold timer if moving significantly
+        if (this.isHolding) {
+            // We are in EDITING state
+            if (this.onShapeEdit && this.holdStartPoint) {
+                const dx = point.x - this.holdStartPoint.x;
+                const dy = point.y - this.holdStartPoint.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+
+                // Scale factor: 1.0 + (distance / 200)
+                // This means moving 200px doubles the size.
+                // Angle: absolute angle from start point.
+                this.onShapeEdit({
+                    scale: 1 + (dist / 200),
+                    angle: angle
+                });
+            }
+            return;
+        }
+
+        // Reset hold timer if moving significantly (only if NOT holding yet)
         if (this.holdStartPoint) {
             const dx = point.x - this.holdStartPoint.x;
             const dy = point.y - this.holdStartPoint.y;

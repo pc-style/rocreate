@@ -31,6 +31,9 @@ export type THistoryEntryLayer = {
     // if index changed (did it move up or down)
     index?: number;
 
+    // if isClippingMask changed
+    isClippingMask?: boolean;
+
     // if contents changed
     tiles?: (THistoryEntryLayerTile | undefined)[]; // undefined if tile did not change
 };

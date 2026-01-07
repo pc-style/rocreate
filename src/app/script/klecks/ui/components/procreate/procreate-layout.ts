@@ -5,6 +5,7 @@ import { SideBar } from './side-bar';
 import { FloatingPanel } from './floating-panel';
 import { BrushLibrary } from './brush-library';
 import { UtilitySideBar } from './utility-side-bar';
+import { ReferenceWindow } from '../reference-window';
 
 import { css } from '../../../../bb/base/base';
 import { TRgb, TUiLayout } from '../../../kl-types'
@@ -140,6 +141,9 @@ export class ProcreateLayout {
                 this.toggleTransformPanel();
             },
             onGallery: p.onGallery,
+            onReference: () => {
+                this.toggleReferencePanel();
+            },
         });
         this.topBar.getElement().style.pointerEvents = 'auto';
 
@@ -531,6 +535,36 @@ export class ProcreateLayout {
         this.transformPanel.destroy();
         this.transformPanel.getElement().remove();
         this.transformPanel = null;
+    }
+
+    // --- Reference Panel ---
+    private referenceWindow: ReferenceWindow | null = null;
+
+    public toggleReferencePanel(): void {
+        if (this.referenceWindow) {
+            this.closeReferencePanel();
+        } else {
+            // Reference window can exist alongside others, or exclusive?
+            // Procreate allows reference window to be open while working.
+            // So we don't closeAllPanels().
+            this.openReferencePanel();
+        }
+    }
+
+    private openReferencePanel(): void {
+        if (this.referenceWindow) return;
+        this.referenceWindow = new ReferenceWindow(() => {
+            this.closeReferencePanel();
+        });
+        this.referenceWindow.getElement().style.pointerEvents = 'auto';
+        this.containerEl.append(this.referenceWindow.getElement());
+    }
+
+    private closeReferencePanel(): void {
+        if (!this.referenceWindow) return;
+        this.referenceWindow.destroy();
+        this.referenceWindow.getElement().remove();
+        this.referenceWindow = null;
     }
 
     // --- Public API ---

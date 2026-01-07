@@ -193,6 +193,7 @@ export class KlCanvas {
             isVisible: boolean;
             opacity: number;
             mixModeStr: TMixMode;
+            isClippingMask?: boolean;
             image: HTMLCanvasElement;
         }[];
     }): number {
@@ -226,6 +227,7 @@ export class KlCanvas {
                 layer.name = pItem.name;
                 layer.isVisible = pItem.isVisible;
                 layer.mixModeStr = pItem.mixModeStr ? pItem.mixModeStr : 'source-over';
+                layer.isClippingMask = !!pItem.isClippingMask;
                 layer.canvas.width = this.width;
                 layer.canvas.height = this.height;
                 layer.context.drawImage(pItem.image, 0, 0);
@@ -422,6 +424,7 @@ export class KlCanvas {
             mixModeStr?: TMixMode;
             isVisible: boolean;
             opacity: number;
+            isClippingMask?: boolean;
             image: HTMLCanvasElement | HTMLImageElement | ((ctx: CanvasRenderingContext2D) => void);
         },
     ): false | number {
@@ -451,6 +454,7 @@ export class KlCanvas {
             mixModeStr: data ? (data.mixModeStr ?? 'source-over') : 'source-over',
             isVisible: data ? data.isVisible : true,
             opacity: data ? data.opacity : 1,
+            isClippingMask: data ? !!data.isClippingMask : false,
             canvas,
             context,
         };
@@ -1386,6 +1390,27 @@ export class KlCanvas {
         }
     }
 
+    setClippingMask(layerIndex: number, isClippingMask: boolean): void {
+        const targetLayer = this.layers[layerIndex];
+        // Ensure boolean
+        isClippingMask = !!isClippingMask;
+
+        if (targetLayer.isClippingMask === isClippingMask) {
+            return;
+        }
+
+        targetLayer.isClippingMask = isClippingMask;
+
+        if (!this.klHistory.isPaused()) {
+            this.klHistory.push({
+                layerMap: createLayerMap(this.layers, {
+                    layerId: targetLayer.id,
+                    attributes: ['isClippingMask'],
+                }),
+            });
+        }
+    }
+
     /**
      * Set composite drawing step for KlCanvasWorkspace.
      * To apply temporary manipulations to a layer.
@@ -1394,7 +1419,19 @@ export class KlCanvas {
      * @param compositeObj
      */
     setComposite(layerIndex: number, compositeObj: undefined | TLayerComposite): void {
-        console.log(`[KlCanvas] setComposite layer ${layerIndex}`, compositeObj ? 'SET' : 'CLEAR');
+        // console.log(`[KlCanvas] setComposite layer ${layerIndex}`, compositeObj ? 'SET' : 'CLEAR');
+
+        // Safety: Ensure only one layer has a composite at a time
+        // If setting a new composite, clear all others.
+        // If clearing (undefined), we don't strictly need to loop, but it's safer to ensure consistency.
+        if (compositeObj) {
+            for (let i = 0; i < this.layers.length; i++) {
+                if (i !== layerIndex && this.layers[i].compositeObj) {
+                    this.layers[i].compositeObj = undefined;
+                }
+            }
+        }
+
         if (!this.layers[layerIndex]) {
             throw new Error('invalid layer');
         }

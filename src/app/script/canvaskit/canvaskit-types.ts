@@ -26,6 +26,13 @@ export interface CompositorLayer {
     opacity: number;
     /** Canvas 2D blend mode (globalCompositeOperation) */
     mixModeStr: string;
+    /** Optional live layer (brush stroke) to composite with this layer */
+    liveLayer?: {
+        id: string;
+        opacity?: number;
+    };
+    /** Whether the layer is a clipping mask */
+    isClippingMask?: boolean;
 }
 
 /**

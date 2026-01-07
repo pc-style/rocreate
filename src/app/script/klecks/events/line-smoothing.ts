@@ -17,10 +17,10 @@ export class LineSmoothing {
     private strokeId: number = 0;
     private lastMixedInput:
         | {
-              x: number;
-              y: number;
-              pressure: number;
-          }
+            x: number;
+            y: number;
+            pressure: number;
+        }
         | undefined;
     private interval: ReturnType<typeof setInterval> | undefined;
     private timeout: ReturnType<typeof setTimeout> | undefined;
@@ -33,6 +33,9 @@ export class LineSmoothing {
     }
 
     chainIn(event: TDrawEvent): TDrawEvent | null {
+        if (!event) {
+            return null;
+        }
         event = BB.copyObj(event);
         clearTimeout(this.timeout);
         clearInterval(this.interval);
