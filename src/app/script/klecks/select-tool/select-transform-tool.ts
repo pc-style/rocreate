@@ -56,7 +56,7 @@ export class SelectTransformTool {
 
     // ----------------------------------- public -----------------------------------
 
-    constructor() {}
+    constructor() { }
 
     setBackgroundIsTransparent(isTransparent: boolean): void {
         this.backgroundIsTransparent = isTransparent;
@@ -217,7 +217,7 @@ export class SelectTransformTool {
 
                 ctx.restore();
             },
-        } as any;
+        };
     }
 
     /**
@@ -247,7 +247,7 @@ export class SelectTransformTool {
                 }
                 ctx.restore();
             },
-        } as any;
+        };
     }
 
     /**
@@ -282,6 +282,6 @@ export class SelectTransformTool {
 
                 ctx.restore();
             },
-        } as any;
+        };
     }
 }

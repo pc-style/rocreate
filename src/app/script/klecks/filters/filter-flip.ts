@@ -12,6 +12,7 @@ import { LANG } from '../../language/language';
 import { throwIfNull } from '../../bb/base/base';
 import { Options } from '../ui/components/options';
 import { SMALL_PREVIEW } from '../ui/utils/preview-size';
+import { toGlobalCompositeOperation } from '../canvas/translate-blending';
 
 export type TFilterFlipInput = {
     horizontal: boolean;
@@ -156,7 +157,7 @@ export const filterFlip = {
                     ctx.imageSmoothingEnabled = false;
                 }
                 ctx.globalAlpha = layers[i].opacity;
-                ctx.globalCompositeOperation = layers[i].mixModeStr;
+                ctx.globalCompositeOperation = toGlobalCompositeOperation(layers[i].mixModeStr);
                 ctx.drawImage(
                     layers[i].context.canvas,
                     0,

@@ -12,8 +12,8 @@ export class ToolspaceScroller {
     private readonly toolspace: HTMLElement;
     private readonly upBtn: HTMLElement;
     private readonly downBtn: HTMLElement;
-    private downInterval: any;
-    private upInterval: any;
+    private downInterval: ReturnType<typeof setInterval> | null = null;
+    private upInterval: ReturnType<typeof setInterval> | null = null;
 
     private update(): void {
         let newUpDisplay = this.upBtn.style.display;
@@ -75,7 +75,9 @@ export class ToolspaceScroller {
                     }, 20);
                 }
                 if (e.type === 'pointerup') {
-                    clearInterval(this.upInterval);
+                    if (this.upInterval !== null) {
+                        clearInterval(this.upInterval);
+                    }
                     setTimeout(() => {
                         // prevent ff pressing anything underneath
                         this.upInterval = null;
@@ -94,7 +96,9 @@ export class ToolspaceScroller {
                     }, 20);
                 }
                 if (e.type === 'pointerup') {
-                    clearInterval(this.downInterval);
+                    if (this.downInterval !== null) {
+                        clearInterval(this.downInterval);
+                    }
                     setTimeout(() => {
                         // prevent ff pressing anything underneath
                         this.downInterval = null;

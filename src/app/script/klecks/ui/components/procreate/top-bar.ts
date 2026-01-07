@@ -27,6 +27,7 @@ export type TTopBarParams = {
     onOpenQuickMenu: (p: { relX: number; relY: number }) => void;
     onTransform: () => void;
     onGallery: () => void;
+    onReference: () => void;
 };
 
 type TTopBarButton = {
@@ -145,6 +146,15 @@ export class TopBar {
             className: 'procreate-topbar__gallery-btn',
         });
         leftSide.append(galleryBtn.el);
+
+        // Reference (text style)
+        const refBtn = this.createButton({
+            text: 'Ref',
+            title: 'Reference Window',
+            onClick: p.onReference,
+            className: 'procreate-topbar__btn--text',
+        });
+        leftSide.append(refBtn.el);
 
         // Actions (wrench icon)
         const actionsBtn = this.createButton({

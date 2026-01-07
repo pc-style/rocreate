@@ -63,7 +63,7 @@ export const filterBloom = {
 
         // Intensity slider (brightness boost)
         const intensitySlider = new KlSlider({
-            label: 'Intensity',
+            label: LANG('intensity'),
             width: 300,
             height: 30,
             min: 0,
@@ -80,7 +80,7 @@ export const filterBloom = {
 
         // Radius slider (glow spread)
         const radiusSlider = new KlSlider({
-            label: 'Radius',
+            label: LANG('radius'),
             width: 300,
             height: 30,
             min: 1,
@@ -97,7 +97,7 @@ export const filterBloom = {
 
         // Threshold slider (affects brightness sensitivity)
         const thresholdSlider = new KlSlider({
-            label: 'Threshold',
+            label: LANG('threshold'),
             width: 300,
             height: 30,
             min: 0,

@@ -1,5 +1,6 @@
 import { BB } from '../../bb/bb';
 import { ALPHA_IM_ARR } from './brushes-common';
+import { SymmetryGuide } from '../ui/components/procreate/symmetry-guide';
 import { TPressureInput, TRgb } from '../kl-types';
 import { BezierLine } from '../../bb/math/line';
 import { KlHistory } from '../history/kl-history';
@@ -19,6 +20,8 @@ const ALPHA_SQUARE = 3;
 
 const TWO_PI = 2 * Math.PI;
 
+type TDrawDotBefore = [number, number, number, number, number, number | undefined];
+
 export class PenBrush {
     private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
     private klHistory: KlHistory = {} as KlHistory;
@@ -34,6 +37,7 @@ export class PenBrush {
     private settingColorStr: string = '';
     private settingAlphaId: number = ALPHA_CIRCLE;
     private settingLockLayerAlpha: boolean = false;
+    private symmetryGuide: SymmetryGuide | null = null;
     private strokeContext: CanvasRenderingContext2D | null = null;
     private strokeAlpha: number = 1;
 
@@ -91,7 +95,7 @@ export class PenBrush {
         let ctx;
 
         for (let i = 0; i < instructionArr.length; i++) {
-            ctx = BB.ctx(instructionArr[i][0] as any);
+            ctx = BB.ctx(instructionArr[i][0]);
 
             ctx.save();
             ctx.clearRect(0, 0, instructionArr[i][1], instructionArr[i][1]);
@@ -183,7 +187,23 @@ export class PenBrush {
         opacity: number,
         scatter: number,
         angle?: number,
-        before?: [number, number, number, number, number, number | undefined],
+        before?: TDrawDotBefore,
+    ): void {
+        const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
+        points.forEach((p, index) => {
+            // For now, angle mirroring is simplified
+            this.drawDotInternal(p.x, p.y, size, opacity, scatter, angle, before && index === 0 ? before : undefined);
+        });
+    }
+
+    private drawDotInternal(
+        x: number,
+        y: number,
+        size: number,
+        opacity: number,
+        scatter: number,
+        angle?: number,
+        before?: TDrawDotBefore,
     ): void {
         if (size <= 0) {
             return;
@@ -281,7 +301,7 @@ export class PenBrush {
         const currTiltX = tiltX ?? 0;
         const currTiltY = tiltY ?? 0;
 
-        const drawArr: [number, number, number, number, number, number | undefined][] = []; //draw instructions. will be all drawn at once
+        const drawArr: TDrawDotBefore[] = []; //draw instructions. will be all drawn at once
 
         const dotCallback = (val: {
             x: number;
@@ -341,6 +361,10 @@ export class PenBrush {
             : undefined;
 
         this.changedTiles = [];
+
+        // explicitly reset bezier line to ensure clean stroke start
+        this.bezierLine = null;
+
         p = BB.clamp(p, 0, 1);
         const localOpacity = this.calcOpacity(p, tiltX, tiltY);
         const localSize = this.calcSize(p, tiltX, tiltY);
@@ -380,7 +404,7 @@ export class PenBrush {
         ];
     }
 
-    goLine(x: number, y: number, p: number, tiltX?: number, tiltY?: number): void {
+    goLine(x: number, y: number, p: number, isCoalesced?: boolean, tiltX?: number, tiltY?: number): void {
         if (!this.inputIsDrawing) {
             return;
         }
@@ -591,6 +615,10 @@ export class PenBrush {
     setStrokeContext(c: CanvasRenderingContext2D | null, alpha: number): void {
         this.strokeContext = c;
         this.strokeAlpha = alpha;
+    }
+
+    setSymmetryGuide(guide: SymmetryGuide | null): void {
+        this.symmetryGuide = guide;
     }
 
     //GET

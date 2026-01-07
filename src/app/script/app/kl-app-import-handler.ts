@@ -75,12 +75,21 @@ export class KlAppImportHandler {
             this.applyUncommitted();
             const resizedDimensions = getResizedDimensions(canvas.width, canvas.height);
 
-            //resize first
-            const tempCanvas = BB.canvas(canvas.width, canvas.height);
+            const tempCanvas = BB.canvas(resizedDimensions.width, resizedDimensions.height);
             const tempCanvasCtx = BB.ctx(tempCanvas);
-            tempCanvasCtx.drawImage(canvas, 0, 0);
-
-            BB.resizeCanvas(tempCanvas, resizedDimensions.width, resizedDimensions.height);
+            tempCanvasCtx.imageSmoothingEnabled = true;
+            tempCanvasCtx.imageSmoothingQuality = 'high';
+            tempCanvasCtx.drawImage(
+                canvas,
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+                0,
+                0,
+                resizedDimensions.width,
+                resizedDimensions.height,
+            );
 
             this.klCanvas.reset({
                 width: resizedDimensions.width,
@@ -386,24 +395,49 @@ export class KlAppImportHandler {
                 pasteStr = pasteStr.trim();
                 if (pasteStr.match(/^https?/)) {
                     // url
-                    const img = new Image();
-                    img.onload = () => {
-                        this.importFinishedLoading(
-                            {
-                                type: 'image',
-                                width: img.width,
-                                height: img.height,
-                                canvas: img,
-                            },
-                            undefined,
-                            'default',
-                        );
-                    };
-                    img.onerror = (e) => {
-                        console.log('error loading', e);
-                    };
-                    img.crossOrigin = 'Anonymous';
-                    img.src = pasteStr;
+                    (async () => {
+                        try {
+                            const response = await BB.timeoutWrapper(
+                                fetch(pasteStr),
+                                'fetch paste',
+                                10000,
+                            );
+                            if (!response.ok) {
+                                throw new Error('fetch failed');
+                            }
+                            const blob = await response.blob();
+                            if (!blob.type.startsWith('image/')) {
+                                throw new Error('not an image');
+                            }
+                            if (blob.size > 1024 * 1024 * 50) {
+                                // 50MB limit
+                                throw new Error('image too large');
+                            }
+
+                            const img = new Image();
+                            img.onload = () => {
+                                URL.revokeObjectURL(img.src);
+                                this.importFinishedLoading(
+                                    {
+                                        type: 'image',
+                                        width: img.width,
+                                        height: img.height,
+                                        canvas: img,
+                                    },
+                                    undefined,
+                                    'default',
+                                );
+                            };
+                            img.src = URL.createObjectURL(blob);
+                        } catch (e) {
+                            KL.popup({
+                                target: this.klRootEl,
+                                type: 'error',
+                                message: LANG('import-failed'),
+                                buttons: ['Ok'],
+                            });
+                        }
+                    })();
                 } else if (pasteStr.match(/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)) {
                     // url
                     const rgbObj = BB.ColorConverter.hexToRGB(pasteStr.replace('#', ''));

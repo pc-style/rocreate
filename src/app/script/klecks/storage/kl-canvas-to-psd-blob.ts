@@ -26,5 +26,5 @@ export async function klCanvasToPsdBlob(klCanvas: KlCanvas): Promise<Blob> {
 
     const agPsd = await loadAgPsd();
     const buffer = agPsd.writePsdBuffer(psdConfig);
-    return new Blob([buffer], { type: 'application/octet-stream' });
+    return new Blob([new Uint8Array(buffer)], { type: 'application/octet-stream' });
 }

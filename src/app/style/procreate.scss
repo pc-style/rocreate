@@ -597,6 +597,7 @@
         transform: scale(0.95) translateY(-8px);
     }
 
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -606,6 +607,50 @@
 .procreate-floating--dragging {
     transition: none !important;
     cursor: grabbing;
+}
+
+.procreate-floating--resizing {
+    transition: none !important;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.procreate-floating__resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    cursor: nwse-resize;
+    z-index: 10;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 12px;
+        height: 12px;
+        background: linear-gradient(135deg,
+                transparent 0%,
+                transparent 40%,
+                var(--procreate-text-secondary) 40%,
+                var(--procreate-text-secondary) 45%,
+                transparent 45%,
+                transparent 55%,
+                var(--procreate-text-secondary) 55%,
+                var(--procreate-text-secondary) 60%,
+                transparent 60%,
+                transparent 70%,
+                var(--procreate-text-secondary) 70%,
+                var(--procreate-text-secondary) 75%,
+                transparent 75%);
+        opacity: 0.5;
+    }
+
+    &:hover::after {
+        opacity: 0.8;
+    }
 }
 
 .procreate-floating__header {

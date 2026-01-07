@@ -16,6 +16,12 @@ const DEBUG_UNSAVED_ACTIONS_LIMIT: undefined | number = undefined;
 const UNSAVED_ACTIONS_LIMIT = DEBUG_UNSAVED_ACTIONS_LIMIT ?? 100;
 const LS_REMINDER_KEY = 'kl-save-reminder';
 
+const isSaveReminderSetting = (
+    value: string | null,
+): value is TSaveReminderSetting => {
+    return value === '20min' || value === '40min' || value === 'disabled';
+};
+
 export type TSaveReminderParams = {
     onSaveAsPsd: () => void;
     isDrawing: () => boolean;
@@ -140,8 +146,11 @@ export class SaveReminder {
         this.applyUncommitted = p.applyUncommitted;
         this.klHistory = p.klHistory;
 
-        this.setting =
-            (LocalStorage.getItem(LS_REMINDER_KEY) as TSaveReminderSetting | null) ?? '40min';
+        const storedSetting = LocalStorage.getItem(LS_REMINDER_KEY);
+        this.setting = isSaveReminderSetting(storedSetting) ? storedSetting : '40min';
+        if (storedSetting !== null && !isSaveReminderSetting(storedSetting)) {
+            LocalStorage.setItem(LS_REMINDER_KEY, this.setting);
+        }
     }
 
     init(): void {

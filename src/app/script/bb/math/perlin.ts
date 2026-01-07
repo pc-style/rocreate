@@ -14,14 +14,17 @@
  *
  */
 
-const myModule = {} as any;
+const noiseModule = {
+    seed: (seed: number) => { },
+    simplex2: (xin: number, yin: number) => 0
+};
 
 class Grad {
     constructor(
         public x: number,
         public y: number,
         public z: number,
-    ) {}
+    ) { }
 
     dot2(x: number, y: number): number {
         return this.x * x + this.y * y;
@@ -68,7 +71,7 @@ const gradP = new Array(512);
 
 // This isn't a very good seeding function, but it works ok. It supports 2^16
 // different seed values. Write something better if you need more seeds.
-myModule.seed = function (seed: number): void {
+noiseModule.seed = function (seed: number): void {
     if (seed > 0 && seed < 1) {
         // Scale the seed out
         seed *= 65536;
@@ -92,7 +95,7 @@ myModule.seed = function (seed: number): void {
     }
 };
 
-myModule.seed(0);
+noiseModule.seed(0);
 
 /*
 for (let i=0; i<256; i++) {
@@ -108,7 +111,7 @@ const G2 = (3 - Math.sqrt(3)) / 6;
 let G3 = 1/6;*/
 
 // 2D simplex noise
-myModule.simplex2 = function (xin: number, yin: number): number {
+noiseModule.simplex2 = function (xin: number, yin: number): number {
     let n0, n1, n2; // Noise contributions from the three corners
     // Skew the input space to determine which simplex cell we're in
     const s = (xin + yin) * F2; // Hairy factor for 2D
@@ -170,7 +173,7 @@ myModule.simplex2 = function (xin: number, yin: number): number {
 };
 /*
 // 3D simplex noise
-myModule.simplex3 = function(xin, yin, zin) {
+noiseModule.simplex3 = function(xin, yin, zin) {
     let n0, n1, n2, n3; // Noise contributions from the four corners
 
     // Skew the input space to determine which simplex cell we're in
@@ -268,7 +271,7 @@ function lerp(a, b, t) {
 }
 
 // 2D Perlin Noise
-myModule.perlin2 = function(x, y) {
+noiseModule.perlin2 = function(x, y) {
     // Find unit grid cell containing point
     let X = Math.floor(x), Y = Math.floor(y);
     // Get relative xy coordinates of point within that cell
@@ -293,7 +296,7 @@ myModule.perlin2 = function(x, y) {
 };*/
 /*
 // 3D Perlin Noise
-myModule.perlin3 = function(x, y, z) {
+noiseModule.perlin3 = function(x, y, z) {
     // Find unit grid cell containing point
     let X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
     // Get relative xyz coordinates of point within that cell
@@ -327,4 +330,4 @@ myModule.perlin3 = function(x, y, z) {
         v);
 };*/
 
-export const noise = myModule;
+export const noise = noiseModule;

@@ -42,6 +42,8 @@ export class Options<IdType> {
         onChange?: (id: IdType) => void;
         /** before the change happens, check if you allow it. true -> yes */
         onBeforeChange?: (id: IdType) => boolean;
+        /** called when clicking an already selected option */
+        onAlreadySelected?: (id: IdType) => void;
         changeOnInit?: boolean; // trigger change on creation
         isSmall?: boolean;
         optionCss?: Partial<CSSStyleDeclaration>;
@@ -97,6 +99,8 @@ export class Options<IdType> {
                             this.selectedId = optionObj.id;
                             this.update();
                             this.onChange && this.onChange(this.selectedId);
+                        } else {
+                            p.onAlreadySelected && p.onAlreadySelected(this.selectedId);
                         }
                     },
                     css: p.optionCss,

@@ -4,6 +4,7 @@ import { MultiPolygon } from 'polygon-clipping';
 import { transformMultiPolygon } from '../../bb/multi-polygon/transform-multi-polygon';
 import { scale } from 'transformation-matrix';
 import { getSelectionPath2d } from '../../bb/multi-polygon/get-selection-path-2d';
+import { toGlobalCompositeOperation } from './translate-blending';
 
 export function drawProject(
     project: TKlProject,
@@ -35,8 +36,7 @@ export function drawProject(
             continue;
         }
         ctx.globalAlpha = layer.opacity;
-        const mixModeStr = layer.mixModeStr;
-        ctx.globalCompositeOperation = mixModeStr !== undefined ? mixModeStr : 'source-over';
+        ctx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
         if (isLayerFill(layer.image)) {
             ctx.fillStyle = layer.image.fill;
             ctx.fillRect(0, 0, resultCanvas.width, resultCanvas.height);

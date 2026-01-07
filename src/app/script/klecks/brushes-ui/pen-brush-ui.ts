@@ -10,6 +10,9 @@ import { TBrushUi } from '../kl-types';
 import { LANG, LANGUAGE_STRINGS } from '../../language/language';
 import { Options } from '../ui/components/options';
 import { PenBrush } from '../brushes/pen-brush';
+// TEMPORARILY using PenBrush directly instead of HybridPenBrush
+// until CanvasKit real-time rendering is properly implemented
+type BrushType = PenBrush;
 
 export const penBrushUi = (function () {
     const brushInterface = {
@@ -34,7 +37,7 @@ export const penBrushUi = (function () {
             max: 100,
             curve: BB.powerSplineInput(0, 100, 0.1, 2.5),
         },
-    } as TBrushUi<PenBrush>;
+    } as TBrushUi<BrushType>;
 
     let alphaNames = [
         LANG('brush-pen-circle'),
@@ -291,8 +294,7 @@ export const penBrushUi = (function () {
             brush.startLine(x, y, p, tiltX, tiltY);
         };
         this.goLine = function (x, y, p, _isCoalesced, tiltX, tiltY) {
-            // isCoalesced not used by pen brush - kept for interface compatibility
-            brush.goLine(x, y, p, tiltX, tiltY);
+            brush.goLine(x, y, p, _isCoalesced, tiltX, tiltY);
         };
         this.endLine = function () {
             brush.endLine();
@@ -306,6 +308,6 @@ export const penBrushUi = (function () {
         this.getElement = function () {
             return div;
         };
-    } as TBrushUi<PenBrush>['Ui'];
+    } as TBrushUi<BrushType>['Ui'];
     return brushInterface;
 })();

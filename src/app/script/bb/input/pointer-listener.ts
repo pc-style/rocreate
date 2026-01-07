@@ -17,7 +17,7 @@ export type TPointerListenerParams = {
     isWheelPassive?: boolean; // default false
     onEnterLeave?: (isOver: boolean) => void; // optional
     maxPointers?: number; // int [1,n] default is 1 - how many concurrent pointers to pay attention to
-    fixScribble?: boolean; // fix ipad scribble issue - TODO remove, fixed start of 2022 -> https://bugs.webkit.org/show_bug.cgi?id=217430#c2
+
 };
 
 type TPointer = {
@@ -300,7 +300,6 @@ export class PointerListener {
         | ((event: PointerEvent, skipGlobal?: boolean) => void)
         | undefined;
     private readonly onWheel: ((e: WheelEvent) => void) | undefined;
-    private readonly onTouchMoveScribbleFix: ((e: TouchEvent) => void) | undefined;
     private readonly windowOnPointerMove: ((event: PointerEvent) => void) | undefined;
     private readonly windowOnPointerUp: ((event: PointerEvent) => void) | undefined;
     private readonly windowOnPointerLeave: ((event: PointerEvent) => void) | undefined;
@@ -309,6 +308,16 @@ export class PointerListener {
     private readonly onTouchMove: ((e: TouchEvent) => void) | undefined;
     private readonly onTouchEnd: ((e: TouchEvent) => void) | undefined;
     private readonly onTouchCancel: ((e: TouchEvent) => void) | undefined;
+
+    private cleanupCorruptedPointer(pointerId: number): void {
+        const index = this.dragPointerIdArr.indexOf(pointerId);
+        if (index !== -1) {
+            this.dragPointerIdArr.splice(index, 1);
+            if (this.dragPointerIdArr.length === 0) {
+                this.destroyDocumentListeners();
+            }
+        }
+    }
 
     private getDragObj(pointerId: number): TDragObj | null {
         for (let i = 0; i < this.dragObjArr.length; i++) {
@@ -522,7 +531,7 @@ export class PointerListener {
                 const dragObj = this.getDragObj(correctedEvent.pointerId);
 
                 if (!dragObj) {
-                    // todo need to handle this!
+                    this.cleanupCorruptedPointer(correctedEvent.pointerId);
                     return;
                 }
 
@@ -583,14 +592,13 @@ export class PointerListener {
                 }
                 const dragObj = this.removeDragObj(correctedEvent.pointerId);
                 if (!dragObj) {
-                    // todo need to handle this!
+                    this.cleanupCorruptedPointer(correctedEvent.pointerId);
                     return;
                 }
 
                 const outEvent = this.createPointerOutEvent('pointerup', correctedEvent, {
                     downPageX: dragObj.downPageX,
                     downPageY: dragObj.downPageY,
-                    button: getButtonStr(correctedEvent.button),
                 });
                 this.onPointerCallback?.(outEvent);
             };
@@ -610,7 +618,7 @@ export class PointerListener {
                 }
                 const dragObj = this.removeDragObj(correctedEvent.pointerId);
                 if (!dragObj) {
-                    // todo need to handle this!
+                    this.cleanupCorruptedPointer(correctedEvent.pointerId);
                     return;
                 }
 
@@ -740,16 +748,6 @@ export class PointerListener {
                 OPTIONS_PASSIVE,
             );
         }
-
-        if (p.fixScribble) {
-            //ipad scribble workaround https://developer.apple.com/forums/thread/662874
-            this.onTouchMoveScribbleFix = (e: TouchEvent) => e.preventDefault();
-            this.targetElement.addEventListener(
-                'touchmove',
-                this.onTouchMoveScribbleFix,
-                OPTIONS_PASSIVE,
-            );
-        }
     }
 
     destroy(): void {
@@ -767,8 +765,6 @@ export class PointerListener {
             this.targetElement.removeEventListener(pointerDownEvt, this.onPointerDown);
         this.onWheel && this.targetElement.removeEventListener('wheel', this.onWheel);
         this.destroyDocumentListeners();
-        this.onTouchMoveScribbleFix &&
-            document.removeEventListener('touchmove', this.onTouchMoveScribbleFix);
 
         this.onTouchStart &&
             this.targetElement.removeEventListener('touchstart', this.onTouchStart);

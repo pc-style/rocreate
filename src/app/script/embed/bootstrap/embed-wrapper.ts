@@ -74,12 +74,14 @@ export class EmbedWrapper {
                 loadingScreen.style[loadingStyleArr[i][0] as any] = loadingStyleArr[i][1];
             }
             loadingScreen.id = 'loading-screen';
+            const customLogoSrc =
+                typeof p.logoImg === 'string' ? p.logoImg : p.logoImg?.src;
             loadingScreen.append(
                 createImage({
                     width: 150,
                     height: 54,
                     alt: 'Logo',
-                    src: p.logoImg ? p.logoImg : logoImg,
+                    src: customLogoSrc ?? logoImg,
                     css: {
                         filter: THEME.isDark() && !p.logoImg ? 'invert(1)' : undefined,
                     },

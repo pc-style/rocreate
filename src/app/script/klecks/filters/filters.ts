@@ -18,6 +18,7 @@ import noiseImg from 'url:/src/app/img/ui/procreate/noise.svg';
 import patternImg from 'url:/src/app/img/ui/procreate/pattern.svg';
 import vanishPointImg from 'url:/src/app/img/ui/procreate/vanish-point.svg';
 import distortImg from 'url:/src/app/img/ui/procreate/distort.svg';
+import chromaticAberrationImg from 'url:/src/app/img/ui/procreate/chromatic-aberration.svg';
 
 export const FILTER_LIB_STATUS = {
     isLoaded: false,
@@ -271,9 +272,9 @@ export const FILTER_LIB: {
     },
     bloom: {
         lang: {
-            name: 'Bloom' as any,
-            button: 'Bloom' as any,
-            description: 'Add glow effect to bright areas' as any,
+            name: 'filter-bloom-title',
+            button: 'filter-bloom',
+            description: 'filter-bloom-description',
         },
         icon: glBlurImg, // Reuse blur icon for now
         updatePos: false,
@@ -281,5 +282,31 @@ export const FILTER_LIB: {
         apply: null,
         inEmbed: true,
         webGL: true,
+    },
+    chromaticAberration: {
+        lang: {
+            name: 'filter-chromatic-aberration-title',
+            button: 'filter-chromatic-aberration',
+            description: 'filter-chromatic-aberration-description',
+        },
+        icon: chromaticAberrationImg,
+        updatePos: false,
+        getDialog: null,
+        apply: null,
+        inEmbed: true,
+        webGL: false, // Uses CanvasKit directly
+    },
+    vignette: {
+        lang: {
+            name: 'filter-vignette-title',
+            button: 'filter-vignette',
+            description: 'filter-vignette-description',
+        },
+        icon: glTiltShiftImg, // Using tilt-shift icon for now
+        updatePos: false,
+        getDialog: null,
+        apply: null,
+        inEmbed: true,
+        webGL: false, // Uses CanvasKit directly
     },
 };

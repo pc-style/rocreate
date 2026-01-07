@@ -6,6 +6,7 @@ import {
     css,
     dateDayDifference,
     decToFraction,
+    escapeHtml,
     fitInto,
     gcd,
     getDate,
@@ -19,6 +20,8 @@ import {
     setAttributes,
     shareCanvas,
     throwIfNull,
+    throwIfUndefined,
+    timeoutWrapper,
 } from './base/base';
 import {
     canShareFiles,
@@ -109,6 +112,7 @@ export const BB = {
     gcd,
     reduce,
     decToFraction,
+    escapeHtml,
     imageBlobToUrl,
     dateDayDifference,
     copyObj,
@@ -118,6 +122,8 @@ export const BB = {
     BbLog,
     LocalStorage,
     throwIfNull,
+    throwIfUndefined,
+    timeoutWrapper,
     nullToUndefined,
     isDark,
 

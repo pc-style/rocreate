@@ -15,6 +15,16 @@ export type TBrowserStorageBannerParams = {
     onOpenBrowserStorage: () => void;
 };
 
+type TBrowserStorageChannelMessage =
+    | { type: 'request-project-ids' }
+    | { type: 'response-project-id'; id: string };
+
+function isBrowserStorageChannelMessage(
+    message: unknown,
+): message is TBrowserStorageChannelMessage {
+    return !!message && typeof message === 'object' && 'type' in message;
+}
+
 export async function runBrowserStorageBanner(p: TBrowserStorageBannerParams): Promise<void> {
     /*
     only show banner if all:
@@ -33,15 +43,18 @@ export async function runBrowserStorageBanner(p: TBrowserStorageBannerParams): P
     {
         // subscription stays up during run of application
         crossTabChannel.subscribe((message) => {
-            if (message.type === 'request-project-ids') {
+            if (isBrowserStorageChannelMessage(message) && message.type === 'request-project-ids') {
                 crossTabChannel.postMessage({
                     type: 'response-project-id',
                     id: p.klHistory.getComposed().projectId.value,
                 });
             }
         });
-        const otherIdListener = (message: any) => {
-            if (message.type === 'response-project-id') {
+        const otherIdListener = (message: unknown) => {
+            if (!isBrowserStorageChannelMessage(message)) {
+                return;
+            }
+            if (message.type === 'response-project-id' && typeof message.id === 'string') {
                 openedProjectIds.push(message.id);
             }
         };
@@ -149,7 +162,7 @@ export async function runBrowserStorageBanner(p: TBrowserStorageBannerParams): P
 
     const onPointerDown = (e: PointerEvent) => {
         const target = e.target as HTMLElement | null;
-        if (banner.contains(target) || banner.contains(target)) {
+        if (banner.contains(target)) {
             return;
         }
         close();

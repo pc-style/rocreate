@@ -38,6 +38,7 @@ export class SymmetryGuide {
             elementType: 'g',
             class: 'symmetry-guide',
         });
+        this.rootEl.style.pointerEvents = 'none';
 
         this.linesGroup = BB.createSvg({
             elementType: 'g',
@@ -218,6 +219,15 @@ export class SymmetryGuide {
 
     isActive(): boolean {
         return this.mode !== 'off';
+    }
+
+    /**
+     * Update the transform of the guide to match the canvas viewport
+     */
+    setTransform(transform: { x: number; y: number; scale: number; angleDeg: number }) {
+        const transformStr = `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale}) rotate(${transform.angleDeg}deg)`;
+        this.rootEl.style.transform = transformStr;
+        this.rootEl.style.transformOrigin = '0 0';
     }
 
     destroy(): void {

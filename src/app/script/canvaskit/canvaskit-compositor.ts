@@ -112,31 +112,20 @@ export class CanvasKitCompositor {
 
         const existing = this.layerImages.get(layerId);
         if (existing) {
-            try {
-                // Efficiently update existing texture
-                this.surface.updateTextureFromSource(existing, canvas as any);
-                if (this.debug) {
-                    console.log(`[CanvasKitCompositor] Updated texture ${layerId}, size: ${canvas.width}x${canvas.height}`);
-                }
-            } catch (e) {
-                console.warn('[CanvasKitCompositor] updateTextureFromSource failed, recreating...', layerId, e);
-                existing.delete();
-                const skImage = this.surface.makeImageFromTextureSource(canvas as any);
-                if (skImage) {
-                    this.layerImages.set(layerId, skImage);
-                }
+            existing.delete();
+            this.layerImages.delete(layerId);
+        }
+
+        // Create initial or updated texture
+        // Note: updateTextureFromSource/makeImageFromTextureSource are not available in all CanvasKit versions/builds
+        const skImage = this.ck.MakeImageFromCanvasImageSource(canvas);
+        if (skImage) {
+            this.layerImages.set(layerId, skImage);
+            if (this.debug) {
+                console.log(`[CanvasKitCompositor] ${existing ? 'Updated' : 'Created'} texture ${layerId}, size: ${canvas.width}x${canvas.height}`);
             }
         } else {
-            // First time for this layer
-            const skImage = this.surface.makeImageFromTextureSource(canvas as any);
-            if (skImage) {
-                this.layerImages.set(layerId, skImage);
-                if (this.debug) {
-                    console.log(`[CanvasKitCompositor] Created initial texture ${layerId}, size: ${canvas.width}x${canvas.height}`);
-                }
-            } else {
-                console.warn('[CanvasKitCompositor] Failed to create SkImage for layer', layerId);
-            }
+            console.warn('[CanvasKitCompositor] Failed to create SkImage for layer', layerId);
         }
     }
 
@@ -189,31 +178,115 @@ export class CanvasKitCompositor {
         this.canvas.rotate(transform.angleDeg, 0, 0);
 
         // Composite each visible layer
-        for (const layer of layers) {
+        for (let i = 0; i < layers.length; i++) {
+            const layer = layers[i];
+
             if (!layer.isVisible || layer.opacity === 0) {
+                // Optimization: Skip hidden layers
+                // But if it's a hidden base of a clipping stack, must skip the stack too.
+                let j = i + 1;
+                while (j < layers.length && layers[j].isClippingMask) {
+                    i = j;
+                    j++;
+                }
                 continue;
             }
 
-            const skImage = this.layerImages.get(layer.id);
-            if (!skImage) {
-                continue;
-            }
+            // Check for Clipping Stack
+            const nextLayer = layers[i + 1];
+            const isClippingStackBase = nextLayer && nextLayer.isClippingMask && !layer.isClippingMask;
 
-            const paint = new this.ck.Paint();
-            paint.setAlphaf(layer.opacity);
-            const blendMode = this.getBlendMode(layer.mixModeStr);
-            if (blendMode) {
-                paint.setBlendMode(blendMode);
-            }
+            if (isClippingStackBase) {
+                // Clipping Group
+                // 1. Setup Group Paint (applies to the whole stack onto the canvas)
+                const stackPaint = new this.ck.Paint();
+                stackPaint.setAlphaf(layer.opacity);
+                const stackBlend = this.getBlendMode(layer.mixModeStr);
+                if (stackBlend) stackPaint.setBlendMode(stackBlend);
 
-            this.canvas.drawImage(skImage, 0, 0, paint);
-            paint.delete();
+                // 2. Start Group
+                this.canvas.saveLayer(stackPaint);
+                stackPaint.delete();
+
+                // 3. Draw Base Layer (Opacity 1, SrcOver inside the group)
+                this.drawSingleLayer(layer, { opacity: 1.0, mixMode: 'source-over' });
+
+                // 4. Draw Clipping Layers
+                let j = i + 1;
+                while (j < layers.length && layers[j].isClippingMask) {
+                    const clipLayer = layers[j];
+                    if (clipLayer.isVisible && clipLayer.opacity > 0) {
+                        // Draw Clipper (Opacity = own, Blend = SrcATop)
+                        this.drawSingleLayer(clipLayer, { mixMode: 'source-atop' });
+                    }
+                    j++;
+                }
+
+                // Advance main loop
+                i = j - 1;
+
+                this.canvas.restore();
+
+            } else {
+                // Normal Layer
+                this.drawSingleLayer(layer);
+            }
         }
 
         this.canvas.restore();
 
         // Flush to display
         this.surface.flush();
+    }
+
+    /**
+     * Helper to draw a single layer (or layer+live composite).
+     */
+    private drawSingleLayer(
+        layer: CompositorLayer,
+        overrides: { opacity?: number; mixMode?: string } = {}
+    ): void {
+        const skImage = this.layerImages.get(layer.id);
+        if (!skImage) return;
+
+        const opacity = overrides.opacity ?? layer.opacity;
+        const mixModeStr = overrides.mixMode ?? layer.mixModeStr;
+
+        const paint = new this.ck.Paint();
+        paint.setAlphaf(opacity);
+        const blendMode = this.getBlendMode(mixModeStr);
+        if (blendMode) {
+            paint.setBlendMode(blendMode);
+        }
+
+        // Check for live layer (active stroke)
+        let liveImage: SkImage | undefined;
+        if (layer.liveLayer) {
+            liveImage = this.layerImages.get(layer.liveLayer.id);
+        }
+
+        if (liveImage) {
+            // Grouping: Composite (Layer + Live) using the desired opacity & mixMode
+            this.canvas!.saveLayer(paint);
+
+            // Draw main layer (base) - normally opaque relative to the group
+            const basePaint = new this.ck.Paint();
+            this.canvas!.drawImage(skImage, 0, 0, basePaint);
+            basePaint.delete();
+
+            // Draw live layer on top
+            const livePaint = new this.ck.Paint();
+            if (layer.liveLayer?.opacity !== undefined) {
+                livePaint.setAlphaf(layer.liveLayer.opacity);
+            }
+            this.canvas!.drawImage(liveImage, 0, 0, livePaint);
+            livePaint.delete();
+
+            this.canvas!.restore();
+        } else {
+            this.canvas!.drawImage(skImage, 0, 0, paint);
+        }
+        paint.delete();
     }
 
     /**
@@ -224,6 +297,12 @@ export class CanvasKitCompositor {
      */
     resize(htmlCanvas: HTMLCanvasElement): void {
         if (this.isDestroyed) return;
+
+        // Recreating the surface invalidates existing GPU textures.
+        for (const image of this.layerImages.values()) {
+            image.delete();
+        }
+        this.layerImages.clear();
 
         // Recreate surface with new size
         this.surface?.delete();

@@ -5,7 +5,7 @@ import { LANG } from '../../../language/language';
 export function showIframeModal(url: string, isEmbed: boolean) {
     // window very small, modal might look bad
     if (!isEmbed && (window.innerHeight < 500 || window.innerWidth < 700)) {
-        window.open(url);
+        window.open(url, '_blank', 'noopener,noreferrer');
         return;
     }
 
@@ -13,6 +13,8 @@ export function showIframeModal(url: string, isEmbed: boolean) {
         tagName: 'iframe',
         custom: {
             src: url,
+            sandbox: 'allow-scripts allow-same-origin allow-popups allow-forms',
+            referrerPolicy: 'no-referrer',
         },
         css: {
             width: '100%',

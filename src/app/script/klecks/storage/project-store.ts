@@ -18,12 +18,11 @@ export type TImageDataReference = {
 };
 
 export function isTImageDataReference(input: unknown): input is TImageDataReference {
-    return (
-        typeof input === 'object' &&
-        input !== null &&
-        'id' in input &&
-        typeof (input as any).id === 'string'
-    );
+    if (!input || typeof input !== 'object') {
+        return false;
+    }
+    const maybe = input as { id?: unknown };
+    return typeof maybe.id === 'string';
 }
 
 async function createFallbackThumbnail(): Promise<Blob> {
@@ -93,16 +92,14 @@ export class ProjectStore {
         };
 
         // store first. so nothing will be lost if something goes wrong
-        for (const imageData of imageDataList) {
-            await KL_INDEXED_DB.set(IMAGE_DATA_STORE, imageData.id, imageData.data);
-        }
+        await Promise.all(
+            imageDataList.map((img) => KL_INDEXED_DB.set(IMAGE_DATA_STORE, img.id, img.data)),
+        );
 
         await KL_INDEXED_DB.set(BROWSER_STORAGE_STORE, undefined, raw);
 
         // remove obsolete imageData
-        for (const id of deleteIds) {
-            await KL_INDEXED_DB.remove(IMAGE_DATA_STORE, id);
-        }
+        await Promise.all(deleteIds.map((id) => KL_INDEXED_DB.remove(IMAGE_DATA_STORE, id)));
     }
 
     private async lowLevelReadMeta(): Promise<TRawMeta | undefined> {
@@ -158,26 +155,24 @@ export class ProjectStore {
         }
         thumbnail = thumbnail ?? (await createFallbackThumbnail());
 
-        const layers: TKlStorageProjectRead['layers'] = [];
-        for (const layer of raw.layers) {
-            let blob: Blob | undefined;
+        // fetch all layer blobs in parallel
+        const layerBlobPromises = raw.layers.map(async (layer) => {
             if (isTImageDataReference(layer.blob)) {
                 const readResult = (await KL_INDEXED_DB.get(IMAGE_DATA_STORE, layer.blob.id)) as
                     | TIdb['V2']['ImageDataStore']['Read']
                     | undefined;
-                if (isBlob(readResult)) {
-                    blob = readResult;
-                }
-            } else {
-                blob = layer.blob;
+                return isBlob(readResult) ? readResult : undefined;
             }
-            layers.push({
-                ...layer,
-                isVisible: layer.isVisible ?? true,
-                mixModeStr: layer.mixModeStr ?? 'source-over',
-                blob,
-            });
-        }
+            return layer.blob;
+        });
+        const layerBlobs = await Promise.all(layerBlobPromises);
+
+        const layers: TKlStorageProjectRead['layers'] = raw.layers.map((layer, i) => ({
+            ...layer,
+            isVisible: layer.isVisible ?? true,
+            mixModeStr: layer.mixModeStr ?? 'source-over',
+            blob: layerBlobs[i],
+        }));
         return {
             ...raw,
             projectId: raw.projectId ?? randomUuid(),
@@ -204,9 +199,7 @@ export class ProjectStore {
         }
 
         await KL_INDEXED_DB.remove(BROWSER_STORAGE_STORE, 1);
-        for (const id of deleteIds) {
-            await KL_INDEXED_DB.remove(IMAGE_DATA_STORE, id);
-        }
+        await Promise.all(deleteIds.map((id) => KL_INDEXED_DB.remove(IMAGE_DATA_STORE, id)));
     }
 
     private emit(meta?: TKlProjectMeta): void {

@@ -162,6 +162,9 @@ export function dateDayDifference(dateA: string | Date, dateB: string | Date): n
 }
 
 export function copyObj<T>(obj: T): T {
+    if (obj === undefined) {
+        return undefined as any;
+    }
     return JSON.parse(JSON.stringify(obj));
 }
 
@@ -199,7 +202,7 @@ export function shareCanvas(p: {
                     title: p.title,
                     files: filesArray,
                 } as any)
-                .then(() => {})
+                .then(() => { })
                 .catch(() => {
                     err();
                 });
@@ -319,6 +322,15 @@ export function randomUuid(): string {
             v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
+}
+
+export function escapeHtml(str: string): string {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
 export function sleep(ms: number) {

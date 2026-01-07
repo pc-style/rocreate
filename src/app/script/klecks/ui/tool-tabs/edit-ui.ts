@@ -181,7 +181,7 @@ This has been reported to Google.
                         return;
                     }
 
-                    const applyFilter = (input: any) => {
+                    const applyFilter = (input: unknown) => {
                         const filterResult = filters[filterKey].apply!({
                             layer: this.getCurrentLayer(),
                             klCanvas: this.klCanvas,

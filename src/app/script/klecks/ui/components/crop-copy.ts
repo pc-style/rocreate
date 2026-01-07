@@ -296,7 +296,6 @@ export class CropCopy {
         });
         this.pointerListener = new BB.PointerListener({
             target: this.eventTarget,
-            fixScribble: true,
             onWheel: (event) => {
                 this.preview.onWheel(event);
             },

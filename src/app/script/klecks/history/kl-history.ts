@@ -83,7 +83,7 @@ export class KlHistory {
         ];
         this.composed = p.oldest;
         if (HISTORY_DEBUGGING) {
-            (window as any).getHistoryEntries = () => this.entries;
+            window.getHistoryEntries = () => this.entries;
         }
     }
 

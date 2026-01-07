@@ -8,6 +8,7 @@ import { Icon } from '../components/icon';
 export type TMobileBrushUiParams = {
     onEraser: () => void;
     onBrush: () => void;
+    onBrushLibrary: () => void;
 };
 
 type TBrushType = 'brush' | 'eraser';
@@ -52,11 +53,16 @@ export class MobileBrushUi {
                 },
             ],
             initId: 'brush',
-            onChange: (id: string): void => {
+            onChange: (id: TBrushType): void => {
                 if (id === 'brush') {
                     p.onBrush();
                 } else {
                     p.onEraser();
+                }
+            },
+            onAlreadySelected: (id: TBrushType): void => {
+                if (id === 'brush') {
+                    p.onBrushLibrary();
                 }
             },
             isColumn: true,

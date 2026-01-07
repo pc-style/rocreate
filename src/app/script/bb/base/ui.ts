@@ -3,7 +3,7 @@ import { BB } from '../bb';
 
 export function appendTextDiv(target: HTMLElement, text: string): HTMLDivElement {
     const div = document.createElement('div');
-    div.innerHTML = text;
+    div.textContent = text;
     target.append(div);
     return div;
 }
@@ -120,6 +120,9 @@ const els: {
  *
  *  If onClick or onChange is used, then BB.destroyEl MUST be called
  *  to prevent a memory leak.
+ *
+ *  WARNING: Using 'content' with a string will use innerHTML.
+ *  Prefer 'textContent' for untrusted content.
  *
  * @param params
  */

@@ -12,7 +12,7 @@ import { getSharedFx } from '../../fx-canvas/shared-fx';
 import { Options } from '../ui/components/options';
 import { EVENT_RES_MS } from './filters-consts';
 import { Select } from '../ui/components/select';
-import { translateBlending } from '../canvas/translate-blending';
+import { translateBlending, toGlobalCompositeOperation } from '../canvas/translate-blending';
 import { KL } from '../kl';
 import { ColorConverter } from '../../bb/color/color';
 import { Checkbox } from '../ui/components/checkbox';
@@ -63,7 +63,7 @@ export type TFilterNoiseInput = {
     channels: TNoiseChannels;
 
     // only for channels = rgb
-    mixModeStr: GlobalCompositeOperation; // how mixed with image
+    mixModeStr: TMixMode; // how mixed with image
     colA: TRgb;
     colB: TRgb;
 };
@@ -271,7 +271,7 @@ export const filterNoise = {
             opacity: 0.5,
             isReversed: false,
             channels: 'rgb',
-            mixModeStr: 'source-over' as GlobalCompositeOperation,
+            mixModeStr: 'source-over',
             colA: { r: 0, g: 0, b: 0 },
             colB: { r: 255, g: 255, b: 255 },
         };
@@ -404,7 +404,7 @@ export const filterNoise = {
                 return item ? ([item, translateBlending(item)] as [TMixMode, string]) : undefined;
             }),
             initValue: noiseInput.mixModeStr,
-            onChange: (val: GlobalCompositeOperation) => {
+            onChange: (val: TMixMode) => {
                 noiseInput.mixModeStr = val;
                 update();
             },
@@ -473,8 +473,9 @@ export const filterNoise = {
             },
             postMix: {
                 opacity: noiseInput.opacity,
-                operation:
+                operation: toGlobalCompositeOperation(
                     noiseInput.channels === 'alpha' ? 'destination-out' : noiseInput.mixModeStr,
+                ),
             },
             selection: klCanvas.getSelection(),
             isMaskingWithEmptyOriginal: true,
@@ -516,8 +517,9 @@ export const filterNoise = {
         function update(): void {
             fxPreviewRenderer.setPostMix({
                 opacity: noiseInput.opacity,
-                operation:
+                operation: toGlobalCompositeOperation(
                     noiseInput.channels === 'alpha' ? 'destination-out' : noiseInput.mixModeStr,
+                ),
             });
             preview.render();
         }
@@ -581,7 +583,7 @@ export const filterNoise = {
         if (input.channels === 'alpha') {
             context.globalCompositeOperation = 'destination-out';
         } else {
-            context.globalCompositeOperation = input.mixModeStr;
+            context.globalCompositeOperation = toGlobalCompositeOperation(input.mixModeStr);
         }
         context.drawImage(fxCanvas, 0, 0);
         context.restore();

@@ -76,7 +76,7 @@ export function isExtendedBlendMode(mode: TMixMode): boolean {
  * Convert a TMixMode to a valid GlobalCompositeOperation.
  * Extended modes fallback to their closest native approximation.
  */
-export function toGlobalCompositeOperation(mode?: TMixMode): GlobalCompositeOperation {
+export function toGlobalCompositeOperation(mode?: TMixMode | string): GlobalCompositeOperation {
     if (!mode) {
         return 'source-over';
     }
@@ -92,7 +92,7 @@ export function toGlobalCompositeOperation(mode?: TMixMode): GlobalCompositeOper
     };
 
     if (mode in fallbacks) {
-        return fallbacks[mode]!;
+        return fallbacks[mode as TMixMode]!;
     }
 
     // Standard modes are already valid GlobalCompositeOperation

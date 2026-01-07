@@ -58,6 +58,7 @@ function composeLayer(
         opacity: getLatestDefinedProp(layerEntries, 'opacity'),
         isVisible: getLatestDefinedProp(layerEntries, 'isVisible'),
         mixModeStr: getLatestDefinedProp(layerEntries, 'mixModeStr'),
+        isClippingMask: getLatestDefinedProp(layerEntries, 'isClippingMask'),
         index: getLatestDefinedProp(layerEntries, 'index'),
         tiles: composeLayerTiles(layerEntries.map((item) => (item ? item.tiles : undefined))),
     };

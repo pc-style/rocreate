@@ -43,6 +43,9 @@ function createEntryLayer(
     if (useAll || attributes.includes('tiles')) {
         result.tiles = tiles ?? canvasToLayerTiles(layer.context.canvas, bounds);
     }
+    if (useAll || attributes.includes('isClippingMask')) {
+        result.isClippingMask = !!layer.isClippingMask;
+    }
     return result;
 }
 

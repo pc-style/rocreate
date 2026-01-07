@@ -51,7 +51,7 @@ export class FreeTransform {
         - if the free transform is rotated, the corners of the transform do not move. the canvas moves.
 
     iX iY, iP.x, iP.y - i indicates image/canvas space
-    tX tY, tP.x, tP.y - t indicates transform/viewport space - TODO is it transform or viewport?
+    tX tY, tP.x, tP.y - t indicates transform space (relative to transform center, before viewport)
 
     --- DOM structure ---
     rootEl
@@ -372,14 +372,14 @@ export class FreeTransform {
 
         const onWheel = p.onWheel
             ? (e: TWheelEvent) => {
-                  if (!p.onWheel || !p.wheelParent) {
-                      return;
-                  }
-                  const parentRect = p.wheelParent.getBoundingClientRect();
-                  e.relX = e.pageX - parentRect.left;
-                  e.relY = e.pageY - parentRect.top;
-                  p.onWheel(e);
-              }
+                if (!p.onWheel || !p.wheelParent) {
+                    return;
+                }
+                const parentRect = p.wheelParent.getBoundingClientRect();
+                e.relX = e.pageX - parentRect.left;
+                e.relY = e.pageY - parentRect.top;
+                p.onWheel(e);
+            }
             : undefined;
 
         this.rootEl = BB.el({
@@ -419,7 +419,6 @@ export class FreeTransform {
         };
         this.boundsPointerListener = new BB.PointerListener({
             target: this.boundsEl,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointerdown') {
@@ -619,7 +618,7 @@ export class FreeTransform {
                     });
                     const tinyOffset =
                         Math.abs(this.rectInViewport.width) < 20 ||
-                        Math.abs(this.rectInViewport.height) < 20
+                            Math.abs(this.rectInViewport.height) < 20
                             ? 10
                             : 0;
 
@@ -660,7 +659,6 @@ export class FreeTransform {
 
                 g.pointerListener = new BB.PointerListener({
                     target: this.corners[i].el,
-                    fixScribble: true,
                     onPointer: (event) => {
                         event.eventPreventDefault();
                         if (event.type === 'pointerdown' && event.button === 'left') {
@@ -843,7 +841,6 @@ export class FreeTransform {
                 const isVertical = [0, 2].includes(i);
                 g.pointerListener = new BB.PointerListener({
                     target: this.edges[i].el,
-                    fixScribble: true,
                     onPointer: (event) => {
                         event.eventPreventDefault();
                         if (event.type === 'pointerdown' && event.button === 'left') {
@@ -978,7 +975,6 @@ export class FreeTransform {
 
         this.anglePointerListener = new BB.PointerListener({
             target: this.angleGrip.el,
-            fixScribble: true,
             onPointer: (event) => {
                 event.eventPreventDefault();
                 if (event.type === 'pointermove' && event.button === 'left') {

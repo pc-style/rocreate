@@ -27,6 +27,7 @@ export class EraserBrush {
     private context: CanvasRenderingContext2D = {} as CanvasRenderingContext2D;
     private strokeContext: CanvasRenderingContext2D | null = null;
     private strokeAlpha: number = 1;
+    private symmetryGuide: any = null;
 
     private started: boolean = false;
     private lastDot: number | undefined;
@@ -52,6 +53,13 @@ export class EraserBrush {
     }
 
     private drawDot(x: number, y: number, size: number, opacity: number): void {
+        const points = this.symmetryGuide ? this.symmetryGuide.getMirroredPoints({ x, y }) : [{ x, y }];
+        points.forEach((p: { x: number; y: number }) => {
+            this.drawDotInternal(p.x, p.y, size, opacity);
+        });
+    }
+
+    private drawDotInternal(x: number, y: number, size: number, opacity: number): void {
         const targetCtx = this.strokeContext || this.context;
         targetCtx.save();
         if (this.strokeContext) {
@@ -300,5 +308,9 @@ export class EraserBrush {
 
     getOpacity(): number {
         return this.opacity;
+    }
+
+    setSymmetryGuide(guide: any): void {
+        this.symmetryGuide = guide;
     }
 }

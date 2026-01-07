@@ -1,5 +1,6 @@
 import { BB } from '../../bb/bb';
 import { floodFillBits } from '../image-operations/flood-fill';
+import { floodFillBitsAsync } from '../image-operations/flood-fill-async';
 import { drawShape } from '../image-operations/shape-tool';
 import { renderText, TRenderTextParam } from '../image-operations/render-text';
 import {
@@ -46,16 +47,6 @@ import { getSelectionBounds } from '../select-tool/get-selection-bounds';
 import { translateMultiPolygon } from '../../bb/multi-polygon/translate-multi-polygon';
 import { getBinaryMask } from '../select-tool/get-binary-mask';
 
-// TODO remove in 2026
-// workaround for chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=1281185
-// reported 2021-13 (v96), fixed 2022-02 (v99)
-// affects: source-in, source-out, destination-in, destination-atop
-function workaroundForChromium1281185(ctx: CanvasRenderingContext2D): void {
-    ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.01)';
-    ctx.fillRect(-0.9999999, -0.9999999, 1, 1);
-    ctx.restore();
-}
 
 // legacy constant for compatibility - actual limit is now dynamic
 export const MAX_LAYERS = 16;
@@ -142,7 +133,7 @@ export class KlCanvas {
         this.klHistory = history;
         this.layers = [];
         if (KL_CANVAS_DEBUGGING) {
-            (window as any).getCanvasLayers = () => this.layers;
+            window.getCanvasLayers = () => this.layers;
         }
         this.eyedropper = new Eyedropper();
         this.width = 0;
@@ -193,6 +184,7 @@ export class KlCanvas {
             isVisible: boolean;
             opacity: number;
             mixModeStr: TMixMode;
+            isClippingMask?: boolean;
             image: HTMLCanvasElement;
         }[];
     }): number {
@@ -226,6 +218,7 @@ export class KlCanvas {
                 layer.name = pItem.name;
                 layer.isVisible = pItem.isVisible;
                 layer.mixModeStr = pItem.mixModeStr ? pItem.mixModeStr : 'source-over';
+                layer.isClippingMask = !!pItem.isClippingMask;
                 layer.canvas.width = this.width;
                 layer.canvas.height = this.height;
                 layer.context.drawImage(pItem.image, 0, 0);
@@ -422,6 +415,7 @@ export class KlCanvas {
             mixModeStr?: TMixMode;
             isVisible: boolean;
             opacity: number;
+            isClippingMask?: boolean;
             image: HTMLCanvasElement | HTMLImageElement | ((ctx: CanvasRenderingContext2D) => void);
         },
     ): false | number {
@@ -451,6 +445,7 @@ export class KlCanvas {
             mixModeStr: data ? (data.mixModeStr ?? 'source-over') : 'source-over',
             isVisible: data ? data.isVisible : true,
             opacity: data ? data.opacity : 1,
+            isClippingMask: data ? !!data.isClippingMask : false,
             canvas,
             context,
         };
@@ -723,7 +718,6 @@ export class KlCanvas {
 
             bottomCtx.restore();
 
-            mixModeStr && workaroundForChromium1281185(bottomCtx);
         }
         this.klHistory.pause(true);
         this.removeLayer(layerTopIndex);
@@ -937,12 +931,6 @@ export class KlCanvas {
         );
         ctx.restore();
 
-        // workaround for chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=1281185
-        // TODO remove if chrome updated
-        ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0.01)';
-        ctx.fillRect(-0.9999999, -0.9999999, 1, 1);
-        ctx.restore();
 
         /*if (!document.getElementById('testocanvas')) {
             layerCanvasArr[layerIndex].id = 'testocanvas';
@@ -984,6 +972,64 @@ export class KlCanvas {
                         ? createFillColorTiles(this.width, this.height, fill)
                         : undefined,
                     bounds,
+                }),
+            });
+        }
+    }
+
+    private applyFloodFillResult(
+        layerIndex: number,
+        result: { data: Uint8Array; bounds: TBounds },
+        targetCtx: CanvasRenderingContext2D,
+        targetImageData: ImageData,
+        rgb: TRgb | null,
+        opacity: number,
+    ): void {
+        const targetData = targetImageData.data;
+        if (rgb) {
+            if (opacity === 1) {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4] = rgb.r;
+                        targetData[i * 4 + 1] = rgb.g;
+                        targetData[i * 4 + 2] = rgb.b;
+                        targetData[i * 4 + 3] = 255;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4] = BB.mix(targetData[i * 4], rgb.r, opacity);
+                        targetData[i * 4 + 1] = BB.mix(targetData[i * 4 + 1], rgb.g, opacity);
+                        targetData[i * 4 + 2] = BB.mix(targetData[i * 4 + 2], rgb.b, opacity);
+                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 255, opacity);
+                    }
+                }
+            }
+        } else {
+            // erase
+            if (opacity === 1) {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4 + 3] = 0;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 0, opacity);
+                    }
+                }
+            }
+        }
+        targetCtx.putImageData(targetImageData, 0, 0);
+
+        if (!this.klHistory.isPaused()) {
+            this.klHistory.push({
+                layerMap: createLayerMap(this.layers, {
+                    layerId: this.layers[layerIndex].id,
+                    attributes: ['tiles'],
+                    bounds: result.bounds,
                 }),
             });
         }
@@ -1072,65 +1118,96 @@ export class KlCanvas {
                     : targetCtx.getImageData(0, 0, this.width, this.height);
         }
 
-        const targetData = targetImageData.data;
-        if (rgb) {
-            if (opacity === 1) {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4] = rgb.r;
-                        targetData[i * 4 + 1] = rgb.g;
-                        targetData[i * 4 + 2] = rgb.b;
-                        targetData[i * 4 + 3] = 255;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4] = BB.mix(targetData[i * 4], rgb.r, opacity);
-                        targetData[i * 4 + 1] = BB.mix(targetData[i * 4 + 1], rgb.g, opacity);
-                        targetData[i * 4 + 2] = BB.mix(targetData[i * 4 + 2], rgb.b, opacity);
-                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 255, opacity);
-                    }
-                }
-            }
+        this.applyFloodFillResult(layerIndex, result, targetCtx, targetImageData, rgb, opacity);
+    }
+
+    /**
+     * Async version of floodFill that runs in a Web Worker.
+     * Provides better responsiveness on large canvases.
+     */
+    async floodFillAsync(
+        layerIndex: number,
+        x: number,
+        y: number,
+        rgb: TRgb | null,
+        opacity: number,
+        tolerance: number,
+        sampleStr: TFillSampling,
+        grow: number,
+        isContiguous: boolean,
+    ): Promise<void> {
+        if (x < 0 || y < 0 || x >= this.width || y >= this.height || opacity === 0) {
+            return;
+        }
+        tolerance = Math.round(tolerance);
+        x = Math.round(x);
+        y = Math.round(y);
+
+        if (!['above', 'current', 'all'].includes(sampleStr)) {
+            throw new Error('invalid sampleStr');
+        }
+        const selectionMask = this.selection
+            ? getBinaryMask(this.selection, this.width, this.height)
+            : undefined;
+        if (selectionMask && selectionMask[y * this.width + x] === 0) {
+            return;
+        }
+
+        const targetLayer = this.layers[layerIndex];
+        let result: { data: Uint8Array; bounds: TBounds };
+        let targetCtx: CanvasRenderingContext2D;
+        let targetImageData: ImageData;
+
+        if (sampleStr === 'all') {
+            const srcCanvas =
+                this.layers.length === 1 ? this.layers[0].canvas : this.getCompleteCanvas(1);
+            const srcCtx = BB.ctx(srcCanvas);
+            const srcImageData = srcCtx.getImageData(0, 0, this.width, this.height);
+            const srcData = srcImageData.data;
+            result = await floodFillBitsAsync(
+                srcData,
+                selectionMask,
+                this.width,
+                this.height,
+                x,
+                y,
+                tolerance,
+                Math.round(grow),
+                isContiguous,
+            );
+
+            targetCtx = targetLayer.context;
+            targetImageData = targetCtx.getImageData(0, 0, this.width, this.height);
         } else {
-            // erase
-            if (opacity === 1) {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4 + 3] = 0;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 0, opacity);
-                    }
-                }
+            const srcIndex = sampleStr === 'above' ? layerIndex + 1 : layerIndex;
+
+            if (srcIndex >= this.layers.length) {
+                return;
             }
-        }
-        targetCtx.putImageData(targetImageData, 0, 0);
 
-        // const ctx = this.layers[layerIndex].context;
-        // ctx.save();
-        // ctx.fillStyle = 'rgba(255,0,0,0.2)';
-        // ctx.fillRect(
-        //     result.bounds.x1,
-        //     result.bounds.y1,
-        //     result.bounds.x2 - result.bounds.x1,
-        //     result.bounds.y2 - result.bounds.y1,
-        // );
-        // ctx.restore();
+            const srcCtx = this.layers[srcIndex].context;
+            const srcImageData = srcCtx.getImageData(0, 0, this.width, this.height);
+            const srcData = srcImageData.data;
+            result = await floodFillBitsAsync(
+                srcData,
+                selectionMask,
+                this.width,
+                this.height,
+                x,
+                y,
+                tolerance,
+                Math.round(grow),
+                isContiguous,
+            );
 
-        if (!this.klHistory.isPaused()) {
-            this.klHistory.push({
-                layerMap: createLayerMap(this.layers, {
-                    layerId: targetLayer.id,
-                    attributes: ['tiles'],
-                    bounds: result.bounds,
-                }),
-            });
+            targetCtx = layerIndex === srcIndex ? srcCtx : targetLayer.context;
+            targetImageData =
+                layerIndex === srcIndex
+                    ? srcImageData
+                    : targetCtx.getImageData(0, 0, this.width, this.height);
         }
+
+        this.applyFloodFillResult(layerIndex, result, targetCtx, targetImageData, rgb, opacity);
     }
 
     /**
@@ -1279,6 +1356,7 @@ export class KlCanvas {
         opacity: number;
         name: string;
         mixModeStr: TMixMode;
+        isClippingMask?: boolean;
     }[] {
         return this.layers.map((layer) => {
             return {
@@ -1289,6 +1367,7 @@ export class KlCanvas {
                 opacity: layer.opacity,
                 name: layer.name,
                 mixModeStr: layer.mixModeStr,
+                isClippingMask: layer.isClippingMask,
             };
         });
     }
@@ -1299,6 +1378,7 @@ export class KlCanvas {
         opacity: number;
         name: string;
         mixModeStr: TMixMode;
+        isClippingMask?: boolean;
         compositeObj?: TLayerComposite;
     }[] {
         return this.layers.map((item) => {
@@ -1308,6 +1388,7 @@ export class KlCanvas {
                 opacity: item.opacity,
                 name: item.name,
                 mixModeStr: item.mixModeStr,
+                isClippingMask: item.isClippingMask,
                 ...(item.compositeObj ? { compositeObj: item.compositeObj } : {}),
             };
         });
@@ -1386,6 +1467,27 @@ export class KlCanvas {
         }
     }
 
+    setClippingMask(layerIndex: number, isClippingMask: boolean): void {
+        const targetLayer = this.layers[layerIndex];
+        // Ensure boolean
+        isClippingMask = !!isClippingMask;
+
+        if (targetLayer.isClippingMask === isClippingMask) {
+            return;
+        }
+
+        targetLayer.isClippingMask = isClippingMask;
+
+        if (!this.klHistory.isPaused()) {
+            this.klHistory.push({
+                layerMap: createLayerMap(this.layers, {
+                    layerId: targetLayer.id,
+                    attributes: ['isClippingMask'],
+                }),
+            });
+        }
+    }
+
     /**
      * Set composite drawing step for KlCanvasWorkspace.
      * To apply temporary manipulations to a layer.
@@ -1394,7 +1496,19 @@ export class KlCanvas {
      * @param compositeObj
      */
     setComposite(layerIndex: number, compositeObj: undefined | TLayerComposite): void {
-        console.log(`[KlCanvas] setComposite layer ${layerIndex}`, compositeObj ? 'SET' : 'CLEAR');
+        // console.log(`[KlCanvas] setComposite layer ${layerIndex}`, compositeObj ? 'SET' : 'CLEAR');
+
+        // Safety: Ensure only one layer has a composite at a time
+        // If setting a new composite, clear all others.
+        // If clearing (undefined), we don't strictly need to loop, but it's safer to ensure consistency.
+        if (compositeObj) {
+            for (let i = 0; i < this.layers.length; i++) {
+                if (i !== layerIndex && this.layers[i].compositeObj) {
+                    this.layers[i].compositeObj = undefined;
+                }
+            }
+        }
+
         if (!this.layers[layerIndex]) {
             throw new Error('invalid layer');
         }
