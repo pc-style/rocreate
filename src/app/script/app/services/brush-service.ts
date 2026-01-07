@@ -31,6 +31,10 @@ export class BrushService implements IBrushService {
             ? this.currentBrushId
             : 'penBrush';
         this.currentColor = params.initialColor ?? { r: 0, g: 0, b: 0 };
+
+        // Apply initial settings to the initial brush
+        const ui = this.getCurrentBrushUi();
+        ui.setColor(this.currentColor);
     }
 
     // internal emit helper
@@ -49,6 +53,11 @@ export class BrushService implements IBrushService {
             return;
         }
 
+        const ui = this.brushUiMap[brushId];
+        if (!ui) {
+            throw new Error(`Brush UI not found for ${brushId}`);
+        }
+
         const previousBrushId = this.currentBrushId;
         this.currentBrushId = brushId;
 
@@ -58,7 +67,6 @@ export class BrushService implements IBrushService {
         }
 
         // apply current settings to the new brush
-        const ui = this.getCurrentBrushUi();
         ui.setColor(this.currentColor);
         if (this.currentLayer) {
             ui.setLayer(this.currentLayer);
@@ -90,6 +98,9 @@ export class BrushService implements IBrushService {
         const keyArr = (Object.keys(this.brushUiMap) as TBrushId[]).filter(
             (item) => item !== 'eraserBrush' && item !== 'smudgeBrush'
         );
+        if (keyArr.length === 0) {
+            return this.currentBrushId;
+        }
         const i = keyArr.findIndex((item) => item === this.currentBrushId);
         return keyArr[(i + 1) % keyArr.length];
     }
@@ -160,6 +171,9 @@ export class BrushService implements IBrushService {
 
     getSliderConfig(): TSliderConfig {
         const brushDef = this.brushDefinitions[this.currentBrushId];
+        if (!brushDef) {
+            throw new Error(`Brush definition not found for ${this.currentBrushId}`);
+        }
         return {
             sizeSlider: brushDef.sizeSlider,
             opacitySlider: brushDef.opacitySlider,

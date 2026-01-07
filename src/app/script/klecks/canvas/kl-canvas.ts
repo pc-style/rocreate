@@ -977,6 +977,64 @@ export class KlCanvas {
         }
     }
 
+    private applyFloodFillResult(
+        layerIndex: number,
+        result: { data: Uint8Array; bounds: TBounds },
+        targetCtx: CanvasRenderingContext2D,
+        targetImageData: ImageData,
+        rgb: TRgb | null,
+        opacity: number,
+    ): void {
+        const targetData = targetImageData.data;
+        if (rgb) {
+            if (opacity === 1) {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4] = rgb.r;
+                        targetData[i * 4 + 1] = rgb.g;
+                        targetData[i * 4 + 2] = rgb.b;
+                        targetData[i * 4 + 3] = 255;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4] = BB.mix(targetData[i * 4], rgb.r, opacity);
+                        targetData[i * 4 + 1] = BB.mix(targetData[i * 4 + 1], rgb.g, opacity);
+                        targetData[i * 4 + 2] = BB.mix(targetData[i * 4 + 2], rgb.b, opacity);
+                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 255, opacity);
+                    }
+                }
+            }
+        } else {
+            // erase
+            if (opacity === 1) {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4 + 3] = 0;
+                    }
+                }
+            } else {
+                for (let i = 0; i < this.width * this.height; i++) {
+                    if (result.data[i] === 255) {
+                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 0, opacity);
+                    }
+                }
+            }
+        }
+        targetCtx.putImageData(targetImageData, 0, 0);
+
+        if (!this.klHistory.isPaused()) {
+            this.klHistory.push({
+                layerMap: createLayerMap(this.layers, {
+                    layerId: this.layers[layerIndex].id,
+                    attributes: ['tiles'],
+                    bounds: result.bounds,
+                }),
+            });
+        }
+    }
+
     floodFill(
         layerIndex: number, // index of layer to be filled
         x: number, // starting point
@@ -1060,65 +1118,7 @@ export class KlCanvas {
                     : targetCtx.getImageData(0, 0, this.width, this.height);
         }
 
-        const targetData = targetImageData.data;
-        if (rgb) {
-            if (opacity === 1) {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4] = rgb.r;
-                        targetData[i * 4 + 1] = rgb.g;
-                        targetData[i * 4 + 2] = rgb.b;
-                        targetData[i * 4 + 3] = 255;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4] = BB.mix(targetData[i * 4], rgb.r, opacity);
-                        targetData[i * 4 + 1] = BB.mix(targetData[i * 4 + 1], rgb.g, opacity);
-                        targetData[i * 4 + 2] = BB.mix(targetData[i * 4 + 2], rgb.b, opacity);
-                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 255, opacity);
-                    }
-                }
-            }
-        } else {
-            // erase
-            if (opacity === 1) {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4 + 3] = 0;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 0, opacity);
-                    }
-                }
-            }
-        }
-        targetCtx.putImageData(targetImageData, 0, 0);
-
-        // const ctx = this.layers[layerIndex].context;
-        // ctx.save();
-        // ctx.fillStyle = 'rgba(255,0,0,0.2)';
-        // ctx.fillRect(
-        //     result.bounds.x1,
-        //     result.bounds.y1,
-        //     result.bounds.x2 - result.bounds.x1,
-        //     result.bounds.y2 - result.bounds.y1,
-        // );
-        // ctx.restore();
-
-        if (!this.klHistory.isPaused()) {
-            this.klHistory.push({
-                layerMap: createLayerMap(this.layers, {
-                    layerId: targetLayer.id,
-                    attributes: ['tiles'],
-                    bounds: result.bounds,
-                }),
-            });
-        }
+        this.applyFloodFillResult(layerIndex, result, targetCtx, targetImageData, rgb, opacity);
     }
 
     /**
@@ -1207,53 +1207,7 @@ export class KlCanvas {
                     : targetCtx.getImageData(0, 0, this.width, this.height);
         }
 
-        const targetData = targetImageData.data;
-        if (rgb) {
-            if (opacity === 1) {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4] = rgb.r;
-                        targetData[i * 4 + 1] = rgb.g;
-                        targetData[i * 4 + 2] = rgb.b;
-                        targetData[i * 4 + 3] = 255;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4] = BB.mix(targetData[i * 4], rgb.r, opacity);
-                        targetData[i * 4 + 1] = BB.mix(targetData[i * 4 + 1], rgb.g, opacity);
-                        targetData[i * 4 + 2] = BB.mix(targetData[i * 4 + 2], rgb.b, opacity);
-                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 255, opacity);
-                    }
-                }
-            }
-        } else {
-            if (opacity === 1) {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4 + 3] = 0;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.width * this.height; i++) {
-                    if (result.data[i] === 255) {
-                        targetData[i * 4 + 3] = BB.mix(targetData[i * 4 + 3], 0, opacity);
-                    }
-                }
-            }
-        }
-        targetCtx.putImageData(targetImageData, 0, 0);
-
-        if (!this.klHistory.isPaused()) {
-            this.klHistory.push({
-                layerMap: createLayerMap(this.layers, {
-                    layerId: targetLayer.id,
-                    attributes: ['tiles'],
-                    bounds: result.bounds,
-                }),
-            });
-        }
+        this.applyFloodFillResult(layerIndex, result, targetCtx, targetImageData, rgb, opacity);
     }
 
     /**

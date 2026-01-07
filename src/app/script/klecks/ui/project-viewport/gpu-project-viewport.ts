@@ -500,7 +500,7 @@ export class GPUProjectViewport {
 
                 // 2. Draw Base Layer
                 tempCtx.save();
-                tempCtx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
+                tempCtx.globalCompositeOperation = 'source-over';
                 tempCtx.globalAlpha = layer.opacity; // Base opacity applies to base
 
                 let image: CanvasImageSource;
@@ -553,7 +553,11 @@ export class GPUProjectViewport {
                 }
 
                 // 4. Draw result to main canvas
+                this.ctx.save();
+                this.ctx.globalCompositeOperation = toGlobalCompositeOperation(layer.mixModeStr);
+                this.ctx.globalAlpha = layer.opacity;
                 this.ctx.drawImage(tempCanvas, 0, 0);
+                this.ctx.restore();
 
                 // Cleanup?
                 // BB.freeCanvas(tempCanvas)? BB.canvas doesn't automatically track?

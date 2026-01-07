@@ -97,6 +97,7 @@ export class LayoutService implements ILayoutService {
         this.uiWidth = newWidth;
         this.uiHeight = newHeight;
         this.updateCollapse();
+        this.notifyChange();
     }
 
     updateCollapse(): void {
@@ -104,7 +105,6 @@ export class LayoutService implements ILayoutService {
 
         if (this.isCollapsed !== shouldCollapse) {
             this.isCollapsed = shouldCollapse;
-            this.isMobileMode = shouldCollapse;
             this.notifyChange();
         }
     }
@@ -122,7 +122,7 @@ export class LayoutService implements ILayoutService {
     }
 
     getEffectiveCanvasWidth(): number {
-        if (this.isCollapsed && !this.isProcreateMode) {
+        if (this.isCollapsed) {
             return this.uiWidth;
         }
         return this.uiWidth - this.getToolWidth();

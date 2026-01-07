@@ -40,7 +40,7 @@ const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
     blendBrush: {
         sizeSlider: { min: 1, max: 50 },
         opacitySlider: { min: 0, max: 1 },
-        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        scatterSlider: null as any,
         image: '',
         tooltip: '',
         Ui: {} as any,
@@ -48,7 +48,7 @@ const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
     sketchyBrush: {
         sizeSlider: { min: 1, max: 80 },
         opacitySlider: { min: 0, max: 1 },
-        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        scatterSlider: null as any,
         image: '',
         tooltip: '',
         Ui: {} as any,
@@ -56,15 +56,15 @@ const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
     pixelBrush: {
         sizeSlider: { min: 1, max: 10 },
         opacitySlider: { min: 0, max: 1 },
-        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        scatterSlider: null as any,
         image: '',
         tooltip: '',
         Ui: {} as any,
     },
     chemyBrush: {
         sizeSlider: { min: 1, max: 100 },
-        opacitySlider: { min: 0, max: 1 }, // Added missing required property
-        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        opacitySlider: null as any,
+        scatterSlider: null as any,
         image: '',
         tooltip: '',
         Ui: {} as any,
@@ -72,7 +72,7 @@ const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
     smudgeBrush: {
         sizeSlider: { min: 1, max: 100 },
         opacitySlider: { min: 0, max: 1 },
-        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        scatterSlider: null as any,
         image: '',
         tooltip: '',
         Ui: {} as any,
@@ -80,7 +80,7 @@ const mockBrushDefinitions: Record<string, TBrushUi<any>> = {
     eraserBrush: {
         sizeSlider: { min: 1, max: 100 },
         opacitySlider: { min: 0, max: 1 },
-        scatterSlider: { min: 0, max: 100 }, // Added missing required property
+        scatterSlider: null as any,
         image: '',
         tooltip: '',
         Ui: {} as any,
@@ -226,11 +226,11 @@ describe('BrushService', () => {
             expect(service.getCurrentBrushUi()).toBe(blendBrushUi);
         });
 
-        it('getCurrentBrushUi throws if brush not in map', () => {
-            const service = new BrushService({
+        it('throws during initialization if initial brush UI not in map', () => {
+            expect(() => new BrushService({
                 brushUiMap: {},
-            });
-            expect(() => service.getCurrentBrushUi()).toThrow('Brush UI not found for penBrush');
+                brushDefinitions: mockBrushDefinitions,
+            })).toThrow('Brush UI not found for penBrush');
         });
 
         it('updates lastPaintingBrushId when switching to painting brush', () => {
@@ -284,6 +284,7 @@ describe('BrushService', () => {
                     penBrush: penBrushUi,
                     blendBrush: blendBrushUi,
                 },
+                brushDefinitions: mockBrushDefinitions,
             });
 
             service.setCurrentBrush('blendBrush');

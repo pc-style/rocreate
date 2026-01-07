@@ -416,7 +416,7 @@ export class KlApp {
             const layerIndex = currentLayer.index;
             this.klCanvas.eraseLayer({
                 layerIndex,
-                useAlphaLock: layerIndex === 0 && !brushUiMap.eraserBrush!.getIsTransparentBg!(),
+                useAlphaLock: layerIndex === 0 && (brushUiMap.eraserBrush ? !brushUiMap.eraserBrush.getIsTransparentBg?.() : false),
                 useSelection: !ignoreSelection,
             });
             showStatus &&
@@ -734,7 +734,7 @@ export class KlApp {
                 const layerIndex = currentLayer.index;
                 this.klCanvas.eraseLayer({
                     layerIndex,
-                    useAlphaLock: layerIndex === 0 && !brushUiMap.eraserBrush!.getIsTransparentBg!(),
+                    useAlphaLock: layerIndex === 0 && (brushUiMap.eraserBrush ? !brushUiMap.eraserBrush.getIsTransparentBg?.() : false),
                     useSelection: true,
                 });
                 this.easelProjectUpdater.requestUpdate();
@@ -754,7 +754,7 @@ export class KlApp {
                 drawEventChain.chainIn({
                     type: 'down',
                     scale: this.easel.getTransform().scale,
-                    shiftIsPressed: klAppEvents.isPressed('shift'),
+                    shiftIsPressed: klAppEvents ? klAppEvents.isPressed('shift') : false,
                     pressure: e.pressure,
                     isCoalesced: e.isCoalesced,
                     x: e.x,
@@ -768,7 +768,7 @@ export class KlApp {
                 drawEventChain.chainIn({
                     type: 'move',
                     scale: this.easel.getTransform().scale,
-                    shiftIsPressed: klAppEvents.isPressed('shift'),
+                    shiftIsPressed: klAppEvents ? klAppEvents.isPressed('shift') : false,
                     pressure: e.pressure,
                     isCoalesced: e.isCoalesced,
                     x: e.x,
@@ -782,7 +782,7 @@ export class KlApp {
                 drawEventChain.chainIn({
                     type: 'up',
                     scale: this.easel.getTransform().scale,
-                    shiftIsPressed: klAppEvents.isPressed('shift'),
+                    shiftIsPressed: klAppEvents ? klAppEvents.isPressed('shift') : false,
                     isCoalesced: false,
                 } as TDrawEvent as unknown as TPointerEvent);
             },

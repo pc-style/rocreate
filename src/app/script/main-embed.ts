@@ -135,9 +135,15 @@ export class Embed {
             return;
         }
 
-        const readItem = (item: TReadPSD) => {
+        const readItem = async (item: TReadPSD) => {
+            const agPsd = this.agPsd;
+            if (!agPsd || agPsd === 'error') {
+                item.callback(null);
+                return;
+            }
             try {
-                const psd = (this.agPsd as any).readPsd(item.blob as any);
+                const buffer = await item.blob.arrayBuffer();
+                const psd = agPsd.readPsd(buffer);
                 const project = klPsdToKlProject(readPsd(psd));
                 item.callback(project);
             } catch (e) {
@@ -157,7 +163,7 @@ export class Embed {
                         this.agPsd = 'error';
                     }
                     while (this.psdQueue.length) {
-                        readItem(this.psdQueue.shift()!);
+                        void readItem(this.psdQueue.shift()!);
                     }
                 })();
             }
@@ -165,7 +171,9 @@ export class Embed {
                 this.psdQueue.push(item);
             });
         } else {
-            psds.forEach(readItem);
+            psds.forEach((item) => {
+                void readItem(item);
+            });
         }
     }
 }

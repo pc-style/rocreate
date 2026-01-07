@@ -100,7 +100,7 @@ export async function floodFillBitsAsync(
     const rgbaCopy = new Uint8ClampedArray(rgbaArr);
     const selectionCopy = selectionMaskArr ? new Uint8Array(selectionMaskArr) : undefined;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<{ data: Uint8Array; bounds: TBounds }>((resolve, reject) => {
         pendingRequests.set(id, { resolve, reject });
 
         const message: TFloodFillWorkerMessage = {
@@ -128,19 +128,22 @@ export async function floodFillBitsAsync(
         } catch (e) {
             // if transfer fails, fall back to sync
             pendingRequests.delete(id);
-            const result = floodFillBits(
-                rgbaArr,
-                selectionMaskArr,
-                width,
-                height,
-                x,
-                y,
-                tolerance,
-                grow,
-                isContiguous,
-            );
-            resolve(result);
+            reject(e);
         }
+    }).catch((e) => {
+        // Fallback to main thread on any error
+        console.warn('[floodFillAsync] Worker failed, falling back to main thread', e);
+        return floodFillBits(
+            rgbaArr,
+            selectionMaskArr,
+            width,
+            height,
+            x,
+            y,
+            tolerance,
+            grow,
+            isContiguous,
+        );
     });
 }
 

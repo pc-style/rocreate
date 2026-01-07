@@ -82,7 +82,7 @@ export class ToolspaceTopRow {
         const logoButton = createButton({
             onClick: p.onLogo,
             title: LANG('home'),
-            image: p.logoImg ?? klecksLogoImg,
+            image: p.logoImg || klecksLogoImg,
             contain: true,
             darkInvert: true,
         });

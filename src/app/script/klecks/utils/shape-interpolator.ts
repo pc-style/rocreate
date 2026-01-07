@@ -20,6 +20,9 @@ export class ShapeInterpolator {
         spacing: number,
         excludeEnd: boolean = false
     ): TBrushPoint[] {
+        if (!(isFinite(spacing) && spacing > 0)) {
+            return [];
+        }
         const points: TBrushPoint[] = [];
         const dist = BB.dist(x1, y1, x2, y2);
         const steps = Math.max(1, Math.ceil(dist / spacing));
@@ -82,6 +85,9 @@ export class ShapeInterpolator {
         rotation: number,
         spacing: number
     ): TBrushPoint[] {
+        if (!(isFinite(spacing) && spacing > 0) || rx <= 0 || ry <= 0) {
+            return [];
+        }
         const points: TBrushPoint[] = [];
         const h = Math.pow(rx - ry, 2) / Math.pow(rx + ry, 2);
         const circumference = Math.PI * (rx + ry) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
@@ -90,7 +96,7 @@ export class ShapeInterpolator {
         const cosRot = Math.cos(rotation);
         const sinRot = Math.sin(rotation);
 
-        for (let i = 0; i <= steps; i++) {
+        for (let i = 0; i < steps; i++) {
             const angle = (i / steps) * 2 * Math.PI;
             const px = Math.cos(angle) * rx;
             const py = Math.sin(angle) * ry;
@@ -199,6 +205,9 @@ export class ShapeInterpolator {
         p3: { x: number; y: number },
         spacing: number
     ): TBrushPoint[] {
+        if (!(isFinite(spacing) && spacing > 0)) {
+            return [];
+        }
         let points: TBrushPoint[] = [];
         points = points.concat(this.line(p1.x, p1.y, p2.x, p2.y, spacing, true));
         points = points.concat(this.line(p2.x, p2.y, p3.x, p3.y, spacing, true));

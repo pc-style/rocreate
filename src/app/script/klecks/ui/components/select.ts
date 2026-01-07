@@ -72,6 +72,10 @@ export class Select<ValueType extends string> {
     }
 
     setDeltaValue(delta: number): void {
+        const step = Math.round(delta);
+        if (step === 0) {
+            return;
+        }
         let index = 0;
         for (let i = 0; i < this.optionArr.length; i++) {
             const option = this.optionArr[i];
@@ -80,9 +84,20 @@ export class Select<ValueType extends string> {
                 break;
             }
         }
-        index = Math.max(0, Math.min(this.optionArr.length - 1, index + delta));
-        const option = this.optionArr[index];
-        this.selectEl.value = option.item ? option.item[0] : '';
+        const maxIndex = this.optionArr.length - 1;
+        const direction = step > 0 ? 1 : -1;
+        let nextIndex = Math.max(0, Math.min(maxIndex, index + step));
+        while (this.optionArr[nextIndex] && !this.optionArr[nextIndex].item) {
+            if (nextIndex === 0 || nextIndex === maxIndex) {
+                return;
+            }
+            nextIndex = Math.max(0, Math.min(maxIndex, nextIndex + direction));
+        }
+        const option = this.optionArr[nextIndex];
+        if (!option || !option.item) {
+            return;
+        }
+        this.selectEl.value = option.item[0];
         this.onChange && this.onChange(this.getValue());
     }
 

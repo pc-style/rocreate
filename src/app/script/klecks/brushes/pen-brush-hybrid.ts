@@ -258,7 +258,8 @@ export class HybridPenBrush
                 : undefined;
 
             // initialize stroke bounds tracking
-            const size = this.currentSize * (this.hasSizePressure ? pressure : 1);
+            const tiltFactor = this.tiltToSize > 0 ? (1 + this.tiltToSize) : 1;
+            const size = this.currentSize * (this.hasSizePressure ? pressure : 1) * tiltFactor;
             this.strokeBounds = {
                 x1: x - size,
                 y1: y - size,
@@ -284,7 +285,8 @@ export class HybridPenBrush
         if (this.strokeUsingCanvasKit && this.canvasKitRenderer && this.context) {
             // expand stroke bounds for history tracking
             if (this.strokeBounds) {
-                const size = this.currentSize * (this.hasSizePressure ? pressure : 1);
+                const tiltFactor = this.tiltToSize > 0 ? (1 + this.tiltToSize) : 1;
+                const size = this.currentSize * (this.hasSizePressure ? pressure : 1) * tiltFactor;
                 this.strokeBounds.x1 = Math.min(this.strokeBounds.x1, x - size);
                 this.strokeBounds.y1 = Math.min(this.strokeBounds.y1, y - size);
                 this.strokeBounds.x2 = Math.max(this.strokeBounds.x2, x + size);
