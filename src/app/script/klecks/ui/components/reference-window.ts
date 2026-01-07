@@ -36,7 +36,7 @@ export class ReferenceWindow {
         const uploadBtn = BB.el({
             tagName: 'button',
             className: 'kl-button',
-            content: `Load Reference`,
+            content: LANG('load-ref'),
             css: {
                 marginTop: '10px',
             },
@@ -59,7 +59,7 @@ export class ReferenceWindow {
         });
 
         const msg = BB.el({
-            textContent: 'No reference loaded',
+            textContent: LANG('no-ref-loaded'),
             css: {
                 color: '#888',
                 marginBottom: '10px',
@@ -69,7 +69,7 @@ export class ReferenceWindow {
         this.containerEl.append(msg, uploadBtn, this.imgEl);
 
         this.panel = new FloatingPanel({
-            title: 'Reference',
+            title: LANG('reference-window'),
             width: 300,
             content: this.containerEl,
             onClose: onClose,

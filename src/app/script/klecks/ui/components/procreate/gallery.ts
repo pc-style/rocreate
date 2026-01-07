@@ -87,7 +87,7 @@ export class Gallery {
         const closeBtn = BB.el({
             tagName: 'button',
             className: 'procreate-gallery__close-btn',
-            textContent: '← Back',
+            textContent: '← ' + LANG('back'),
             onClick: () => this.hide(),
             css: {
                 background: 'rgba(255, 255, 255, 0.1)',
@@ -110,7 +110,7 @@ export class Gallery {
 
         const title = BB.el({
             className: 'procreate-gallery__title',
-            textContent: 'Gallery',
+            textContent: LANG('gallery'),
             css: {
                 fontSize: '20px',
                 fontWeight: '600',
@@ -134,7 +134,7 @@ export class Gallery {
             const importBtn = BB.el({
                 tagName: 'button',
                 className: 'procreate-gallery__import-btn',
-                textContent: 'Import',
+                textContent: LANG('file-import'),
                 onClick: () => this.onImport?.(),
                 css: {
                     background: 'transparent',
@@ -161,7 +161,7 @@ export class Gallery {
         const newBtn = BB.el({
             tagName: 'button',
             className: 'procreate-gallery__new-btn',
-            textContent: '+ New Canvas',
+            textContent: '+ ' + LANG('new-canvas'),
             onClick: () => this.onNew(),
             css: {
                 background: 'linear-gradient(135deg, #0a84ff 0%, #0066cc 100%)',
@@ -248,8 +248,8 @@ export class Gallery {
             showModal({
                 target: document.body,
                 type: 'warning',
-                message: 'Delete this artwork?\nThis action cannot be undone.',
-                buttons: ['Delete', 'Cancel'],
+                message: LANG('delete-artwork-confirm') + '\n' + LANG('delete-undone-warning'),
+                buttons: [LANG('delete'), LANG('cancel')],
                 callback: (result: string) => {
                     resolve(result === 'Delete');
                 },
@@ -302,7 +302,7 @@ export class Gallery {
                 });
 
                 const emptyTitle = BB.el({
-                    textContent: 'No artworks yet',
+                    textContent: LANG('no-artworks-yet'),
                     css: {
                         fontSize: '24px',
                         fontWeight: '600',
@@ -312,7 +312,7 @@ export class Gallery {
                 });
 
                 const emptySubtitle = BB.el({
-                    textContent: 'Tap "+ New Canvas" to start creating',
+                    textContent: LANG('new-canvas-prompt'),
                     css: {
                         fontSize: '16px',
                         color: 'rgba(255, 255, 255, 0.4)',
@@ -335,7 +335,7 @@ export class Gallery {
             // Show error state
             const errorState = BB.el({
                 className: 'procreate-gallery__error',
-                textContent: 'Failed to load projects. Please try again.',
+                textContent: LANG('failed-load-projects'),
                 css: {
                     gridColumn: '1 / -1',
                     textAlign: 'center',
@@ -423,7 +423,7 @@ export class Gallery {
         // Open button
         const openBtn = BB.el({
             tagName: 'button',
-            textContent: 'Open',
+            textContent: LANG('open'),
             onClick: (e: Event) => {
                 e.stopPropagation();
                 this.onSelect(parseInt(meta.id));
@@ -512,7 +512,7 @@ export class Gallery {
 
         const name = BB.el({
             className: 'procreate-gallery__name',
-            textContent: 'Untitled Artwork',
+            textContent: LANG('untitled'),
             css: {
                 fontSize: '15px',
                 fontWeight: '500',

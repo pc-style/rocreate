@@ -158,7 +158,7 @@ export class FloatingPanel {
         if (p.resizable) {
             const resizeHandle = BB.el({
                 className: 'procreate-floating__resize-handle',
-                title: 'Drag to resize',
+                title: LANG('drag-to-resize'),
             });
             this.rootEl.append(resizeHandle);
 

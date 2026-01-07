@@ -3,6 +3,7 @@ import { KlColorSliderSmall } from '../kl-color-slider-small';
 import { KlCanvas, TKlCanvasLayer } from '../../../canvas/kl-canvas';
 import { TRgb } from '../../../kl-types';
 import { alphaLockManager } from '../../../canvas/alpha-lock-manager';
+import { LANG } from '../../../../language/language';
 
 import brushIcon from 'url:/src/app/img/ui/procreate/brush.svg';
 import layersIcon from 'url:/src/app/img/ui/procreate/layers.svg';
@@ -34,10 +35,10 @@ export class UtilitySideBar {
     private isDestroyed: boolean = false;
 
     private readonly brushes = [
-        { id: 'penBrush', name: 'Pen', icon: brushIcon },
-        { id: 'sketchyBrush', name: 'Pencil', icon: pencilIcon },
-        { id: 'smudgeBrush', name: 'Smudge', icon: smudgeIcon },
-        { id: 'eraserBrush', name: 'Eraser', icon: eraserIcon },
+        { id: 'penBrush', name: LANG('brush-pen'), icon: brushIcon },
+        { id: 'sketchyBrush', name: LANG('brush-sketchy'), icon: pencilIcon },
+        { id: 'smudgeBrush', name: LANG('brush-smudge'), icon: smudgeIcon },
+        { id: 'eraserBrush', name: LANG('eraser'), icon: eraserIcon },
     ];
 
     constructor(p: TUtilitySideBarParams) {
@@ -80,7 +81,7 @@ export class UtilitySideBar {
         const addBtn = BB.el({
             tagName: 'button',
             className: 'procreate-utility-sidebar__control-btn',
-            title: 'Add Layer',
+            title: LANG('layers-add'),
             parent: layerControls,
             content: `<img src="${addLayerIcon}" />`,
             onClick: p.onAddLayer,
@@ -89,7 +90,7 @@ export class UtilitySideBar {
         const dupBtn = BB.el({
             tagName: 'button',
             className: 'procreate-utility-sidebar__control-btn',
-            title: 'Duplicate Layer',
+            title: LANG('layers-duplicate'),
             parent: layerControls,
             content: `<img src="${duplicateLayerIcon}" />`,
             onClick: p.onDuplicateLayer,
@@ -98,7 +99,7 @@ export class UtilitySideBar {
         const remBtn = BB.el({
             tagName: 'button',
             className: 'procreate-utility-sidebar__control-btn',
-            title: 'Remove Layer',
+            title: LANG('layers-remove'),
             parent: layerControls,
             content: `<img src="${removeLayerIcon}" />`,
             onClick: p.onRemoveLayer,

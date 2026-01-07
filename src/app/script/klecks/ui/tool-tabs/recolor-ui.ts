@@ -37,7 +37,7 @@ export class RecolorUi {
         // Title
         BB.el({
             parent: this.rootEl,
-            content: 'Recolor',
+            content: LANG('recolor'),
             css: { fontSize: '16px', fontWeight: '600', marginBottom: '8px' },
         });
 
@@ -46,7 +46,7 @@ export class RecolorUi {
             parent: this.rootEl,
             css: { display: 'flex', alignItems: 'center', gap: '12px' },
         });
-        BB.el({ parent: sourceRow, content: 'Source:', css: { minWidth: '70px' } });
+        BB.el({ parent: sourceRow, content: LANG('source'), css: { minWidth: '70px' } });
         const sourceColorBox = this.createColorBox(this.sourceColor, (color) => {
             this.sourceColor = color;
             this.recolorTool.setSourceColor(color);
@@ -56,7 +56,7 @@ export class RecolorUi {
         const pickSourceBtn = BB.el({
             tagName: 'button',
             parent: sourceRow,
-            content: '⬅ From Primary',
+            content: LANG('from-primary'),
             css: this.buttonStyle(),
             onClick: () => {
                 this.sourceColor = p.klCanvas.getColorPrimary().rgb;
@@ -70,7 +70,7 @@ export class RecolorUi {
             parent: this.rootEl,
             css: { display: 'flex', alignItems: 'center', gap: '12px' },
         });
-        BB.el({ parent: targetRow, content: 'Target:', css: { minWidth: '70px' } });
+        BB.el({ parent: targetRow, content: LANG('target'), css: { minWidth: '70px' } });
         const targetColorBox = this.createColorBox(this.targetColor, (color) => {
             this.targetColor = color;
             this.recolorTool.setTargetColor(color);
@@ -80,7 +80,7 @@ export class RecolorUi {
         const pickTargetBtn = BB.el({
             tagName: 'button',
             parent: targetRow,
-            content: '⬅ From Secondary',
+            content: LANG('from-secondary'),
             css: this.buttonStyle(),
             onClick: () => {
                 this.targetColor = p.klCanvas.getColorSecondary().rgb;
@@ -91,7 +91,7 @@ export class RecolorUi {
 
         // Tolerance slider
         const toleranceSlider = new KlSlider({
-            label: 'Tolerance',
+            label: LANG('bucket-tolerance'),
             width: 200,
             height: 30,
             min: 0,
@@ -107,7 +107,7 @@ export class RecolorUi {
         // Preserve Luminosity
         const preserveLumCheckbox = new Checkbox({
             init: true,
-            label: 'Preserve Luminosity',
+            label: LANG('preserve-luminosity'),
             callback: (val) => {
                 this.recolorTool.setPreserveLuminosity(val);
             },
@@ -119,7 +119,7 @@ export class RecolorUi {
         const applyBtn = BB.el({
             tagName: 'button',
             parent: this.rootEl,
-            content: 'Apply Recolor',
+            content: LANG('apply-recolor'),
             css: {
                 ...this.buttonStyle(),
                 background: 'var(--kl-accent-color)',

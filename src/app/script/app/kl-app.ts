@@ -440,44 +440,44 @@ export class KlApp {
                 actions: [
                     {
                         id: 'assist-mode',
-                        label: 'Assisted Drawing',
+                        label: LANG('assisted-drawing'),
                         onClick: () => {
                             const isEnabled = !assistModeSanitizer.getIsEnabled();
                             assistModeSanitizer.setIsEnabled(isEnabled);
-                            this.statusOverlay.out(`Assisted Drawing: ${isEnabled ? 'On' : 'Off'}`, true);
+                            this.statusOverlay.out(LANG('assisted-drawing') + ': ' + (isEnabled ? LANG('on') : LANG('off')), true);
                         },
                     },
                     {
                         id: 'alpha-lock',
-                        label: 'Alpha Lock',
+                        label: LANG('layers-alpha-lock'),
                         onClick: () => {
                             const layerId = currentLayer.id;
                             const isLocked = alphaLockManager.toggle(layerId);
-                            this.statusOverlay.out(`Alpha Lock: ${isLocked ? 'On' : 'Off'}`, true);
+                            this.statusOverlay.out(LANG('layers-alpha-lock') + ': ' + (isLocked ? LANG('on') : LANG('off')), true);
                             this.procreateLayout.updateLayers();
                         },
                     },
                     {
                         id: 'flip-h',
-                        label: 'Flip Horizontally',
+                        label: LANG('flip-horizontally'),
                         onClick: () => {
                             this.klCanvas.flip(true, false);
                             this.easelProjectUpdater.requestUpdate();
-                            this.statusOverlay.out('Flip Horizontal', true);
+                            this.statusOverlay.out(LANG('flip-horizontally'), true);
                         },
                     },
                     {
                         id: 'clear',
-                        label: 'Clear Layer',
+                        label: LANG('cleared-layer'),
                         onClick: () => {
                             clearLayer(true);
                             this.easelProjectUpdater.requestUpdate();
-                            this.statusOverlay.out('Layer Cleared', true);
+                            this.statusOverlay.out(LANG('cleared-layer'), true);
                         },
                     },
                     {
                         id: 'merge-down',
-                        label: 'Merge Down',
+                        label: LANG('layers-merge'),
                         onClick: () => {
                             const index = currentLayer.index;
                             if (index > 0) {

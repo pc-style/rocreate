@@ -330,7 +330,7 @@ export class ProcreateLayout {
         });
 
         this.brushLibraryPanel = new FloatingPanel({
-            title: 'Brush Library',
+            title: LANG('brush-library'),
             content: brushLibrary.getElement(),
             position: { x: window.innerWidth - 450, y: 60 },
             width: 420,
@@ -576,7 +576,7 @@ export class ProcreateLayout {
         this.recolorUi.onOpen();
 
         this.recolorPanel = new FloatingPanel({
-            title: 'Recolor',
+            title: LANG('recolor'),
             content: this.recolorUi.el,
             position: { x: (window.innerWidth - 300) / 2, y: 100 },
             width: 280,
@@ -618,7 +618,7 @@ export class ProcreateLayout {
         this.liquifyUi.onOpen();
 
         this.liquifyPanel = new FloatingPanel({
-            title: 'Liquify',
+            title: LANG('liquify'),
             content: this.liquifyUi.el,
             position: { x: (window.innerWidth - 300) / 2, y: 100 },
             width: 280,

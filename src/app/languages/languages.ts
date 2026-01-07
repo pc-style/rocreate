@@ -188,7 +188,7 @@ export type TTranslationCode = 'switch-ui-left-right' | // Switch left/right UI
     'layers-new' | // New Layer
     'layers-remove' | // Remove Layer
     'layers-duplicate' | // Duplicate Layer
-    'layers-merge' | // Merge with layer below
+    'layers-merge' | // Merge Down
     'layers-clear' | // Clear layer
     'layers-merge-advanced' | // Advanced merge
     'layers-merge-all' | // Merge all
@@ -528,4 +528,110 @@ export type TTranslationCode = 'switch-ui-left-right' | // Switch left/right UI
     'x-minutes' | // {x}min
     'wip' | // Work in progress
     'browser-zoom-help' | // Double-tap or pinch-out to reset browser zoom.
-    'dismiss'; // Dismiss
+    'dismiss' | // Dismiss
+    'gallery' | // Gallery
+    'reference-window' | // Reference Window
+    'recolor' | // Recolor
+    'recolor-target' | // Target Color
+    'recolor-replacement' | // Replacement Color
+    'distort-mode' | // Distort Mode
+    'strength' | // Strength
+    'reset' | // Reset
+    'stabilizer-mode' | // Mode
+    'smoothing' | // Smoothing
+    'stabilizer-settings' | // Stabilizer Settings
+    'stabilizer-mode-basic' | // Basic
+    'stabilizer-mode-streamline' | // StreamLine
+    'stabilizer-mode-pulled-string' | // Pulled String
+    'stroke' | // Stroke
+    'shape' | // Shape
+    'dynamics' | // Dynamics
+    'grain' | // Grain
+    'spacing' | // Spacing
+    'scattering' | // Scattering
+    'hardness' | // Hardness
+    'rotation' | // Rotation
+    'count' | // Count
+    'jitter' | // Jitter
+    'texture' | // Texture
+    'depth' | // Depth
+    'brush-studio' | // Brush Studio
+    'dynamics-size-pressure' | // Size responds to pressure
+    'dynamics-opacity-pressure' | // Opacity responds to pressure
+    'dynamics-tilt-angle' | // Tilt → Angle
+    'dynamics-tilt-size' | // Tilt → Size
+    'dynamics-tilt-opacity' | // Tilt → Opacity
+    'grain-scale' | // Grain Scale
+    'grain-opacity' | // Grain Opacity
+    'done' | // Done
+    'source' | // Source:
+    'target' | // Target:
+    'from-primary' | // ⬅ From Primary
+    'from-secondary' | // ⬅ From Secondary
+    'preserve-luminosity' | // Preserve Luminosity
+    'apply-recolor' | // Apply Recolor
+    'liquify' | // Liquify
+    'mode-push' | // Push
+    'mode-twirl-cw' | // Twirl CW
+    'mode-twirl-ccw' | // Twirl CCW
+    'mode-pinch' | // Pinch
+    'mode-expand' | // Expand
+    'apply' | // Apply
+    'quick-access' | // Quick Access
+    'increase' | // Increase
+    'decrease' | // Decrease
+    'layers-add' | // Add Layer
+    'brush-library' | // Brush Library
+    'brush-lib-category-recent' | // Recent
+    'brush-lib-category-sketching' | // Sketching
+    'brush-lib-category-inking' | // Inking
+    'brush-lib-category-drawing' | // Drawing
+    'brush-lib-category-painting' | // Painting
+    'brush-lib-category-artistic' | // Artistic
+    'brush-lib-category-airbrushing' | // Airbrushing
+    'brush-lib-category-calligraphy' | // Calligraphy
+    'brush-lib-category-textures' | // Textures
+    'brush-lib-category-pixel' | // Pixel Art
+    'brush-name-pen' | // Pen
+    'brush-name-6b-pencil' | // 6B Pencil
+    'brush-name-derwent' | // Derwent
+    'brush-name-hb-pencil' | // HB Pencil
+    'brush-name-studio-pen' | // Studio Pen
+    'brush-name-technical-pen' | // Technical Pen
+    'brush-name-syrup' | // Syrup
+    'brush-name-gel-pen' | // Gel Pen
+    'brush-name-charcoal' | // Charcoal
+    'brush-name-compressed' | // Compressed
+    'brush-name-round' | // Round Brush
+    'brush-name-flat' | // Flat Brush
+    'brush-name-oil-paint' | // Oil Paint
+    'brush-name-acrylic' | // Acrylic
+    'brush-name-alchemy' | // Alchemy
+    'brush-name-soft-blend' | // Soft Blend
+    'brush-name-soft-airbrush' | // Soft Airbrush
+    'brush-name-hard-airbrush' | // Hard Airbrush
+    'brush-name-monoline' | // Monoline
+    'brush-name-brush-pen' | // Brush Pen
+    'brush-name-script' | // Script
+    'brush-name-noise' | // Noise
+    'brush-name-grunge' | // Grunge
+    'brush-name-pixel-art' | // Pixel
+    'drag-to-resize' | // Drag to resize
+    'load-ref' | // Load Reference
+    'no-ref-loaded' | // No reference loaded
+    'assisted-drawing' | // Assisted Drawing
+    'flip-horizontally' | // Flip Horizontally
+    'layers-alpha-lock' | // Alpha Lock
+    'on' | // On
+    'off' | // Off
+    'back' | // Back
+    'new-canvas' | // New Canvas
+    'delete-artwork-confirm' | // Delete this artwork?
+    'delete-undone-warning' | // This action cannot be undone.
+    'no-artworks-yet' | // No artworks yet
+    'new-canvas-prompt' | // Tap "+ New Canvas" to start creating
+    'failed-load-projects' | // Failed to load projects. Please try again.
+    'delete' | // Delete
+    'cancel' | // Cancel
+    'open' | // Open
+    'untitled'; // Untitled Artwork

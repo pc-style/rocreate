@@ -144,8 +144,8 @@ export class TopBar {
 
         // Gallery button (text style, like Procreate)
         const galleryBtn = this.createButton({
-            text: 'Gallery',
-            title: 'Gallery',
+            text: LANG('gallery'),
+            title: LANG('gallery'),
             onClick: p.onGallery,
             className: 'procreate-topbar__gallery-btn',
         });
@@ -153,8 +153,8 @@ export class TopBar {
 
         // Reference (text style)
         const refBtn = this.createButton({
-            text: 'Ref',
-            title: 'Reference Window',
+            text: LANG('reference-window'),
+            title: LANG('reference-window'),
             onClick: p.onReference,
             className: 'procreate-topbar__btn--text',
         });
@@ -199,7 +199,7 @@ export class TopBar {
         // Quick Access (lightning icon / custom icon)
         const quickAccessBtn = this.createButton({
             text: '⚡', // Lightning bolt for Quick Access
-            title: 'Quick Access',
+            title: LANG('quick-access'),
             onClick: () => {
                 const rect = quickAccessBtn.el.getBoundingClientRect();
                 p.onOpenQuickMenu({ relX: rect.left + rect.width / 2, relY: rect.bottom + 40 });
@@ -271,7 +271,7 @@ export class TopBar {
         // Recolor
         const recolorBtn = this.createButton({
             icon: toolRecolorImg,
-            title: 'Recolor Tool',
+            title: LANG('recolor'),
             onClick: () => {
                 this.setActiveTool('recolor');
                 this.onToolChange('recolor');
@@ -284,7 +284,7 @@ export class TopBar {
         // Liquify
         const liquifyBtn = this.createButton({
             icon: toolLiquifyImg,
-            title: 'Liquify Brush',
+            title: LANG('liquify'),
             onClick: () => {
                 this.setActiveTool('liquify');
                 this.onToolChange('liquify');

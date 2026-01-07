@@ -93,7 +93,7 @@ export class BrushStudio {
 
         BB.el({
             parent: header,
-            content: 'Brush Studio',
+            content: LANG('brush-studio'),
             css: { fontSize: '18px', fontWeight: '600' },
         });
 
@@ -112,7 +112,7 @@ export class BrushStudio {
         const closeBtn = BB.el({
             tagName: 'button',
             parent: header,
-            content: 'Done',
+            content: LANG('done'),
             onClick: onClose,
             css: {
                 background: 'linear-gradient(135deg, #0a84ff 0%, #0066cc 100%)',
@@ -141,7 +141,7 @@ export class BrushStudio {
 
         BB.el({
             parent: section,
-            content: 'Preview',
+            content: LANG('preview'),
             css: { fontSize: '14px', fontWeight: '500', color: 'rgba(255,255,255,0.7)' },
         });
 
@@ -177,19 +177,17 @@ export class BrushStudio {
         const shapeContent = this.createShapeTab();
         const dynamicsContent = this.createDynamicsTab();
         const grainContent = this.createGrainTab();
-        const stabilizationContent = this.createStabilizationTab();
 
         // Hide all but first
         shapeContent.style.display = 'none';
         dynamicsContent.style.display = 'none';
         grainContent.style.display = 'none';
-        stabilizationContent.style.display = 'none';
 
         const tabRow = new TabRow({
             initialId: 'stroke',
             tabArr: [
                 {
-                    id: 'stroke', label: 'Stroke', onOpen: () => {
+                    id: 'stroke', label: LANG('stroke'), onOpen: () => {
                         strokeContent.style.display = 'block';
                         shapeContent.style.display = 'none';
                         dynamicsContent.style.display = 'none';
@@ -197,7 +195,7 @@ export class BrushStudio {
                     }, onClose: () => { }
                 },
                 {
-                    id: 'shape', label: 'Shape', onOpen: () => {
+                    id: 'shape', label: LANG('shape'), onOpen: () => {
                         strokeContent.style.display = 'none';
                         shapeContent.style.display = 'block';
                         dynamicsContent.style.display = 'none';
@@ -205,7 +203,7 @@ export class BrushStudio {
                     }, onClose: () => { }
                 },
                 {
-                    id: 'dynamics', label: 'Dynamics', onOpen: () => {
+                    id: 'dynamics', label: LANG('dynamics'), onOpen: () => {
                         strokeContent.style.display = 'none';
                         shapeContent.style.display = 'none';
                         dynamicsContent.style.display = 'block';
@@ -213,21 +211,11 @@ export class BrushStudio {
                     }, onClose: () => { }
                 },
                 {
-                    id: 'grain', label: 'Grain', onOpen: () => {
+                    id: 'grain', label: LANG('grain'), onOpen: () => {
                         strokeContent.style.display = 'none';
                         shapeContent.style.display = 'none';
                         dynamicsContent.style.display = 'none';
                         grainContent.style.display = 'block';
-                        stabilizationContent.style.display = 'none';
-                    }, onClose: () => { }
-                },
-                {
-                    id: 'stabilization', label: 'Stabilization', onOpen: () => {
-                        strokeContent.style.display = 'none';
-                        shapeContent.style.display = 'none';
-                        dynamicsContent.style.display = 'none';
-                        grainContent.style.display = 'none';
-                        stabilizationContent.style.display = 'block';
                     }, onClose: () => { }
                 },
             ],
@@ -238,7 +226,7 @@ export class BrushStudio {
             parent: section,
             css: { flex: '1', overflow: 'auto', padding: '20px 0' },
         });
-        contentWrapper.append(strokeContent, shapeContent, dynamicsContent, grainContent, stabilizationContent);
+        contentWrapper.append(strokeContent, shapeContent, dynamicsContent, grainContent);
 
         return section;
     }
@@ -248,7 +236,7 @@ export class BrushStudio {
 
         // Spacing slider
         const spacingSlider = new KlSlider({
-            label: 'Spacing',
+            label: LANG('spacing'),
             width: 280,
             height: 30,
             min: 0.01,
@@ -264,7 +252,7 @@ export class BrushStudio {
 
         // Scatter slider
         const scatterSlider = new KlSlider({
-            label: 'Scatter',
+            label: LANG('scatter'),
             width: 280,
             height: 30,
             min: 0,
@@ -287,10 +275,10 @@ export class BrushStudio {
         // Shape selector
         const shapeSelect = new Select<TBrushShape>({
             optionArr: [
-                ['circle', 'Circle'],
-                ['square', 'Square'],
-                ['chalk', 'Chalk'],
-                ['calligraphy', 'Calligraphy'],
+                ['circle', LANG('brush-pen-circle')],
+                ['square', LANG('brush-pen-square')],
+                ['chalk', LANG('brush-pen-chalk')],
+                ['calligraphy', LANG('brush-pen-calligraphy')],
             ],
             initValue: this.settings.shape ?? 'circle',
             onChange: (val) => {
@@ -300,7 +288,7 @@ export class BrushStudio {
             name: 'brush-shape',
         });
         const row = BB.el({ parent: tab, css: { display: 'flex', alignItems: 'center', gap: '12px' } });
-        BB.el({ parent: row, content: 'Shape' });
+        BB.el({ parent: row, content: LANG('shape') });
         row.append(shapeSelect.getElement());
 
         return tab;
@@ -312,7 +300,7 @@ export class BrushStudio {
         // Size pressure
         const sizePressure = new Checkbox({
             init: this.settings.sizePressure ?? true,
-            label: 'Size responds to pressure',
+            label: LANG('dynamics-size-pressure'),
             callback: (val) => {
                 this.settings.sizePressure = val;
                 this.emitChange();
@@ -324,7 +312,7 @@ export class BrushStudio {
         // Opacity pressure
         const opacityPressure = new Checkbox({
             init: this.settings.opacityPressure ?? false,
-            label: 'Opacity responds to pressure',
+            label: LANG('dynamics-opacity-pressure'),
             callback: (val) => {
                 this.settings.opacityPressure = val;
                 this.emitChange();
@@ -335,7 +323,7 @@ export class BrushStudio {
 
         // Tilt to angle
         const tiltAngleSlider = new KlSlider({
-            label: 'Tilt → Angle',
+            label: LANG('dynamics-tilt-angle'),
             width: 280,
             height: 30,
             min: 0,
@@ -351,7 +339,7 @@ export class BrushStudio {
 
         // Tilt to size
         const tiltSizeSlider = new KlSlider({
-            label: 'Tilt → Size',
+            label: LANG('dynamics-tilt-size'),
             width: 280,
             height: 30,
             min: 0,
@@ -367,7 +355,7 @@ export class BrushStudio {
 
         // Tilt to opacity
         const tiltOpacitySlider = new KlSlider({
-            label: 'Tilt → Opacity',
+            label: LANG('dynamics-tilt-opacity'),
             width: 280,
             height: 30,
             min: 0,
@@ -389,7 +377,7 @@ export class BrushStudio {
 
         // Grain scale
         const grainScaleSlider = new KlSlider({
-            label: 'Grain Scale',
+            label: LANG('grain-scale'),
             width: 280,
             height: 30,
             min: 0.1,
@@ -405,7 +393,7 @@ export class BrushStudio {
 
         // Grain opacity
         const grainOpacitySlider = new KlSlider({
-            label: 'Grain Opacity',
+            label: LANG('grain-opacity'),
             width: 280,
             height: 30,
             min: 0,
@@ -422,45 +410,6 @@ export class BrushStudio {
         return tab;
     }
 
-    private createStabilizationTab(): HTMLElement {
-        const tab = BB.el({ css: { display: 'flex', flexDirection: 'column', gap: '20px' } });
-
-        // Stabilization Mode
-        const modeSelect = new Select({
-            optionArr: [
-                ['basic', 'Basic'],
-                ['streamline', 'StreamLine'],
-                ['pulled-string', 'Pulled String'],
-            ],
-            initValue: (this.settings as any).stabilizerMode ?? 'basic',
-            onChange: (val) => {
-                (this.settings as any).stabilizerMode = val;
-                this.emitChange();
-            },
-            name: 'stabilizer-mode',
-        });
-        const row = BB.el({ parent: tab, css: { display: 'flex', alignItems: 'center', gap: '12px' } });
-        BB.el({ parent: row, content: 'Mode' });
-        row.append(modeSelect.getElement());
-
-        // Smoothing slider
-        const smoothingSlider = new KlSlider({
-            label: 'Smoothing',
-            width: 280,
-            height: 30,
-            min: 0,
-            max: 1,
-            value: (this.settings as any).stabilizerSmoothing ?? 0,
-            resolution: 100,
-            onChange: (val) => {
-                (this.settings as any).stabilizerSmoothing = val;
-                this.emitChange();
-            },
-        });
-        tab.append(smoothingSlider.getElement());
-
-        return tab;
-    }
 
     private emitChange(): void {
         this.onChange({ ...this.settings });

@@ -19,6 +19,8 @@ import { css } from '../../../bb/base/base';
 import { Select } from '../components/select';
 import { KlSlider } from '../components/kl-slider';
 import { TStabilizerMode, TStabilizerSettings } from '../../events/line-smoothing';
+import { languages } from '../../../../languages/languages';
+import { LANGUAGE_STRINGS, LS_LANGUAGE_KEY } from '../../../language/language';
 
 const LS_SHOW_SAVE_DIALOG = 'kl-save-dialog';
 
@@ -57,6 +59,7 @@ export type TFileUiParams = {
     onStoredToBrowserStorage: () => void;
     stabilizerSettings?: TStabilizerSettings;
     onStabilizerChange?: (settings: Partial<TStabilizerSettings>) => void;
+    onLanguageChange?: (langCode: string) => void;
 };
 
 export class FileUi {
@@ -70,6 +73,7 @@ export class FileUi {
     private klRecoveryManager: KlRecoveryManager | undefined;
     private stabilizerSettings: TStabilizerSettings | undefined;
     private onStabilizerChange: TFileUiParams['onStabilizerChange'];
+    private onLanguageChange: TFileUiParams['onLanguageChange'];
     private recoveryCountBubble: HTMLElement | undefined;
     private recoveryListener: TKlRecoveryListener = (metas) => {
         if (!this.recoveryCountBubble) {
@@ -91,6 +95,7 @@ export class FileUi {
         this.applyUncommitted = p.applyUncommitted;
         this.stabilizerSettings = p.stabilizerSettings;
         this.onStabilizerChange = p.onStabilizerChange;
+        this.onLanguageChange = p.onLanguageChange;
 
         this.rootEl = document.createElement('div');
 
@@ -336,6 +341,7 @@ export class FileUi {
                 BB.canShareFiles() ? shareButton : undefined,
                 BB.el({ css: { clear: 'both' } }),
                 this.createStabilizerSection(),
+                this.createLanguageSection(),
             ]);
         };
 
@@ -384,7 +390,7 @@ export class FileUi {
         // Header
         BB.el({
             parent: section,
-            content: LANG('stabilizer') + ' Settings',
+            content: LANG('stabilizer-settings'),
             css: {
                 fontSize: '14px',
                 fontWeight: '600',
@@ -398,13 +404,13 @@ export class FileUi {
             parent: section,
             css: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' },
         });
-        BB.el({ parent: modeRow, content: 'Mode:', css: { minWidth: '70px' } });
+        BB.el({ parent: modeRow, content: LANG('stabilizer-mode'), css: { minWidth: '70px' } });
 
         const modeSelect = new Select<TStabilizerMode>({
             optionArr: [
-                ['basic', 'Basic'],
-                ['streamline', 'StreamLine'],
-                ['pulled-string', 'Pulled String'],
+                ['basic', LANG('stabilizer-mode-basic')],
+                ['streamline', LANG('stabilizer-mode-streamline')],
+                ['pulled-string', LANG('stabilizer-mode-pulled-string')],
             ],
             initValue: this.stabilizerSettings.mode,
             onChange: (val) => {
@@ -416,7 +422,7 @@ export class FileUi {
 
         // Smoothing slider
         const smoothingSlider = new KlSlider({
-            label: 'Smoothing',
+            label: LANG('smoothing'),
             width: 200,
             height: 30,
             min: 0,
@@ -429,6 +435,61 @@ export class FileUi {
         });
         css(smoothingSlider.getElement(), { marginBottom: '8px' });
         section.append(smoothingSlider.getElement());
+
+        return section;
+    }
+
+    private createLanguageSection(): HTMLElement {
+        const section = BB.el({
+            css: {
+                margin: '10px',
+                padding: '10px',
+                background: 'var(--kl-popup-bg)',
+                borderRadius: '8px',
+            },
+        });
+
+        // Header
+        BB.el({
+            parent: section,
+            content: LANG('settings-language'),
+            css: {
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '12px',
+                color: 'var(--kl-text-color)',
+            },
+        });
+
+        // Language selector
+        const langOptions: [string, string][] = languages.map(lang => [lang.code, lang.name]);
+        const currentLang = LANGUAGE_STRINGS.getCode();
+
+        const langSelect = new Select<string>({
+            optionArr: langOptions,
+            initValue: currentLang,
+            onChange: async (val) => {
+                // Save to localStorage
+                LocalStorage.setItem(LS_LANGUAGE_KEY, val);
+                // Update language
+                await LANGUAGE_STRINGS.setLanguage(val);
+                this.onLanguageChange?.(val);
+            },
+            name: 'language-selector',
+        });
+        css(langSelect.getElement(), { width: '100%' });
+        section.append(langSelect.getElement());
+
+        // Reload notice
+        BB.el({
+            parent: section,
+            content: LANG('settings-language-reload'),
+            css: {
+                fontSize: '11px',
+                color: 'rgba(255,255,255,0.5)',
+                marginTop: '8px',
+            },
+        });
 
         return section;
     }

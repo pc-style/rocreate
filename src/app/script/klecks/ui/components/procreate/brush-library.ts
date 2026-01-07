@@ -89,21 +89,22 @@ export interface TBrushLibraryParams {
 }
 
 // Comprehensive Procreate-style brush categories
+// Comprehensive Procreate-style brush categories
 const BRUSH_CATEGORIES: TBrushCategory[] = [
     {
         id: 'recent',
-        name: 'Recent',
+        name: 'brush-lib-category-recent',
         brushes: [
-            { id: 'penBrush', name: 'Pen', image: penBrushImg },
+            { id: 'penBrush', name: 'brush-name-pen', image: penBrushImg },
         ],
     },
     {
         id: 'sketching',
-        name: 'Sketching',
+        name: 'brush-lib-category-sketching',
         brushes: [
             {
                 id: 'sketchyBrush',
-                name: '6B Pencil',
+                name: 'brush-name-6b-pencil',
                 image: sketchyBrushImg,
                 settings: {
                     shape: 'chalk',
@@ -116,7 +117,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'penBrush',
-                name: 'Derwent',
+                name: 'brush-name-derwent',
                 image: penBrushImg,
                 settings: {
                     shape: 'circle',
@@ -128,7 +129,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'sketchyBrush',
-                name: 'HB Pencil',
+                name: 'brush-name-hb-pencil',
                 image: sketchyBrushImg,
                 settings: {
                     shape: 'chalk',
@@ -141,11 +142,11 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'inking',
-        name: 'Inking',
+        name: 'brush-lib-category-inking',
         brushes: [
             {
                 id: 'penBrush',
-                name: 'Studio Pen',
+                name: 'brush-name-studio-pen',
                 image: penBrushImg,
                 settings: {
                     shape: 'circle',
@@ -156,7 +157,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'penBrush',
-                name: 'Technical Pen',
+                name: 'brush-name-technical-pen',
                 image: penBrushImg,
                 settings: {
                     shape: 'circle',
@@ -167,7 +168,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'penBrush',
-                name: 'Syrup',
+                name: 'brush-name-syrup',
                 image: penBrushImg,
                 settings: {
                     shape: 'circle',
@@ -178,7 +179,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'penBrush',
-                name: 'Gel Pen',
+                name: 'brush-name-gel-pen',
                 image: penBrushImg,
                 settings: {
                     shape: 'circle',
@@ -190,11 +191,11 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'drawing',
-        name: 'Drawing',
+        name: 'brush-lib-category-drawing',
         brushes: [
             {
                 id: 'sketchyBrush',
-                name: 'Charcoal',
+                name: 'brush-name-charcoal',
                 image: sketchyBrushImg,
                 settings: {
                     shape: 'chalk',
@@ -207,7 +208,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'sketchyBrush',
-                name: 'Compressed',
+                name: 'brush-name-compressed',
                 image: sketchyBrushImg,
                 settings: {
                     shape: 'chalk',
@@ -219,11 +220,11 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'painting',
-        name: 'Painting',
+        name: 'brush-lib-category-painting',
         brushes: [
             {
                 id: 'blendBrush',
-                name: 'Round Brush',
+                name: 'brush-name-round',
                 image: blendBrushImg,
                 settings: {
                     shape: 'circle',
@@ -234,7 +235,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'blendBrush',
-                name: 'Flat Brush',
+                name: 'brush-name-flat',
                 image: blendBrushImg,
                 settings: {
                     shape: 'square',
@@ -245,7 +246,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'blendBrush',
-                name: 'Oil Paint',
+                name: 'brush-name-oil-paint',
                 image: blendBrushImg,
                 settings: {
                     shape: 'circle',
@@ -256,7 +257,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'chemyBrush',
-                name: 'Acrylic',
+                name: 'brush-name-acrylic',
                 image: chemyBrushImg,
                 settings: {
                     shape: 'circle',
@@ -267,27 +268,27 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'artistic',
-        name: 'Artistic',
+        name: 'brush-lib-category-artistic',
         brushes: [
             {
                 id: 'chemyBrush',
-                name: 'Alchemy',
+                name: 'brush-name-alchemy',
                 image: chemyBrushImg
             },
             {
                 id: 'blendBrush',
-                name: 'Soft Blend',
+                name: 'brush-name-soft-blend',
                 image: blendBrushImg
             },
         ],
     },
     {
         id: 'airbrushing',
-        name: 'Airbrushing',
+        name: 'brush-lib-category-airbrushing',
         brushes: [
             {
                 id: 'blendBrush',
-                name: 'Soft Airbrush',
+                name: 'brush-name-soft-airbrush',
                 image: blendBrushImg,
                 settings: {
                     shape: 'circle',
@@ -298,7 +299,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'blendBrush',
-                name: 'Hard Airbrush',
+                name: 'brush-name-hard-airbrush',
                 image: blendBrushImg,
                 settings: {
                     shape: 'circle',
@@ -310,11 +311,11 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'calligraphy',
-        name: 'Calligraphy',
+        name: 'brush-lib-category-calligraphy',
         brushes: [
             {
                 id: 'penBrush',
-                name: 'Monoline',
+                name: 'brush-name-monoline',
                 image: penBrushImg,
                 settings: {
                     shape: 'circle',
@@ -324,7 +325,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'penBrush',
-                name: 'Brush Pen',
+                name: 'brush-name-brush-pen',
                 image: penBrushImg,
                 settings: {
                     shape: 'calligraphy',
@@ -335,7 +336,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'penBrush',
-                name: 'Script',
+                name: 'brush-name-script',
                 image: penBrushImg,
                 settings: {
                     shape: 'calligraphy',
@@ -347,11 +348,11 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'textures',
-        name: 'Textures',
+        name: 'brush-lib-category-textures',
         brushes: [
             {
                 id: 'sketchyBrush',
-                name: 'Noise',
+                name: 'brush-name-noise',
                 image: sketchyBrushImg,
                 settings: {
                     scatter: 0.5,
@@ -360,7 +361,7 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
             },
             {
                 id: 'sketchyBrush',
-                name: 'Grunge',
+                name: 'brush-name-grunge',
                 image: sketchyBrushImg,
                 settings: {
                     scatter: 0.3,
@@ -371,11 +372,11 @@ const BRUSH_CATEGORIES: TBrushCategory[] = [
     },
     {
         id: 'pixel',
-        name: 'Pixel Art',
+        name: 'brush-lib-category-pixel',
         brushes: [
             {
                 id: 'pixelBrush',
-                name: 'Pixel',
+                name: 'brush-name-pixel-art',
                 image: pixelBrushImg,
                 settings: {
                     shape: 'square',
@@ -437,7 +438,7 @@ export class BrushLibrary {
             const categoryEl = BB.el({
                 className: 'procreate-brush-library__category' +
                     (category.id === this.selectedCategoryId ? ' procreate-brush-library__category--active' : ''),
-                textContent: category.name,
+                textContent: LANG(category.name as any),
             });
 
             // Category icon (optional)
@@ -476,7 +477,7 @@ export class BrushLibrary {
             // Brush name
             const nameEl = BB.el({
                 className: 'procreate-brush-library__brush-name',
-                textContent: brush.name,
+                textContent: LANG(brush.name as any),
             });
 
             // Brush preview (stroke sample) - simplified for now

@@ -131,7 +131,7 @@ export class SideBar {
             tagName: 'button',
             className: 'procreate-sidebar__increment-btn',
             textContent: '+',
-            title: 'Increase',
+            title: LANG('increase'),
             onClick: p.onIncrement,
         });
 
@@ -162,7 +162,7 @@ export class SideBar {
             tagName: 'button',
             className: 'procreate-sidebar__decrement-btn',
             textContent: '−', // minus sign
-            title: 'Decrease',
+            title: LANG('decrease'),
             onClick: p.onDecrement,
         });
 
@@ -244,7 +244,7 @@ export class SideBar {
         const modifyBtn = BB.el({
             tagName: 'button',
             className: 'procreate-sidebar__modify-btn',
-            title: 'Brush Settings',
+            title: LANG('brush-studio'),
             onClick: p.onModify,
             textContent: '⊙',
         });

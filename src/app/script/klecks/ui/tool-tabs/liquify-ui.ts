@@ -33,19 +33,19 @@ export class LiquifyUi {
         // Title
         BB.el({
             parent: this.rootEl,
-            content: 'Liquify',
+            content: LANG('liquify'),
             css: { fontSize: '16px', fontWeight: '600', marginBottom: '8px' },
         });
 
         // Mode selector
         const modeSelect = new Select<TLiquifyMode>({
             optionArr: [
-                ['push', 'Push'],
-                ['twirl-cw', 'Twirl CW'],
-                ['twirl-ccw', 'Twirl CCW'],
-                ['pinch', 'Pinch'],
-                ['expand', 'Expand'],
-                ['smooth', 'Smooth'],
+                ['push', LANG('mode-push')],
+                ['twirl-cw', LANG('mode-twirl-cw')],
+                ['twirl-ccw', LANG('mode-twirl-ccw')],
+                ['pinch', LANG('mode-pinch')],
+                ['expand', LANG('mode-expand')],
+                ['smooth', LANG('algorithm-smooth')],
             ],
             initValue: 'push',
             onChange: (val) => {
@@ -57,12 +57,12 @@ export class LiquifyUi {
             parent: this.rootEl,
             css: { display: 'flex', alignItems: 'center', gap: '12px' },
         });
-        BB.el({ parent: modeRow, content: 'Mode:', css: { minWidth: '70px' } });
+        BB.el({ parent: modeRow, content: LANG('stabilizer-mode'), css: { minWidth: '70px' } });
         modeRow.append(modeSelect.getElement());
 
         // Size slider
         const sizeSlider = new KlSlider({
-            label: 'Size',
+            label: LANG('brush-size'),
             width: 200,
             height: 30,
             min: 10,
@@ -76,7 +76,7 @@ export class LiquifyUi {
 
         // Strength slider
         const strengthSlider = new KlSlider({
-            label: 'Strength',
+            label: LANG('strength'),
             width: 200,
             height: 30,
             min: 0.1,
@@ -99,7 +99,7 @@ export class LiquifyUi {
         BB.el({
             tagName: 'button',
             parent: buttonsRow,
-            content: 'Reset',
+            content: LANG('hand-reset'),
             css: {
                 border: '1px solid var(--kl-border-color)',
                 borderRadius: '6px',
@@ -117,7 +117,7 @@ export class LiquifyUi {
         BB.el({
             tagName: 'button',
             parent: buttonsRow,
-            content: 'Apply',
+            content: LANG('apply'),
             css: {
                 flex: '1',
                 background: 'var(--kl-accent-color)',
