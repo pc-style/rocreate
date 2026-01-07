@@ -599,7 +599,6 @@ export class PointerListener {
                 const outEvent = this.createPointerOutEvent('pointerup', correctedEvent, {
                     downPageX: dragObj.downPageX,
                     downPageY: dragObj.downPageY,
-                    button: getButtonStr(correctedEvent.button),
                 });
                 this.onPointerCallback?.(outEvent);
             };

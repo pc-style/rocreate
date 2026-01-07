@@ -7,4 +7,9 @@ export default defineConfig({
         globals: true,
         setupFiles: ['./vitest.setup.ts'],
     },
+    resolve: {
+        alias: [
+            { find: /^url:(.*)/, replacement: '$1' },
+        ],
+    },
 });

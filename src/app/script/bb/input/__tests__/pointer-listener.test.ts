@@ -92,4 +92,28 @@ describe('PointerListener', () => {
         // 4. Verify recovery
         expect(privateListener.dragPointerIdArr).not.toContain(2);
     });
+
+    it('should not set button on pointerup events', () => {
+        const downEvent = new PointerEvent('pointerdown', {
+            pointerId: 3,
+            buttons: 2,
+            button: 2,
+            bubbles: true,
+            pointerType: 'mouse',
+        });
+        target.dispatchEvent(downEvent);
+
+        const upEvent = new PointerEvent('pointerup', {
+            pointerId: 3,
+            buttons: 0,
+            button: 2,
+            bubbles: true,
+            pointerType: 'mouse',
+        });
+        document.dispatchEvent(upEvent);
+
+        const lastCall = onPointerSpy.mock.calls[onPointerSpy.mock.calls.length - 1]?.[0];
+        expect(lastCall?.type).toBe('pointerup');
+        expect(lastCall?.button).toBeUndefined();
+    });
 });

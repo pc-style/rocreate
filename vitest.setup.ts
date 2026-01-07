@@ -38,11 +38,14 @@ if (window.performance && !window.performance.timing) {
 // Global mock for canvas getContext to handle environments without 'canvas' package
 (HTMLCanvasElement.prototype as any).getContext = function (type: string) {
     if (type === '2d') {
-        return {
+        const ctx = {
+            canvas: this,
             save: () => { },
             restore: () => { },
             drawImage: () => { },
             clearRect: () => { },
+            fillRect: () => { },
+            strokeRect: () => { },
             fill: () => { },
             stroke: () => { },
             beginPath: () => { },
@@ -54,15 +57,39 @@ if (window.performance && !window.performance.timing) {
             translate: () => { },
             scale: () => { },
             rotate: () => { },
-            measureText: () => ({ width: 0 }),
+            measureText: () => ({
+                width: 0,
+                actualBoundingBoxAscent: 0,
+                actualBoundingBoxDescent: 0,
+                actualBoundingBoxLeft: 0,
+                actualBoundingBoxRight: 0,
+                fontBoundingBoxAscent: 0,
+                fontBoundingBoxDescent: 0
+            }),
             fillText: () => { },
             strokeText: () => { },
             createLinearGradient: () => ({ addColorStop: () => { } }),
             createRadialGradient: () => ({ addColorStop: () => { } }),
             createPattern: () => { },
-            getImageData: () => ({ data: new Uint8ClampedArray(4) }),
+            createImageData: function (w: number, h: number) {
+                return {
+                    data: new Uint8ClampedArray(w * h * 4),
+                    width: w,
+                    height: h,
+                    colorSpace: 'srgb'
+                };
+            },
+            getImageData: function (x: number, y: number, w: number, h: number) {
+                return {
+                    data: new Uint8ClampedArray(w * h * 4),
+                    width: w,
+                    height: h,
+                    colorSpace: 'srgb'
+                };
+            },
             putImageData: () => { },
         };
+        return ctx;
     }
     return null;
 };

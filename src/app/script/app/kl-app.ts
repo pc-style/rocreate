@@ -1311,8 +1311,12 @@ export class KlApp {
                     currentBrushUi.goLine(p.x, p.y, event.pressure, event.isCoalesced, event.tiltX, event.tiltY);
                 });
                 this.easelBrush.setLastDrawEvent({ x: event.x, y: event.y });
-                this.easel.markLayerDirty(currentLayer.index);
-                this.easel.requestRender();
+                if (hasBrushStrokeContext(currentBrushUi.getBrush())) {
+                    this.easelProjectUpdater.requestUpdate();
+                } else {
+                    this.easel.markLayerDirty(currentLayer.index);
+                    this.easel.requestRender();
+                }
             }
             if (event.type === 'up') {
                 this.toolspace.style.pointerEvents = '';
