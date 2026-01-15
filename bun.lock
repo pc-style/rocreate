@@ -18,6 +18,7 @@
         "typescript": "^5.9.3",
       },
       "devDependencies": {
+        "@parcel/reporter-bundle-analyzer": "^2.16.3",
         "@testing-library/dom": "^10.4.1",
         "@vitest/coverage-v8": "^4.0.16",
         "happy-dom": "^20.0.11",
@@ -167,7 +168,7 @@
 
     "@parcel/cache": ["@parcel/cache@2.16.1", "", { "dependencies": { "@parcel/fs": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/utils": "2.16.1", "lmdb": "2.8.5" }, "peerDependencies": { "@parcel/core": "^2.16.1" } }, "sha512-qDlHQQ7RDfSi5MBnuFGCfQYiQQomsA5aZLntO5MCRD62VnMf9qz/RrCqpGFGOooljMoUaeVl0Q8ARvorRJJi8w=="],
 
-    "@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+    "@parcel/codeframe": ["@parcel/codeframe@2.16.3", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-oXZx8PUqExnXnAHCLhxulTDeFvTBqPAwJU4AVZwnYFToaQ6nltXWWYaDGUu2f/V3Z17LObWiOROHT7HYXAe62Q=="],
 
     "@parcel/compressor-raw": ["@parcel/compressor-raw@2.16.1", "", { "dependencies": { "@parcel/plugin": "2.16.1" } }, "sha512-44sHWuEyGwUvs2bG1t/hsBP0lR06HO2btrXhkUGL+HX6D8cZrkZfSBFnUrGYZURYRybyx8qkhcogf5SU5rbwAQ=="],
 
@@ -189,7 +190,7 @@
 
     "@parcel/logger": ["@parcel/logger@2.16.1", "", { "dependencies": { "@parcel/diagnostic": "2.16.1", "@parcel/events": "2.16.1" } }, "sha512-w9Qpp5S79fqn6nh/VqVYG4kCbIeW45zdPvYJMFgE90zhBRLrOnqw06cRZQdKj24C7/kdqOFFbrJ3B5uTsYeS0w=="],
 
-    "@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+    "@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.3", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-r0QQpS44jNueY8lcZcSoUua3kJfI5kDZrJvFgi1jrkyxwDUfq3L0xWQjxHrXzv8K6uFAeU+teoq8JcWLVLXa1w=="],
 
     "@parcel/namer-default": ["@parcel/namer-default@2.16.1", "", { "dependencies": { "@parcel/diagnostic": "2.16.1", "@parcel/plugin": "2.16.1", "nullthrows": "^1.1.1" } }, "sha512-vs4djcAt3HoQri6g8itdCzFTiFXwcVNfFDqa9By1pTdq/aKWapJWZaes2KCf2ey2FoEafS0tOIA90n124PM00A=="],
 
@@ -219,9 +220,11 @@
 
     "@parcel/packager-wasm": ["@parcel/packager-wasm@2.16.1", "", { "dependencies": { "@parcel/plugin": "2.16.1" } }, "sha512-Do/5Cr4yckpWqeQyhiPqwDbbg+nwj20BGIP9edYIL9XAmCh8ARBwntFWmcSpeNdGp+DSJKQ28SgWCT/5cyyoig=="],
 
-    "@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+    "@parcel/plugin": ["@parcel/plugin@2.16.3", "", { "dependencies": { "@parcel/types": "2.16.3" } }, "sha512-w4adN/E2MBbNzUwuGWcUkilrf7B6eQThPRdgiw2awIY0/t0C1gN/hhBfUeWt7vt0WcvWlXcyR/OGzU/r0nPteA=="],
 
     "@parcel/profiler": ["@parcel/profiler@2.16.1", "", { "dependencies": { "@parcel/diagnostic": "2.16.1", "@parcel/events": "2.16.1", "@parcel/types-internal": "2.16.1", "chrome-trace-event": "^1.0.2" } }, "sha512-9VKswpixK5CggxqoEoThiusnRbqU48QIWwmGQhaTV9iBYi9m/LhEYUoTa8K/KQ70yJknghMMNc1JfAvt2bfh5w=="],
+
+    "@parcel/reporter-bundle-analyzer": ["@parcel/reporter-bundle-analyzer@2.16.3", "", { "dependencies": { "@parcel/plugin": "2.16.3", "@parcel/utils": "2.16.3", "nullthrows": "^1.1.1" } }, "sha512-XwDQRWu2zLQUNNWDx4vue2beAe3XTzd46FWijrovY4FAzz9yOUsFqwRZ7l+eNPdNVR2t1+VjmDopQ1mLbAAyEQ=="],
 
     "@parcel/reporter-cli": ["@parcel/reporter-cli@2.16.1", "", { "dependencies": { "@parcel/plugin": "2.16.1", "@parcel/types": "2.16.1", "@parcel/utils": "2.16.1", "chalk": "^4.1.2", "term-size": "^2.2.1" } }, "sha512-+P4Nvg5a2GnOpsIf93U75JjPgltrAmGTCVyRpbeBo45uFBvHGKPX5O7Vn7rl1wWunNobOAxn6F9JxPCApcw79A=="],
 
@@ -239,23 +242,23 @@
 
     "@parcel/runtime-service-worker": ["@parcel/runtime-service-worker@2.16.1", "", { "dependencies": { "@parcel/plugin": "2.16.1", "@parcel/utils": "2.16.1", "nullthrows": "^1.1.1" } }, "sha512-YiM/SS8rk/sBFdA8YFxlviO5FhAjzjBVAzzlnNG0qe3xLmqBfzHzW+RNf0/KblWRhxHCwmUDmzgE2ybaDeL3Lw=="],
 
-    "@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+    "@parcel/rust": ["@parcel/rust@2.16.3", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.3", "@parcel/rust-darwin-x64": "2.16.3", "@parcel/rust-linux-arm-gnueabihf": "2.16.3", "@parcel/rust-linux-arm64-gnu": "2.16.3", "@parcel/rust-linux-arm64-musl": "2.16.3", "@parcel/rust-linux-x64-gnu": "2.16.3", "@parcel/rust-linux-x64-musl": "2.16.3", "@parcel/rust-win32-x64-msvc": "2.16.3" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-pUsgURnDdlHA9AqvEcm124/9+DB7GM7Mk0qQ9XDNiznl09n8XZ67lf/IIvaMW7y0vQ7FpTzRIrRzAJhGyMRbMw=="],
 
-    "@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+    "@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.3", "", { "os": "darwin", "cpu": "arm64" }, "sha512-9JG19DDNjIpvlI1b8VYIjvCaulftd6/J09/Rj2A8KgREv6EtCDkus8jCsNw7Jacj2HIWg23kxJY3XKcJ9pkiug=="],
 
-    "@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+    "@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.3", "", { "os": "darwin", "cpu": "x64" }, "sha512-9mG6M6SGYiCO9IfD85Bixg5udXoy2IQHCRdBoQmpNej5+FrDW1a3FeDwDzqOFtl9b7axpzPEVb7zp+WK36Rn4w=="],
 
-    "@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+    "@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.3", "", { "os": "linux", "cpu": "arm" }, "sha512-zSA1Dz5JWS28DkEMjEQNmf8qk55dR6rcKtwrw5CMg3Ndt30ugrGtRechsqEpXSYYxcDY1kmZ779LwiTUdkdCrQ=="],
 
-    "@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+    "@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.3", "", { "os": "linux", "cpu": "arm64" }, "sha512-PvjO0U6qM0JjRCH2eKi3JNKgBVWDBP3VrMEUXJJM8K37ylfLTozK0f7oK2M03voCS1WjKrduRGjJNk8EZrBPow=="],
 
-    "@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+    "@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.3", "", { "os": "linux", "cpu": "arm64" }, "sha512-a4TZB9/Y/y8DQ55XZXh9bNb5yIC9CAoK2YK8g3OytauC8OrHGtIIVlF+E1UCn/FPBFr2dobYOeih/InvLKITpQ=="],
 
-    "@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+    "@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.3", "", { "os": "linux", "cpu": "x64" }, "sha512-6/a/5jDcVwE0xpLSLGI9T2pclgnad0jVFRH/4Gm9yQ5fl2gpYghjg3fcCNeSjJ/aBNFKlOeKLlp/oBSlTtlkoQ=="],
 
-    "@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+    "@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.3", "", { "os": "linux", "cpu": "x64" }, "sha512-gTUlFvJBLR3UxNjGs076wVuFZyx+X6G6opJzBFaSG9XqLhLo+VrpqHpjCx+SCwSufDLTVq8rWJbwpvbe2EhRJg=="],
 
-    "@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+    "@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.3", "", { "os": "win32", "cpu": "x64" }, "sha512-/kyr5CL4XFJpMj9CvW8K1NNNqkzyOhxc7ibXhykiPyPiGOwO/ZbqnfDhqVx3JMSjOASeW1e6UlGNjnfTPvFkGQ=="],
 
     "@parcel/source-map": ["@parcel/source-map@2.1.1", "", { "dependencies": { "detect-libc": "^1.0.3" } }, "sha512-Ejx1P/mj+kMjQb8/y5XxDUn4reGdr+WyKYloBljpppUy8gs42T+BNoEOuRYqDVdgPc6NxduzIDoJS9pOFfV5Ew=="],
 
@@ -287,11 +290,11 @@
 
     "@parcel/transformer-svg": ["@parcel/transformer-svg@2.16.1", "", { "dependencies": { "@parcel/diagnostic": "2.16.1", "@parcel/plugin": "2.16.1", "@parcel/rust": "2.16.1" } }, "sha512-OBB0kDjDAAgNzcVqxo/igd+iQL3EDbo8C36JzvH07zR72OXErAdJhTdgtfRq4fqFtMyLyBLT/s3Z37c1GzLoCQ=="],
 
-    "@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+    "@parcel/types": ["@parcel/types@2.16.3", "", { "dependencies": { "@parcel/types-internal": "2.16.3", "@parcel/workers": "2.16.3" } }, "sha512-aIJJFMif/A7u86UEt3sJPZ/F7suQW56ugiCp2Y2mYTPHpTJbI2Knk9yO4fkWHNO1BrH6a/VUWh7bWIOsQtzL1Q=="],
 
     "@parcel/types-internal": ["@parcel/types-internal@2.16.1", "", { "dependencies": { "@parcel/diagnostic": "2.16.1", "@parcel/feature-flags": "2.16.1", "@parcel/source-map": "^2.1.1", "utility-types": "^3.11.0" } }, "sha512-HVCHm0uFyJMsu30bAfm/pd0RNsXRWX0mUXaDHzGJRZ2Yer53JA6elRwkgrPz1KosBA+OuNU/G8atXfCxPMXdKw=="],
 
-    "@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+    "@parcel/utils": ["@parcel/utils@2.16.3", "", { "dependencies": { "@parcel/codeframe": "2.16.3", "@parcel/diagnostic": "2.16.3", "@parcel/logger": "2.16.3", "@parcel/markdown-ansi": "2.16.3", "@parcel/rust": "2.16.3", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-g/yqVWSdZqPvTiS96dEK9MEl7q6w31u+luD5VGt6f9w6PQCpuVajhhDNuXf9uzDU/dL4sSZPKUhLteVZDqryHA=="],
 
     "@parcel/watcher": ["@parcel/watcher@2.5.1", "", { "dependencies": { "detect-libc": "^1.0.3", "is-glob": "^4.0.3", "micromatch": "^4.0.5", "node-addon-api": "^7.0.0" }, "optionalDependencies": { "@parcel/watcher-android-arm64": "2.5.1", "@parcel/watcher-darwin-arm64": "2.5.1", "@parcel/watcher-darwin-x64": "2.5.1", "@parcel/watcher-freebsd-x64": "2.5.1", "@parcel/watcher-linux-arm-glibc": "2.5.1", "@parcel/watcher-linux-arm-musl": "2.5.1", "@parcel/watcher-linux-arm64-glibc": "2.5.1", "@parcel/watcher-linux-arm64-musl": "2.5.1", "@parcel/watcher-linux-x64-glibc": "2.5.1", "@parcel/watcher-linux-x64-musl": "2.5.1", "@parcel/watcher-win32-arm64": "2.5.1", "@parcel/watcher-win32-ia32": "2.5.1", "@parcel/watcher-win32-x64": "2.5.1" } }, "sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg=="],
 
@@ -883,6 +886,192 @@
 
     "@choojs/findup/commander": ["commander@2.20.3", "", {}, "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="],
 
+    "@parcel/bundler-default/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/bundler-default/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/bundler-default/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/cache/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/compressor-raw/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/core/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/core/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/core/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/core/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/fs/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/fs/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/namer-default/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/node-resolver-core/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/node-resolver-core/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/optimizer-css/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/optimizer-css/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/optimizer-html/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/optimizer-html/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/optimizer-html/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/optimizer-image/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/optimizer-image/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/optimizer-image/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/optimizer-svg/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/optimizer-svg/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/optimizer-svg/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/optimizer-swc/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/optimizer-swc/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/package-manager/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/package-manager/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/packager-css/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/packager-css/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/packager-html/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/packager-html/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/packager-html/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/packager-html/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/packager-js/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/packager-js/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/packager-js/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/packager-js/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/packager-raw/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/packager-svg/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/packager-svg/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/packager-svg/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/packager-svg/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/packager-wasm/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/reporter-cli/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/reporter-cli/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/reporter-cli/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/reporter-dev-server/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/reporter-dev-server/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/reporter-tracer/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/reporter-tracer/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/resolver-default/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/runtime-js/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/runtime-js/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/runtime-rsc/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/runtime-rsc/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/runtime-rsc/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/runtime-service-worker/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-babel/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-babel/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-css/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-css/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-glsl/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-html/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-html/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-image/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-image/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-js/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-js/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-js/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-json/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-node/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-postcss/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-postcss/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-postcss/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-posthtml/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-raw/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
+    "@parcel/transformer-sass/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-svg/@parcel/plugin": ["@parcel/plugin@2.16.1", "", { "dependencies": { "@parcel/types": "2.16.1" } }, "sha512-/5hdgMFjd4pRZelfzWVAEWEH51qCHGB6I3z4mV3i8Teh0zsOgoHJrn1t+sVYkhKPDOMs16XAkx2iCMvEcktDrA=="],
+
+    "@parcel/transformer-svg/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/types/@parcel/types-internal": ["@parcel/types-internal@2.16.3", "", { "dependencies": { "@parcel/diagnostic": "2.16.3", "@parcel/feature-flags": "2.16.3", "@parcel/source-map": "^2.1.1", "utility-types": "^3.11.0" } }, "sha512-zi2GKdJHpNeW9sspTBfM68A9lekEztTWU8Dxs1ouPk90lfA0tfrMznAvkD5iJdKsM6usbgcqjjI8s+Ow8OrsBg=="],
+
+    "@parcel/types/@parcel/workers": ["@parcel/workers@2.16.3", "", { "dependencies": { "@parcel/diagnostic": "2.16.3", "@parcel/logger": "2.16.3", "@parcel/profiler": "2.16.3", "@parcel/types-internal": "2.16.3", "@parcel/utils": "2.16.3", "nullthrows": "^1.1.1" }, "peerDependencies": { "@parcel/core": "^2.16.3" } }, "sha512-SxIXRnrlQFhw377wxWC5WIl1FL1Y9IedhUtuc7j3uac3tlbCQJJ+3rFr5/BDUknJbTktvVsPakE98fH7TIJyyw=="],
+
+    "@parcel/utils/@parcel/diagnostic": ["@parcel/diagnostic@2.16.3", "", { "dependencies": { "@mischnic/json-sourcemap": "^0.1.1", "nullthrows": "^1.1.1" } }, "sha512-NBoGGFMqOmbs8i0zGVwTeU0alQ0BkEZe894zAb5jEBQqsRBPmdqogwmARsT4Ix2bN1QBco4o0gn9kBtalFC6IQ=="],
+
+    "@parcel/utils/@parcel/logger": ["@parcel/logger@2.16.3", "", { "dependencies": { "@parcel/diagnostic": "2.16.3", "@parcel/events": "2.16.3" } }, "sha512-dHUJk8dvo2wOg3dIqSjNGqlVqsRn4hTZVbgTShaImaLTWdueaKfMojxo79P7T3em49y0dQb0m+xl2SunDhtwsA=="],
+
+    "@parcel/workers/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
     "ast-v8-to-istanbul/js-tokens": ["js-tokens@9.0.1", "", {}, "sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ=="],
 
     "chalk/ansi-styles": ["ansi-styles@4.3.0", "", { "dependencies": { "color-convert": "^2.0.1" } }, "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg=="],
@@ -907,6 +1096,8 @@
 
     "node-gyp-build-optional-packages/detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
+    "parcel/@parcel/utils": ["@parcel/utils@2.16.1", "", { "dependencies": { "@parcel/codeframe": "2.16.1", "@parcel/diagnostic": "2.16.1", "@parcel/logger": "2.16.1", "@parcel/markdown-ansi": "2.16.1", "@parcel/rust": "2.16.1", "@parcel/source-map": "^2.1.1", "chalk": "^4.1.2", "nullthrows": "^1.1.1" } }, "sha512-aoY6SCfAY7X6L39PFOsWNNcAobmJr4AJEgco+PJ2UAPFiHhkBZfUofXCwna5GHH5uqXZx6u3rAHiCUrM3bEDXg=="],
+
     "path-scurry/lru-cache": ["lru-cache@10.4.3", "", {}, "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ=="],
 
     "string-width-cjs/emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
@@ -925,8 +1116,774 @@
 
     "wrap-ansi-cjs/strip-ansi": ["strip-ansi@6.0.1", "", { "dependencies": { "ansi-regex": "^5.0.1" } }, "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="],
 
+    "@parcel/bundler-default/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/bundler-default/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/bundler-default/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/bundler-default/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/compressor-raw/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/core/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/core/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/core/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/fs/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/fs/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/fs/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/namer-default/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/node-resolver-core/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/node-resolver-core/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/node-resolver-core/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/optimizer-css/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/optimizer-html/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/optimizer-html/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/optimizer-html/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/optimizer-html/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/optimizer-image/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/optimizer-image/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/optimizer-image/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/optimizer-image/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/optimizer-svg/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/optimizer-svg/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/optimizer-svg/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/optimizer-svg/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/optimizer-swc/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/packager-css/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/packager-html/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/packager-html/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/packager-html/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/packager-js/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/packager-js/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/packager-js/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/packager-raw/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/packager-svg/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/packager-svg/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/packager-svg/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/packager-wasm/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/reporter-dev-server/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/reporter-tracer/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/resolver-default/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/runtime-js/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/runtime-rsc/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/runtime-rsc/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/runtime-rsc/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/runtime-rsc/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/runtime-service-worker/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-babel/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-css/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-glsl/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-html/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-html/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-image/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-js/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-js/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-js/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-js/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-json/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-node/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-postcss/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-postcss/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-postcss/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-postcss/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-posthtml/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-raw/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
+    "@parcel/transformer-sass/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-svg/@parcel/plugin/@parcel/types": ["@parcel/types@2.16.1", "", { "dependencies": { "@parcel/types-internal": "2.16.1", "@parcel/workers": "2.16.1" } }, "sha512-RFeomuzV/0Ze0jyzzx0u/eB4bXX6ISxrARA3k/3c7MQ+jaoY67+ELd8FwPV6ZmLqvvYIFdGiCZl6ascCABKwgg=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-svg/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/types/@parcel/types-internal/@parcel/diagnostic": ["@parcel/diagnostic@2.16.3", "", { "dependencies": { "@mischnic/json-sourcemap": "^0.1.1", "nullthrows": "^1.1.1" } }, "sha512-NBoGGFMqOmbs8i0zGVwTeU0alQ0BkEZe894zAb5jEBQqsRBPmdqogwmARsT4Ix2bN1QBco4o0gn9kBtalFC6IQ=="],
+
+    "@parcel/types/@parcel/types-internal/@parcel/feature-flags": ["@parcel/feature-flags@2.16.3", "", {}, "sha512-D15/cM/mAO8yv0NQ9kFBxXZ7C3A+jAq+9tVfrjYegofMk18pQoXJz6X/po2Kq1PzO7pjydn7PqYMB/O9p/+zbQ=="],
+
+    "@parcel/types/@parcel/workers/@parcel/diagnostic": ["@parcel/diagnostic@2.16.3", "", { "dependencies": { "@mischnic/json-sourcemap": "^0.1.1", "nullthrows": "^1.1.1" } }, "sha512-NBoGGFMqOmbs8i0zGVwTeU0alQ0BkEZe894zAb5jEBQqsRBPmdqogwmARsT4Ix2bN1QBco4o0gn9kBtalFC6IQ=="],
+
+    "@parcel/types/@parcel/workers/@parcel/logger": ["@parcel/logger@2.16.3", "", { "dependencies": { "@parcel/diagnostic": "2.16.3", "@parcel/events": "2.16.3" } }, "sha512-dHUJk8dvo2wOg3dIqSjNGqlVqsRn4hTZVbgTShaImaLTWdueaKfMojxo79P7T3em49y0dQb0m+xl2SunDhtwsA=="],
+
+    "@parcel/types/@parcel/workers/@parcel/profiler": ["@parcel/profiler@2.16.3", "", { "dependencies": { "@parcel/diagnostic": "2.16.3", "@parcel/events": "2.16.3", "@parcel/types-internal": "2.16.3", "chrome-trace-event": "^1.0.2" } }, "sha512-/4cVsLfv36fdphm+JiReeXXT3RD6258L79C2kjpD06i84sxyNPQVbFldgWRppbHW2KBR/D6XhIzHcwoDUYtTbw=="],
+
+    "@parcel/utils/@parcel/logger/@parcel/events": ["@parcel/events@2.16.3", "", {}, "sha512-rAh/yXwtHYcKWmi9Tjjf5t95UdBVhhlyJkIYN25/PYKdSRBcQ9c1rd8/fvOeZKy1/fSiOcEXqm6dK7bhLSCaww=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
     "msgpackr-extract/node-gyp-build-optional-packages/detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
+    "parcel/@parcel/utils/@parcel/codeframe": ["@parcel/codeframe@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-KLy9Fvf37SX6/wek2SUPw8A/W0kChcNXPUNeCIYWUFI4USAZ5KvesXS5RHUnrJTaR0XzD0Qia+MFJPgp6kuazQ=="],
+
+    "parcel/@parcel/utils/@parcel/markdown-ansi": ["@parcel/markdown-ansi@2.16.1", "", { "dependencies": { "chalk": "^4.1.2" } }, "sha512-4Qww9KkGrVrY/JyD2NtrdUmyufKOqGg3t6hkE4UqQBPb+GZd+TQi6i1mjWvOE6r9AF53x5PAZZ13f/HfllU2qA=="],
+
+    "parcel/@parcel/utils/@parcel/rust": ["@parcel/rust@2.16.1", "", { "optionalDependencies": { "@parcel/rust-darwin-arm64": "2.16.1", "@parcel/rust-darwin-x64": "2.16.1", "@parcel/rust-linux-arm-gnueabihf": "2.16.1", "@parcel/rust-linux-arm64-gnu": "2.16.1", "@parcel/rust-linux-arm64-musl": "2.16.1", "@parcel/rust-linux-x64-gnu": "2.16.1", "@parcel/rust-linux-x64-musl": "2.16.1", "@parcel/rust-win32-x64-msvc": "2.16.1" }, "peerDependencies": { "napi-wasm": "^1.1.2" }, "optionalPeers": ["napi-wasm"] }, "sha512-lQkf14MLKZSY/P8j1lrOgFvMCt95dO+VdXIIM2aHjbxnzYSIGgHIt2XDVtKULE+DexaYZbleA0tTnX8AABUIyQ=="],
+
     "wrap-ansi-cjs/string-width/emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/cache/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/optimizer-css/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/optimizer-swc/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/package-manager/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/packager-css/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/reporter-cli/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/reporter-dev-server/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/reporter-tracer/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/runtime-browser-hmr/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/runtime-js/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/runtime-service-worker/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-babel/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-css/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-image/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-posthtml/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/transformer-react-refresh-wrap/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "@parcel/types/@parcel/workers/@parcel/logger/@parcel/events": ["@parcel/events@2.16.3", "", {}, "sha512-rAh/yXwtHYcKWmi9Tjjf5t95UdBVhhlyJkIYN25/PYKdSRBcQ9c1rd8/fvOeZKy1/fSiOcEXqm6dK7bhLSCaww=="],
+
+    "@parcel/types/@parcel/workers/@parcel/profiler/@parcel/events": ["@parcel/events@2.16.3", "", {}, "sha512-rAh/yXwtHYcKWmi9Tjjf5t95UdBVhhlyJkIYN25/PYKdSRBcQ9c1rd8/fvOeZKy1/fSiOcEXqm6dK7bhLSCaww=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "@parcel/workers/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-darwin-arm64": ["@parcel/rust-darwin-arm64@2.16.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-6J1pnznHYzH1TOQbDZmbGa6bXNW+KXbD+XIihvQOid42DLGJNXRmwMmCU3en/759lF/pfmzmR7sm6wPKaKGfbg=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-darwin-x64": ["@parcel/rust-darwin-x64@2.16.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-NDZpxleSeJ0yPx4OobDcj+z5x6RzsWmuA1RXBDuCKhf2kyXKP3+kfmrQew/7Q0r9uKA5pqCIw0W4eFqy4IoqIA=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm-gnueabihf": ["@parcel/rust-linux-arm-gnueabihf@2.16.1", "", { "os": "linux", "cpu": "arm" }, "sha512-xLLcbMP38ya8/z5esp3ypN2htxO9AsY4uQqF2rigIUZ2abQwL4MPKxfVZtrExWdcrcWiFUbiwn3+GKu/0M9Yow=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-gnu": ["@parcel/rust-linux-arm64-gnu@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-asZlimUq1wBmj2PDcoBSKD1SJvcLf1mXTcYGojOsA3dqkOOz7fGz7oubqZYn6IM+02cUDO4ekH+YBV6Eo7XlTg=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-linux-arm64-musl": ["@parcel/rust-linux-arm64-musl@2.16.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-japSgrHYDD+uNHQ8TEdEhpiWu0zWMVBE48W3HJ5FKkwUOY51whZa8w0lhYW88ykUDYtEEd1ipvflv0fSDFY1jw=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-gnu": ["@parcel/rust-linux-x64-gnu@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-A2LHDou7QDsKn3qlE+DHTBFqnjk0Hy1dhVEJgPgvW4N0XMa4x2JEcnLI9oFZ4KDXyMLGs0H6/smZ88zSdFoF3w=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-linux-x64-musl": ["@parcel/rust-linux-x64-musl@2.16.1", "", { "os": "linux", "cpu": "x64" }, "sha512-C+WgGbmIV1XxXUgNJdXpfZazqizYBvy7aesh8Z74QrlY99an/puQufd4kSbvwySN5iMGPSpN0VlyAUjDZLv9rQ=="],
+
+    "parcel/@parcel/utils/@parcel/rust/@parcel/rust-win32-x64-msvc": ["@parcel/rust-win32-x64-msvc@2.16.1", "", { "os": "win32", "cpu": "x64" }, "sha512-m8LoaBJfw5nv/4elM/jNNhWL5/HqBHNQnrbnN89e8sxn4L/zv9bPoXqHOuZglXwyB5velw1MGonX9Be/aK00ag=="],
   }
 }

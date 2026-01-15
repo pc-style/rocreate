@@ -49,6 +49,7 @@ if (window.performance && !window.performance.timing) {
             fill: () => { },
             stroke: () => { },
             beginPath: () => { },
+            closePath: () => { },
             moveTo: () => { },
             lineTo: () => { },
             rect: () => { },

@@ -1,0 +1,74 @@
+# Ignore .git directory
+.git/
+
+# Ignore node_modules
+node_modules/
+
+# Ignore Parcel cache and build artifacts
+.parcel-cache/
+
+# Ignore Vercel internal files
+.vercel/
+
+# Ignore test and coverage directories
+coverage/
+logs/
+__tests__/
+
+# Ignore temporary files and logs
+*.log
+*.tmp
+temp/
+.gemini/
+
+# Ignore package manager files
+package-lock.json
+bun.lock
+
+# Ignore configuration files not needed in deployment root
+vitest.config.ts
+vitest.setup.ts
+Dockerfile
+docker-compose.yml
+README.md
+LICENSE
+prompt.md
+all_comments.txt
+all_review_bodies.md
+funkcje-app.txt
+pr_body.md
+pr_feedback.md
+
+# Only include specific files from src, ignore the rest of src
+src/*
+!src/index.html
+!src/embed.ts
+!src/help.html
+!src/tsconfig.json
+!src/languages/
+
+src/languages/*
+!src/languages/**/*.js
+!src/languages/**/*.json5
+!src/app/
+src/app/*
+!src/app/declaration.d.ts
+!src/app/style/
+!src/app/script/
+!src/app/fonts/
+src/app/fonts/*
+!src/app/fonts/*.woff2
+!src/app/fonts/*.ts
+!src/app/img/
+src/app/img/*
+!src/app/img/*.png
+!src/app/img/*.svg
+!src/app/img/ui/
+src/app/img/ui/*
+!src/app/img/ui/*.svg
+!src/app/img/ui/*.png
+!src/app/img/ui/*.gif
+!src/app/img/ui/procreate/
+src/app/img/ui/procreate/*
+!src/app/img/ui/procreate/*.svg
+!src/app/img/ui/procreate/*.png
