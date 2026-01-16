@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://cubic.dev/schema/cubic-repository-config.schema.json
+
+version: 1
+
+reviews:
+  enabled: true
+  sensitivity: high
+  incremental_commits: true
+  architecture_diagrams: true
+  resolve_threads_when_addressed: true
+  custom_instructions: |
+    Rocreate is a high-performance painting application based on Klecks.
+    Technical Focus:
+    - Graphics: CanvasKit (WebAssembly), GPU rendering.
+    - Performance: Critical for real-time brush strokes and large canvases.
+    - Inputs: Complex pointer handling and gesture support.
+    - Stack: TypeScript, Parcel, Vitest.
+    - Recent branch 'refactor/fix-ALL-issues' contains core improvements.
+
+  ignore:
+    files:
+      - node_modules/**
+      - dist/**
+      - .parcel-cache/**
+
+  custom_rules:
+    - name: Performance Regression Watch
+      description: Flag any changes that might introduce latency in the rendering pipeline or input handling.
+      include:
+        - src/rendering/**
+        - src/input/**
+    - name: Type Safety in Graphics
+      description: Ensure CanvasKit and WebGL interactions are strictly typed.
+      include:
+        - src/**/*.ts
+
+pr_descriptions:
+  generate: true
+  instructions: |
+    Highlight performance optimizations and fixes related to rendering or input handling.
+
+issues:
+  fix_with_cubic_buttons: true
